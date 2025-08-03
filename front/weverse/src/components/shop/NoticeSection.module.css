@@ -1,0 +1,46 @@
+/* components/NoticeSection.module.css */
+.section { 
+  background-color: #fff; 
+  padding: 30px; 
+  border-radius: 16px; 
+  margin-bottom: 40px; 
+}
+.sectionHeader { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 20px; 
+}
+.sectionTitle { 
+  font-size: 1.5rem; 
+  font-weight: 700; 
+}
+.viewMore { 
+  font-size: 0.9rem; 
+  color: #555; 
+}
+.noticeList { 
+  list-style: none; 
+  padding: 0; 
+  margin: 0; 
+}
+.noticeList li a { 
+  display: flex; 
+  align-items: center; 
+  padding: 12px 0; 
+  border-bottom: 1px solid #f0f0f0; 
+}
+.noticeList li:last-child a { 
+  border-bottom: none; 
+}
+.noticeCategory { 
+  font-weight: 700; 
+  color: #5a31f4; 
+  margin-right: 15px; 
+  flex-shrink: 0; 
+}
+.noticeTitle { 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}

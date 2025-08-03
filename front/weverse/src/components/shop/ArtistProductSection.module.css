@@ -1,0 +1,112 @@
+.section { 
+  background-color: #f4f4f5; 
+  padding: 0; 
+  border: none; 
+  margin-bottom: 40px; 
+}
+.nowHeader { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  padding: 12px 15px; 
+  background-color: #1a1a1a; 
+  color: white; 
+  border-radius: 16px; 
+  font-size: 1.2rem; 
+  font-weight: 700; 
+}
+.productGrid { 
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 20px; 
+  margin-top: 1px; 
+  background: #fff; 
+  padding: 20px; 
+  border-radius: 0 0 16px 16px; 
+}
+.productCard { 
+  background-color: #fff; 
+  border-radius: 12px; 
+  overflow: hidden; 
+}
+.productImageWrapper { 
+  position: relative; 
+  width: 100%; 
+  padding-top: 100%; 
+  background-color: #f0f0f0; 
+}
+.productImage { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+}
+.productInfo { 
+  padding: 10px 5px; 
+}
+.productName { 
+  font-size: 0.9rem; 
+  font-weight: 500; 
+  margin: 0 0 8px; 
+  height: 38px; 
+  overflow: hidden; 
+}
+.productPrice { 
+  font-size: 1rem; 
+  font-weight: 700; 
+}
+.productPrice span { 
+  font-weight: 400; 
+  margin-left: 2px; 
+}
+
+.mobileOnly { display: none; }
+.productSlider { 
+  position: relative;
+  margin-top: 1px; 
+  background: #fff; 
+  padding: 20px 15px 80px 15px; /* 하단 여백 확보 */
+  border-radius: 0 0 16px 16px; 
+}
+/* Swiper 버튼 전역 스타일 타겟팅 */
+.productSlider :global(.swiper-button-prev),
+.productSlider :global(.swiper-button-next) {
+  top: auto;
+  bottom: 25px; /* 상품과 겹치지 않도록 하단에 위치 */
+  width: 36px;
+  height: 36px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  color: #333;
+  transition: opacity 0.2s;
+}
+.productSlider :global(.swiper-button-prev)::after,
+.productSlider :global(.swiper-button-next)::after {
+  font-size: 14px;
+  font-weight: 700;
+}
+/* 버튼 중앙 정렬 */
+.productSlider :global(.swiper-button-prev) {
+  left: 50%;
+  transform: translateX(-100%);
+  margin-left: -6px; /* 버튼 사이 간격 */
+}
+.productSlider :global(.swiper-button-next) {
+  left: 50%;
+  transform: translateX(0);
+  margin-left: 6px; /* 버튼 사이 간격 */
+}
+.productSlider :global(.swiper-button-disabled) {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .desktopOnly { display: none; }
+  .mobileOnly { display: block; }
+  .nowHeader { font-size: 1.1rem; }
+}

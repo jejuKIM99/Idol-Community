@@ -1,0 +1,151 @@
+/* styles/ArtistStorePage.module.css (New File) */
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.notFound {
+    text-align: center;
+    padding: 5rem 0;
+    font-size: 1.2rem;
+}
+
+.contentGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.productsSection {
+    width: 100%;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #000;
+}
+
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.tabButton {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.tabButton.active,
+.tabButton:hover {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.productGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem 1rem;
+}
+
+.productCard {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.productImageWrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.productImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.productInfo {
+    padding: 0.8rem 0.2rem;
+}
+
+.productName {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.productPrice {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.productPrice span {
+    font-size: 0.8rem;
+    font-weight: 400;
+    margin-left: 2px;
+}
+
+.moreButtonWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.moreButton {
+    padding: 0.8rem 3rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.2s;
+}
+
+.moreButton:hover {
+    background-color: #f5f5f5;
+}
+
+.sidebar {
+    display: none; /* Mobile-first, hide sidebar */
+}
+
+/* Desktop Styles */
+@media (min-width: 768px) {
+    .productGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .contentGrid {
+        grid-template-columns: 2.5fr 1fr;
+    }
+    .sidebar {
+        display: block;
+    }
+}

@@ -1,0 +1,110 @@
+.mediaTabContainer {
+  background-color: black;
+  color: white;
+}
+
+.mediaTabNav {
+  display: flex;
+  gap: 10px;
+  padding-block: 14px;
+  border-bottom: 1px solid #eee;
+  justify-content: center;
+  background: #987de8;
+}
+
+.navButton {
+  background: none;
+  border: none;
+  padding: 0 15px;
+  cursor: pointer;
+  font-size: 16px;
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.navButton:hover {
+  color: #ccc;
+}
+
+.navButton.active {
+  color: #0070f3;
+  border-bottom: 2px solid #0070f3;
+  font-weight: bold;
+}
+
+.homeSubNav {
+  display: flex;
+  gap: 10px;
+  padding-block: 14px;
+  justify-content: center;
+}
+
+.homeSubNav .navButton {
+  background: #2e2e2e;
+  padding: 10px 15px;
+  border-radius: 16px;
+}
+
+.homeSubNav .navButton.active {
+  color: white;
+  border-bottom: 0;
+  font-weight: bold;
+}
+
+.homeContentSections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section {
+  border: 1px solid #333;
+  padding: 15px;
+  background-color: #222;
+  color: white;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.sectionTitle {
+  text-align: left;
+  font-size: 1.2em;
+  margin: 0; /* Remove default margin */
+}
+
+.moreButton {
+  background: none;
+  border: none;
+  color: #0070f3;
+  cursor: pointer;
+  font-size: 0.9em;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.3s ease;
+}
+
+.section:hover .moreButton {
+  opacity: 1; /* Show on hover */
+}
+
+.mediaCardGrid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap; /* Add this to allow wrapping */
+  overflow-x: auto; /* Allows horizontal scrolling if cards exceed container width */
+  padding-bottom: 10px; /* Space for scrollbar */
+}
+
+.viewAllMediaButton {
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  align-self: flex-start; /* Align button to the start of the column */
+}

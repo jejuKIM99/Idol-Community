@@ -1,0 +1,226 @@
+/* app/mypage/settings/settings.module.css */
+.container {
+    background-color: #f8f9fa;
+    padding: 2rem 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    min-height: calc(100vh - 60px);
+}
+
+.content {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 2rem 3rem;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.section {
+    padding-bottom: 2.5rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.sectionTitle {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+.infoRow {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    align-items: center;
+    font-size: 15px;
+}
+
+.infoLabel {
+    color: #868e96;
+    font-weight: 500;
+}
+
+.infoValue {
+    color: #212529;
+    font-weight: 500;
+}
+
+.changeButton {
+    background: none;
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 4px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.snsList {
+    display: grid;
+    gap: 1rem;
+}
+
+.snsItem {
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.connectButton {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.serviceItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+}
+
+.serviceItem img {
+    width: 40px;
+    height: 40px;
+}
+
+.serviceName {
+    font-weight: 600;
+    margin: 0;
+}
+
+.serviceDate {
+    font-size: 13px;
+    color: #868e96;
+    margin: 4px 0 0;
+}
+
+.serviceButton {
+    margin-left: auto;
+    background: none;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.settingRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.settingRow:last-child {
+    margin-bottom: 0;
+}
+
+.settingLabel {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.settingDesc {
+    font-size: 14px;
+    color: #868e96;
+    max-width: 500px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.toggleSwitch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+    flex-shrink: 0;
+    margin-left: 2rem;
+}
+
+.toggleSwitch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #007bff;
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+.policyList {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.policyItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #212529;
+    font-weight: 500;
+}
+
+.deleteAccount {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.deleteAccount a {
+    color: #868e96;
+    font-size: 14px;
+    text-decoration: underline;
+}

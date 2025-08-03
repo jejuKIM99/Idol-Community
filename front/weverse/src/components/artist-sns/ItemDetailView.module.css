@@ -1,0 +1,199 @@
+.container {
+  background-color: #000;
+  color: #fff;
+  text-align: left;
+}
+
+.topSection {
+  width: 1200px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.topContent {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start; /* Align items to the top */
+}
+
+.leftSection {
+  flex: 4;
+}
+
+.rightSection {
+  flex: 1;
+  background-color: #222;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Take full height of parent */
+}
+
+.commentsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.commentCount {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.refreshButton {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+
+.liveChatButton {
+  background-color: #555;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.commentsList {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+.commentInputContainer {
+  display: flex;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #444;
+}
+
+.commentInput {
+  flex-grow: 1;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background-color: #333;
+  color: #fff;
+}
+
+.sendButton {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.5em;
+}
+
+.videoPlayer {
+  width: 100%;
+  height: 500px; /* Adjust as needed */
+  background-color: #333; /* Placeholder for video */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.videoInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.artistProfile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.artistImage {
+  border-radius: 50%;
+}
+
+.artistDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.artistName {
+  font-weight: bold;
+}
+
+.uploadInfo {
+  font-size: 0.9em;
+  color: #ccc;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 15px;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.merchSection {
+  padding: 20px;
+}
+
+.merchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+}
+
+.bottomSection {
+  min-width: 100%;
+  padding-inline: 30px;
+}
+
+.bottomSection h3 {
+  margin-bottom: 20px;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.title {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 500px; /* Adjust as needed */
+  margin-bottom: 20px;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+  font-size: 1.1em;
+  color: #ccc; /* Lighter color for dark background */
+  margin-bottom: 20px;
+}
+
+.description {
+  font-size: 1.2em;
+  line-height: 1.6;
+}

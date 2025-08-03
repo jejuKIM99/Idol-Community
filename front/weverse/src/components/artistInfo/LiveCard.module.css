@@ -1,0 +1,33 @@
+.liveCard {
+  display: flex;
+  flex-direction: column;
+  width: calc(31% - 15px);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  background-color: #222; /* Darker background for the card */
+  color: white;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.info {
+  padding: 10px;
+}
+
+.dateTime {
+  font-size: 0.8em;
+  color: #bbb;
+  margin-bottom: 5px;
+}
+
+.title {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 0;
+}

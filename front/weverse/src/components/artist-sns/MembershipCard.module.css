@@ -1,0 +1,43 @@
+
+.membershipCard {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.membershipInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.heartIcon {
+  color: #ff6b6b;
+  font-size: 24px;
+}
+
+.membershipText {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.subscribeButton {
+  background-color: #8970d0;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.subscribeButton:hover {
+  background-color: #7a5bbd;
+}

@@ -1,0 +1,388 @@
+/* app/jelly/jelly.module.css */
+.pageContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background-color: #f8f9fa;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #e9ecef;
+}
+
+.shopTitle {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 2rem;
+}
+
+.myJellyBox {
+  margin-bottom: 2rem;
+}
+
+.myJellyBox p {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.jellyAmount {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 48px;
+  font-weight: 800;
+}
+
+.jellyIconLarge {
+  color: #ffc107;
+}
+
+.jellyDetails {
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+}
+
+.detailItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.detailItem span:last-child {
+  font-weight: 600;
+}
+
+.chargeLimit {
+  font-size: 14px;
+  color: #495057;
+}
+
+.chargeLimit p {
+  margin: 0.5rem 0 0;
+  font-size: 16px;
+}
+
+.sidebarFooter {
+  margin-top: auto;
+  font-size: 12px;
+  color: #adb5bd;
+}
+
+.weverseLogo {
+  font-weight: 800;
+  color: #ced4da;
+  margin-bottom: 0.5rem;
+}
+
+.mainContent {
+  flex-grow: 1;
+  padding: 2rem 4rem;
+  overflow-y: auto;
+}
+
+.mainNav {
+  display: flex;
+  gap: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 2rem;
+}
+
+.mainNav button {
+  padding: 0.5rem 0.25rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #868e96;
+  border-bottom: 3px solid transparent;
+}
+
+.mainNav button.active {
+  color: #343a40;
+  font-weight: 700;
+  border-bottom-color: #343a40;
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.productList {
+  display: grid;
+  gap: 1rem;
+}
+
+.productItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.productItem:hover {
+  border-color: #adb5bd;
+}
+
+.productItem.selected {
+  border-color: #00c4b4;
+  box-shadow: 0 0 0 2px rgba(0, 196, 180, 0.3);
+}
+
+.bestOffer.selected {
+  border-color: #00c4b4;
+}
+
+.bestOfferBadge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background-color: #00c4b4;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.productInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.jellyIcon {
+  color: #ffc107;
+  font-size: 24px;
+}
+
+.productName {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.bonusJelly {
+  font-size: 12px;
+  color: #007bff;
+  margin: 4px 0 0;
+}
+
+.productPrice {
+  text-align: right;
+}
+
+.productPrice > span:first-child {
+  font-size: 16px;
+  font-weight: 600;
+  display: block;
+}
+
+.benefitTag {
+  font-size: 12px;
+  color: #dc3545;
+  font-weight: 700;
+  margin-top: 4px;
+  display: inline-block;
+}
+
+.infoSection {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e9ecef;
+  font-size: 13px;
+  color: #495057;
+  line-height: 1.6;
+}
+
+.infoSection h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.infoSection ul {
+  list-style-type: '• ';
+  padding-left: 1rem;
+}
+
+.historySection {
+    /* Styles for history tab */
+}
+
+.historyTabs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 2rem;
+}
+
+.historyTabs > div {
+    display: flex;
+}
+
+.historyTabs button {
+    padding: 0.75rem 1rem;
+    border: 1px solid transparent;
+    border-bottom: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #868e96;
+}
+
+.historyTabs button.active {
+    background: white;
+    border-color: #e9ecef;
+    border-radius: 8px 8px 0 0;
+    color: #343a40;
+    font-weight: 600;
+}
+
+.historyTabs select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.emptyHistory {
+    text-align: center;
+    padding: 6rem 0;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+}
+
+.emptyHistory p {
+    font-size: 16px;
+    color: #868e96;
+    margin-bottom: 1.5rem;
+}
+
+.emptyHistory button {
+    background-color: #00c4b4;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* --- Payment Modal Styles --- */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: white;
+  padding: 24px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.modalSection {
+  margin-bottom: 24px;
+}
+
+.modalSectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #868e96;
+  margin-bottom: 12px;
+}
+
+.paymentProduct {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: #f8f9fa;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.paymentPrice {
+    font-size: 14px;
+    color: #495057;
+    margin-top: 4px;
+}
+
+.paymentOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.paymentOption .checkIcon {
+  color: #00c4b4;
+  font-size: 20px;
+}
+
+.paymentOption img {
+    width: 24px;
+    height: 24px;
+}
+
+.paymentButton {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  background-color: #e9ecef;
+  color: #adb5bd;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: not-allowed;
+}
+
+.modalFooter {
+    text-align: center;
+    font-size: 12px;
+    color: #ced4da;
+    margin-top: 24px;
+}
