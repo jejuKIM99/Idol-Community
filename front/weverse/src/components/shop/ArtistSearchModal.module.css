@@ -1,0 +1,71 @@
+
+.modalOverlay { 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  background-color: rgba(0,0,0,0.6); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  z-index: 1000; 
+}
+.modalContent { 
+  background: white; 
+  padding: 20px; 
+  border-radius: 16px; 
+  width: 90%; 
+  max-width: 400px; 
+  max-height: 80vh; 
+  display: flex; 
+  flex-direction: column; 
+}
+.modalHeader { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 20px; 
+}
+.modalHeader h4 { 
+  margin: 0; 
+  font-size: 1.2rem; 
+}
+.closeButton { 
+  background: none; 
+  border: none; 
+  cursor: pointer; 
+  padding: 5px; 
+}
+.searchContainer { 
+  display: flex; 
+  align-items: center; 
+  border: 1px solid #ddd; 
+  border-radius: 8px; 
+  padding: 8px 12px; 
+  margin-bottom: 20px; 
+}
+.searchContainer input { 
+  border: none; 
+  outline: none; 
+  margin-left: 10px; 
+  width: 100%; 
+}
+.artistList { 
+  overflow-y: auto; 
+}
+.artistListItem { 
+  display: flex; 
+  align-items: center; 
+  gap: 15px; 
+  padding: 10px; 
+  border-radius: 8px; 
+}
+.artistListItem:hover { 
+  background-color: #f4f4f5; 
+}
+.artistListItem img { 
+  width: 40px; 
+  height: 40px; 
+  border-radius: 50%; 
+}

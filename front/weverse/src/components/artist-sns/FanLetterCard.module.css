@@ -1,0 +1,44 @@
+
+.fanLetterCard {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.fanIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.envelopeIcon {
+  color: #8970d0;
+  font-size: 20px;
+}
+
+.fanLetterText {
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+}
+
+.sendButton {
+  background-color: #8970d0;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sendButton:hover {
+  background-color: #7a5bbd;
+}

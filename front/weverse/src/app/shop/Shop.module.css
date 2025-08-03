@@ -1,0 +1,19 @@
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; font-family: 'Noto Sans KR', sans-serif; }
+.section { background-color: #fff; padding: 20px; border-radius: 16px; margin-bottom: 40px; }
+.sectionHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.sectionTitle { font-size: 1.2rem; font-weight: 700; }
+.recommendedArtistsList { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 20px; text-align: center; }
+.artistItem { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; width: 80px; }
+.artistLogo { width: 60px; height: 60px; border-radius: 50%; border: 1px solid #eee; object-fit: contain; padding: 4px; transition: transform 0.2s; }
+.artistItem:hover .artistLogo { transform: scale(1.05); }
+.artistName { font-size: 0.8rem; font-weight: 500; word-break: keep-all; }
+.searchBar { margin-top: 30px; padding: 12px; border: 1px solid #e5e5e5; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.2s; font-weight: 500; }
+.searchBar:hover { background-color: #f9f9f9; }
+.searchBar span { margin-left: 8px; }
+
+.mobileOnly { display: none; }
+@media (max-width: 768px) {
+  .desktopOnly { display: none; }
+  .mobileOnly { display: block; }
+  .section { padding: 15px; }
+}

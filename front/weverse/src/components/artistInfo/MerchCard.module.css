@@ -1,0 +1,32 @@
+.merchCard {
+  display: flex;
+  flex-direction: column;
+  width: 180px; /* Adjust as needed */
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  background-color: #222; /* Darker background for the card */
+  color: white;
+}
+
+.merchImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.info {
+  padding: 10px;
+}
+
+.merchName {
+  font-size: 1em;
+  font-weight: bold;
+  margin: 0 0 5px 0;
+}
+
+.merchPrice {
+  font-size: 0.9em;
+  color: #bbb;
+}

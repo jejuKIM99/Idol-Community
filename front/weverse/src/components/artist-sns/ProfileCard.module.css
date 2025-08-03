@@ -1,0 +1,29 @@
+
+.profileCard {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.profileImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.nickname {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.followerCount {
+  font-size: 14px;
+  color: #888;
+}

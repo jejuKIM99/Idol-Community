@@ -1,0 +1,88 @@
+/* components/MainBanner.module.css */
+.bannerContainer {
+  width: 100%;
+  margin-bottom: 40px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.mainBanner {
+  position: relative;
+  height: 400px;
+  background-color: #1a1a1a;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 5%;
+}
+.bannerBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.5;
+  z-index: 1;
+}
+.bannerContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.bannerAlbumArt {
+  width: 280px;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.bannerText h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+.bannerText p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+/* 모바일 반응형 스타일 */
+@media (max-width: 767px) {
+  .mainBanner {
+    height: auto;
+    aspect-ratio: 4 / 5;
+    align-items: flex-end; /* 컨텐츠를 하단으로 정렬 */
+    padding: 10%;
+  }
+  .bannerBg {
+    opacity: 1; /* 이미지 선명하게 */
+  }
+  .bannerContent {
+    flex-direction: column;
+    text-align: center;
+    width: 100%;
+    gap: 10px;
+  }
+  .bannerAlbumArt {
+    display: none; /* 모바일에서 앨범아트는 숨김 */
+  }
+  .bannerText h2 {
+    font-size: 1.5rem;
+  }
+  .bannerText p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+  .bannerContainer :global(.swiper-button-next),
+  .bannerContainer :global(.swiper-button-prev) {
+    display: none; /* 모바일에서 화살표 숨김 */
+  }
+  .bannerContainer :global(.swiper-pagination-bullet) {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  .bannerContainer :global(.swiper-pagination-bullet-active) {
+    background-color: #fff;
+  }
+}

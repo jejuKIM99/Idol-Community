@@ -1,0 +1,45 @@
+.slideContainer {
+  position: relative;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 40px 20px 20px 20px; /* Add padding-top to make space for the image */
+  margin-top: 30px; /* Add margin-top to prevent image from being cut off */
+  height: 120px;
+  text-align: left;
+}
+
+.imageWrapper {
+  position: absolute;
+  top: 0;
+  left: 20px; /* Keep left alignment */
+  transform: translateY(-50%); /* Adjust vertical position */
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.artistImage {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.content {
+  /* Content styles */
+}
+
+.artistName {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.postContent {
+  font-size: 14px;
+  color: #333;
+}

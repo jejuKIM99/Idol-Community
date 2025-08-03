@@ -1,0 +1,102 @@
+.artistName {
+  font-size: 1.5em;
+  color: white;
+  padding-left: 20px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.mediaActiveContainer {
+  background-color: #000;
+}
+
+.liveActiveContainer {
+  background-color: #fff;
+}
+
+.detailViewActiveContainer {
+  background-color: #000;
+}
+
+.artistNameHeader {
+  font-size: 2.5em;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.snsNav {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  background-color: #8970d0;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative; /* Add position for z-index to work */
+  z-index: 100;
+}
+
+.navButton {
+  padding: 10px 20px;
+  border: none;
+  background-color: transparent;
+  color: #dcd4f1;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navButton.active {
+  font-weight: bold;
+  text-decoration: underline;
+  color: white;
+}
+
+.shopButton {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  width: 100%;
+  max-width: 1200px;
+  padding: 30px;
+  padding-top: 0;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.mediaActiveContainer .content,
+.liveActiveContainer .content,
+.detailViewActiveContainer .content {
+  max-width: none; /* Remove max-width */
+  width: 100%; /* Use full width */
+  padding-inline: 0; /* Set padding-inline to 0 */
+}
+
+.contentSection {
+  padding: 20px;
+}
+
+.liveSectionTitle {
+  font-size: 1.8em;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.liveVideoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  justify-content: center;
+}
