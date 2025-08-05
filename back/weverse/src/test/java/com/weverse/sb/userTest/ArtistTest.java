@@ -235,5 +235,24 @@ class ArtistTest {
 				.build();
 		artistRepository.save(artist);
 	}
+	
+	@Test
+	public void testAllArtistsAndGroups() {
+		ArtistDTO dto = artistController.selectArtist();
+
+		System.out.println("=== 전체 아티스트 리스트 ===");
+		dto.getArtistList().forEach(artist -> {
+			System.out.println("ID: " + artist.getId() + ", 이름: " + artist.getStageName());
+			if (artist.getId() != null) {
+				System.out.println("  그룹명: " + artist.getGroup().getGroupName());
+			}
+		});
+
+		System.out.println("=== 전체 그룹 리스트 ===");
+		dto.getGroupList().forEach(group -> {
+			System.out.println("그룹ID: " + group.getId() + ", 그룹명: " + group.getGroupName());
+		});
+
+	}
 
 }

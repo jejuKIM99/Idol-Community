@@ -3,7 +3,6 @@ package com.weverse.sb.community.entity;
 import java.time.LocalDateTime;
 
 import com.weverse.sb.artist.entity.Artist;
-import com.weverse.sb.artist.entity.Tag;
 import com.weverse.sb.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -39,10 +38,6 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "artist_id")
     private Artist artist;
-
-    @ManyToOne
-    @JoinColumn(name = "tag_id")
-    private Tag tag;
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
