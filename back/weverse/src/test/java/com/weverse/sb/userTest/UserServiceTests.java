@@ -1,16 +1,11 @@
 package com.weverse.sb.userTest;
 
-import java.time.LocalDateTime;
-import java.util.stream.IntStream;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.weverse.sb.dto.user.UserDTO;
-import com.weverse.sb.entity.user.User;
-import com.weverse.sb.repository.user.UserRepository;
-import com.weverse.sb.service.user.UserService;
+import com.weverse.sb.user.repository.UserRepository;
+import com.weverse.sb.user.service.UserService;
 
 @SpringBootTest
 class UserServiceTests {
