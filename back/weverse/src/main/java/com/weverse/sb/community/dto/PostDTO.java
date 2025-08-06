@@ -3,8 +3,6 @@ package com.weverse.sb.community.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.weverse.sb.community.entity.Post;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,14 +16,17 @@ import lombok.ToString;
 @NoArgsConstructor
 public class PostDTO {
 	
-	private Long userId;
+	private Long postId;
     private Long artistId;
     private String content;
     private String image;
     private Integer likeCount;
     private LocalDateTime createdAt;
+    private String artistName;
 	
-	private List<Post> postList;
+    private List<PostDTO> postList;
 	
+    private Integer commentCount;
+    private boolean likedByUser;
 
 }

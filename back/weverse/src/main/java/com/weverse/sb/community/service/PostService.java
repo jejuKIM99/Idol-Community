@@ -5,16 +5,23 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.weverse.sb.community.dto.PostDTO;
-import com.weverse.sb.community.entity.Post;
 
 @Service
 public interface PostService {
+	
+	List<PostDTO> getPostDTOList();
 
-	List<Post> getList();
+	void inputPost(Long artistID, String content);
 
-	void inputPost(PostDTO postDTO);
+	List<PostDTO> getFilterPostList(Long id);
+	
+	void inputPostLike(Long postId, Long userId);
 
-	List<Post> getFilterPostList(Long id);
+    void deletePostLike(Long postId, Long userId);
+	
+	
+
+	
 
 
 

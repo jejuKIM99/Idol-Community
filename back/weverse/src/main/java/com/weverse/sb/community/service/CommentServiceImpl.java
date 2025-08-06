@@ -41,24 +41,33 @@ public class CommentServiceImpl implements CommentService{
 	}
 
 	@Override
-	public void inputComment(CommentDTO dto) {
-		User user = userRepository.findById(dto.getUserId())
+	public void inputComment(Long postId, String content, Long userId) {
+		User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-        Artist artist = artistRepository.findById(dto.getArtistId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid artist ID"));
-        Post post = postRepository.findById(dto.getPostId())
+        
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
+        
+        Long artistId = post.getArtist().getArtistId();
+        
+        Artist artist = artistRepository.findById(artistId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid artist ID"));
         
         Comment comment = Comment.builder()
         		.artist(artist)
         		.createdAt(LocalDateTime.now())
                 .post(post)
                 .user(user)
-                .content(dto.getContent())
+                .content(content)
                 .build();
 
         commentRepository.save(comment);
 		
+	}
+
+	@Override
+	public int getCommentCountByPostId(Long postId) {
+		return commentRepository.countByPostId(postId);
 	}
 
 

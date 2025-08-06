@@ -10,6 +10,7 @@ import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.entity.Group;
 import com.weverse.sb.artist.repository.GroupRepository;
 import com.weverse.sb.artist.repository.ArtistRepository;
+import com.weverse.sb.artist.repository.GroupRepository;
 
 @SpringBootTest
 class ArtistTest {
@@ -28,20 +29,20 @@ class ArtistTest {
 	void insertNJZ() {
 		Group group = Group.builder()
 				.groupName("NewJeans")
-				.groupProfileImage("/images/NewJeans_artistpedia_11.png")
-				.groupLogo("/images/NewJeans_artistpedia_01.png")
+				.groupProfileImage("/images/NewJeans_profile/NewJeans_group.png")
+				.groupLogo("/images/NewJeans_profile/NewJeans_logo.png")
 				.build();
 		groupRepository.save(group);
 		
 		String[] memberNames = {"민지", "하니", "다니엘", "해린", "혜인"};
-		String[] memberEngNames = {"Daniel", "Hanny", "다니엘", "해린", "혜인"};
+		String[] memberEngNames = {"Minji", "Hanny", "Daniel", "Haerin", "Hyein"};
 		
 		for (int i = 0; i < memberNames.length; i++) {
-			String profileImage = String.format("/images/NewJeans_artistpedia_%02d.png", i + 2);
+			String profileImage = String.format("/images/NewJeans_profile/NewJeans_" + memberEngNames[i] + ".png");
 			Artist artist = Artist.builder()
 					.group(group)
 					.stageName(memberNames[i])
-					.email("njz@gmail.com")
+					.email("njz_" + memberEngNames[i] + "@gmail.com")
 					.password("NewJeans")
 					.profileImage(profileImage)
 					.build();
@@ -53,18 +54,20 @@ class ArtistTest {
 	void insertLESSERAFIM() {
 	    Group group = Group.builder()
 	            .groupName("LESSERAFIM")
-	            .groupProfileImage("/images/LESSERAFIM_artistpedia_06.png")
-	            .groupLogo("/images/LESSERAFIM_artistpedia_07.png")
+	            .groupProfileImage("/images/LESSERAFIM_profile/LESSERAFIM_group.png")
+	            .groupLogo("/images/LESSERAFIM_profile/LESSERAFIM_logo.png")
 	            .build();
 	    groupRepository.save(group);
 
 	    String[] memberNames = {"사쿠라", "김채원", "허윤진", "카즈하", "홍은채"};
+	    String[] memberEngNames = {"Sakura", "KimChaewon", "HuhYunjin", "Kazuha", "HongEunchae"};
 
 	    for (int i = 0; i < memberNames.length; i++) {
-	        String profileImage = String.format("/images/LESSERAFIM_artistpedia_%02d.png", i + 1);
+	        String profileImage = String.format("/images/LESSERAFIM_profile/" + memberEngNames[i] + ".png");
 	        Artist artist = Artist.builder()
+	        		.group(group)
 	                .stageName(memberNames[i])
-	                .email("lesserafim@gmail.com")
+	                .email("lesserafim_" + memberEngNames[i] + "@gmail.com")
 	                .password("LESSERAFIM")
 	                .profileImage(profileImage)
 	                .group(group)
@@ -76,22 +79,23 @@ class ArtistTest {
 	@Test
 	void insertNCTWISH() {
 	    Group group = Group.builder()
-	            .groupName("NCTWISH")
-	            .groupProfileImage("/images/NCT_WISH_artistpedia_01.png")
-	            .groupLogo("/images/NCT_WISH_artistpedia_08.png")
+	            .groupName("NCT_WISH")
+	            .groupProfileImage("/images/NCT_WISH_profile/NCT_WISH_group.png")
+	            .groupLogo("/images/NCT_WISH_profile/NCT_WISH_logo.png")
 	            .build();
 	    groupRepository.save(group);
 
 	    String[] memberNames = {"시온", "리쿠", "유우시", "재희", "료", "사쿠야"};
+	    String[] memberEngNames = {"Sion", "Riku", "Yushi", "Jaehee", "Ryo", "Sakuya"};
 
 	    for (int i = 0; i < memberNames.length; i++) {
-	        String profileImage = String.format("/images/NCT_WISH_artistpedia%02d.png", i + 2);
+	        String profileImage = String.format("/images/NCT_WISH_profile/NCT_WISH_" + memberEngNames[i] + ".png");
 	        Artist artist = Artist.builder()
-	                .stageName(memberNames[i])
-	                .email("nctwish@gmail.com")
-	                .password("NCTWISH")
-	                .profileImage(profileImage)
 	                .group(group)
+	                .stageName(memberNames[i])
+	                .email("nctwish_" + memberEngNames[i] + "@gmail.com")
+	                .password("NCT_WISH")
+	                .profileImage(profileImage)
 	                .build();
 	        artistRepository.save(artist);
 	    }
@@ -101,21 +105,22 @@ class ArtistTest {
 	void insertRIIZE() {
 	    Group group = Group.builder()
 	            .groupName("RIIZE")
-	            .groupProfileImage("/images/RIIZE_artistpedia02.png")
-	            .groupLogo("/images/RIIZE_artistpedia01.png")
+	            .groupProfileImage("/images/RIIZE_profile/RIIZE_group.png")
+	            .groupLogo("/images/RIIZE_profile/RIIZE_logo.png")
 	            .build();
 	    groupRepository.save(group);
 
 	    String[] memberNames = {"쇼타로", "은석", "성찬", "원빈", "소희", "앤톤"};
+	    String[] memberEngNames = {"Shotaro", "Eunseok", "Sungchan", "Wonbin", "Sohee", "Anton"};
 
 	    for (int i = 0; i < memberNames.length; i++) {
-	        String profileImage = String.format("/images/RIIZE_artistpedia%02d.png", i + 3);
+	        String profileImage = String.format("/images/RIIZE_profile/RIIZE_" + memberEngNames[i] + ".png");
 	        Artist artist = Artist.builder()
+	                .group(group)
 	                .stageName(memberNames[i])
-	                .email("riize@gmail.com")
+	                .email("riize_" + memberEngNames[i] + "@gmail.com")
 	                .password("RIIZE")
 	                .profileImage(profileImage)
-	                .group(group)
 	                .build();
 	        artistRepository.save(artist);
 	    }
@@ -125,21 +130,22 @@ class ArtistTest {
 	void insertSTAYC() {
 	    Group group = Group.builder()
 	            .groupName("STAYC")
-	            .groupProfileImage("/images/STAYC_artistpedia_07.png")
-	            .groupLogo("/images/STAYC_artistpedia_08.png")
+	            .groupProfileImage("/images/STAYC_profile/STAYC_group.png")
+	            .groupLogo("/images/STAYC_profile/STAYC_logo.png")
 	            .build();
 	    groupRepository.save(group);
 
 	    String[] memberNames = {"수민", "시은", "아이사", "세은", "윤", "재이"};
+	    String[] memberEngNames = {"Sumin", "Sieun", "Isa", "Seeun", "Yoon", "Jaei"};
 
 	    for (int i = 0; i < memberNames.length; i++) {
-	        String profileImage = String.format("/images/STAYC_artistpedia_%02d.png", i + 1);
+	        String profileImage = String.format("/images/STAYC_profile/STAYC_" + memberEngNames[i] + ".png");
 	        Artist artist = Artist.builder()
+	                .group(group)
 	                .stageName(memberNames[i])
-	                .email("stayc@gmail.com")
+	                .email("stayc_" + memberEngNames[i] + "@gmail.com")
 	                .password("STAYC")
 	                .profileImage(profileImage)
-	                .group(group)
 	                .build();
 	        artistRepository.save(artist);
 	    }
@@ -149,21 +155,22 @@ class ArtistTest {
 	void insertTWS() {
 	    Group group = Group.builder()
 	            .groupName("TWS")
-	            .groupProfileImage("/images/TWS_artistpedia_02.png")
-	            .groupLogo("/images/TWS_artistpedia_01.png")
+	            .groupProfileImage("/images/TWS_profile/TWS_group.png")
+	            .groupLogo("/images/TWS_profile/TWS_logo.png")
 	            .build();
 	    groupRepository.save(group);
 
 	    String[] memberNames = {"신유", "도훈", "영재", "한진", "지훈", "경민"};
+	    String[] memberEngNames = {"Shinyu", "Dohoon", "Youngjae", "Hanjin", "Jihoon", "Gyeongmin"};
 
 	    for (int i = 0; i < memberNames.length; i++) {
-	        String profileImage = String.format("/images/TWS_artistpedia%02d.png", i + 3);
+	        String profileImage = String.format("/images/TWS_profile/TWS_" + memberEngNames[i] + ".png");
 	        Artist artist = Artist.builder()
+	                .group(group)
 	                .stageName(memberNames[i])
-	                .email("tws@gmail.com")
+	                .email("tws_" + memberEngNames[i] + "@gmail.com")
 	                .password("TWS")
 	                .profileImage(profileImage)
-	                .group(group)
 	                .build();
 	        artistRepository.save(artist);
 	    }
@@ -173,69 +180,71 @@ class ArtistTest {
 	void insertBABYMONSTER() {
 	    Group group = Group.builder()
 	            .groupName("BABYMONSTER")
-	            .groupProfileImage("/images/BABYMONSTER_artistpedia_02.png")
-	            .groupLogo("/images/BABYMONSTER_artistpedia_01.png")
+	            .groupProfileImage("/images/BABYMONSTER_profile/BABYMONSTER_group.png")
+	            .groupLogo("/images/BABYMONSTER_profile/BABYMONSTER_logo.png")
 	            .build();
 	    groupRepository.save(group);
 
-	    String[] memberNames = {"RUKA", "PHARITA", "ASA", "AHYEON", "RAMI", "RORA", "CHIQUITA"};
+	    String[] memberNames = {"ruka", "pharita", "asa", "ahyeon", "rami", "rora", "chiquita"};
 
-	    for (int i = 0; i < memberNames.length; i++) {
-	        String profileImage = String.format("/images/BABYMONSTER_artistpedia%02d.png", i + 3);
+	    for (String memberName : memberNames) {
+	        String profileImage = String.format("/images/BABYMONSTER_profile/BABYMONSTER_" + memberName + ".png");
 	        Artist artist = Artist.builder()
-	                .stageName(memberNames[i])
-	                .email("babymonster@gmail.com")
+	                .group(group)
+	                .stageName(memberName)
+	                .email("babymonster_" + memberName.toLowerCase() + "@gmail.com")
 	                .password("BABYMONSTER")
 	                .profileImage(profileImage)
-	                .group(group)
 	                .build();
 	        artistRepository.save(artist);
 	    }
 	}
-	
+
 	@Test
 	void insertBLACKPINK() {
-		Group group = Group.builder()
-				.groupName("BLACKPINK")
-				.groupProfileImage("/images/BLACKPINK_artistpedia_02.png")
-				.groupLogo("/images/BLACKPINK_artistpedia_01.png")
-				.build();
-		groupRepository.save(group);
-		
-		String[] memberNames = {"JUNNIE", "JISOO", "ROSÉ", "LISA"};
-		
-		for (int i = 0; i < memberNames.length; i++) {
-			String profileImage = String.format("/images/BLACKPINK_artistpedia%02d.png", i + 3);
-			Artist artist = Artist.builder()
-					.stageName(memberNames[i])
-					.email("blackpink@gmail.com")
-					.password("BLACKPINK")
-					.profileImage(profileImage)
-					.group(group)
-					.build();
-			artistRepository.save(artist);
-		}
+	    Group group = Group.builder()
+	            .groupName("BLACKPINK")
+	            .groupProfileImage("/images/BLACKPINK_profile/BLACKPINK_group.png")
+	            .groupLogo("/images/BLACKPINK_profile/BLACKPINK_logo.png")
+	            .build();
+	    groupRepository.save(group);
+
+	    String[] memberNames = {"Junnie", "Jisoo", "Rose", "Lisa"};
+
+	    for (String memberName : memberNames) {
+	        String profileImage = String.format("/images/BLACKPINK_profile/BLACKPINK_" + memberName + ".png");
+	        Artist artist = Artist.builder()
+	                .group(group)
+	                .stageName(memberName)
+	                .email("blackpink_" + memberName.toLowerCase() + "@gmail.com")
+	                .password("BLACKPINK")
+	                .profileImage(profileImage)
+	                .build();
+	        artistRepository.save(artist);
+	    }
 	}
-	
+
 	@Test
 	void insert10CM() {
-		Group group = Group.builder()
-				.groupName("10CM")
-				.groupProfileImage("/images/10CM_artistpedia_02.png")
-				.groupLogo("/images/10CM_artistpedia01.png")
-				.build();
-		groupRepository.save(group);
-		
-		String profileImage = String.format("/images/10CM_artistpedia03.png");
-		Artist artist = Artist.builder()
-				.stageName("권정열")
-				.email("10cm@gmail.com")
-				.password("10CM")
-				.profileImage(profileImage)
-				.group(group)
-				.build();
-		artistRepository.save(artist);
+	    Group group = Group.builder()
+	            .groupName("10CM")
+	            .groupProfileImage("/images/10CM_profile/10CM.png")
+	            .groupLogo("/images/10CM_profile/10CM_logo.png")
+	            .build();
+	    groupRepository.save(group);
+
+	    String profileImage = "/images/10CM_profile/10CM.png";
+
+	    Artist artist = Artist.builder()
+	            .group(group)
+	            .stageName("권정열")
+	            .email("10cm@gmail.com")
+	            .password("10CM")
+	            .profileImage(profileImage)
+	            .build();
+	    artistRepository.save(artist);
 	}
+
 	
 	@Test
 	public void testAllArtistsAndGroups() {

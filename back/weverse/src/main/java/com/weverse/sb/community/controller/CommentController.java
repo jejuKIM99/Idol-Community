@@ -13,11 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.weverse.sb.community.dto.CommentDTO;
-import com.weverse.sb.community.dto.PostDTO;
 import com.weverse.sb.community.entity.Comment;
-import com.weverse.sb.community.entity.Post;
 import com.weverse.sb.community.service.CommentService;
-import com.weverse.sb.community.service.PostService;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -28,8 +25,8 @@ public class CommentController {
 	@Autowired
 	CommentService commentService;
 	
-	@GetMapping("api/artistSNS/post/{postId}")
-	public CommentDTO selectPostCommend(@PathVariable("postId") Long postId) {
+	@GetMapping("api/artistSNS/home/post")
+	public CommentDTO selectPostCommend(@RequestParam("postId") Long postId) {
 		List<Comment> commentList = this.commentService.getCommentList(postId);
 		CommentDTO dto = CommentDTO.builder().commentList(commentList).build();
 		
@@ -37,10 +34,12 @@ public class CommentController {
 	}
 	
 	
-	@PostMapping("api/artistSNS/post/inputComment")
-	public ResponseEntity<String> inputComment(@RequestBody CommentDTO commentDTO) {
+	@PostMapping("api/artistSNS/home/InputComment")
+	public ResponseEntity<String> inputComment(@RequestParam("postId") Long postId, 
+			@RequestParam("content") String content,
+			@RequestParam("userId") Long userId) {
 	    try {
-	        commentService.inputComment(commentDTO);
+	        commentService.inputComment(postId, content, userId);
 	        return ResponseEntity.ok("success");
 	    } catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("fail");
