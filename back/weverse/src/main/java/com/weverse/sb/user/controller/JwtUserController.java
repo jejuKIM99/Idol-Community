@@ -1,0 +1,56 @@
+package com.weverse.sb.user.controller;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.weverse.sb.config.JwtUtil;
+import com.weverse.sb.user.dto.UpdateProfileRequestDto;
+import com.weverse.sb.user.dto.UserSettingsDto;
+import com.weverse.sb.user.service.JwtUserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/user")
+@RequiredArgsConstructor
+public class JwtUserController {
+    private final JwtUserService jwtUserService;
+    private final JwtUtil    jwtUtil;
+
+    /**
+     * 내 정보 조회
+     */
+    @GetMapping("/me")
+    public ResponseEntity<UserSettingsDto> getMySettings(HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        if (token == null || !jwtUtil.isTokenValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String email = jwtUtil.getEmailFromToken(token);
+        UserSettingsDto dto = jwtUserService.getUserSettingsByEmail(email);
+        return ResponseEntity.ok(dto);
+    }
+    
+    // 내 정보 수정
+    @PutMapping("/me")
+    public ResponseEntity<UserSettingsDto> updateMySettings(
+            HttpServletRequest request,
+            @RequestBody UpdateProfileRequestDto updateDto) {
+
+        String token = jwtUtil.resolveToken(request);
+        if (token == null || !jwtUtil.isTokenValid(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = jwtUtil.getEmailFromToken(token);
+        UserSettingsDto updated = jwtUserService.updateUserSettingsByEmail(email, updateDto);
+        return ResponseEntity.ok(updated);
+    }
+    
+} // class
