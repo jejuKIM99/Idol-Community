@@ -3,9 +3,9 @@ package com.weverse.sb.artist.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.weverse.sb.artist.entity.ArtistGroupMap;
+import com.weverse.sb.artist.entity.Group;
 
 @Repository
-public interface ArtistGroupMapRepository extends JpaRepository<ArtistGroupMap, Long>{
+public interface ArtistGroupMapRepository extends JpaRepository<Group, Long>{
 
 }
