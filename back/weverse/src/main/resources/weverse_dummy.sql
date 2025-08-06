@@ -1,3 +1,5 @@
+-- DB 더미데이터 삽입 SQL문.sql
+
 use weverse_db;
 
 show tables;
