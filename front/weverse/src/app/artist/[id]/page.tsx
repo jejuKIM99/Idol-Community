@@ -1,3 +1,5 @@
+'use client';
+
 import { allArtists } from '@/data/artists';
 import { notFound } from 'next/navigation';
 import styles from './ArtistPage.module.css';
@@ -6,6 +8,7 @@ import LiveCard from '@/components/artistInfo/LiveCard';
 import MediaCard from '@/components/artistInfo/MediaCard';
 import MerchCard from '@/components/artistInfo/MerchCard';
 import AnnouncementCard from '@/components/artistInfo/AnnouncementCard';
+import { useRouter } from 'next/navigation';
 
 interface ArtistPageProps {
   params: {
@@ -13,13 +16,47 @@ interface ArtistPageProps {
   };
 }
 
-const ArtistPage = async ({ params }: ArtistPageProps) => {
-  const { id } = await params;
+const ArtistPage = ({ params }: ArtistPageProps) => {
+  const { id } = params;
   const artist = allArtists.find((a) => a.id.toString() === id);
+  const router = useRouter();
 
   if (!artist) {
     notFound();
   }
+
+  const handleLiveCardClick = (index: number) => {
+    const liveItem = {
+      thumbnailSrc: `https://via.placeholder.com/250x150?text=Live+${index + 1}`,
+      duration: "1:23:45",
+      title: `아티스트 라이브 ${index + 1}`,
+      views: "1.2M",
+      likes: "250K",
+      chats: "10K",
+      hasSubtitles: true,
+      artistImageSrc: "/images/artist_profile.jpg",
+      artistName: artist.name,
+      uploadDate: "8월 1일 14:30",
+    };
+    router.push(`/artist-sns?artistId=${artist.id}&artistName=${artist.name}&activeTab=live&selectedItem=${encodeURIComponent(JSON.stringify(liveItem))}`);
+  };
+
+  const handleMediaCardClick = (index: number) => {
+    const mediaItem = {
+      thumbnailSrc: `https://via.placeholder.com/200x120?text=Media+${index + 1}`,
+      title: `미디어 제목 ${index + 1}`,
+      date: "2024년 7월 20일",
+      type: "video", // 또는 "image" 등 실제 데이터에 맞게 설정
+      artistImageSrc: "/images/artist_profile.jpg",
+      artistName: artist.name,
+      uploadDate: "2024년 7월 20일",
+      views: "100K",
+      likes: "10K",
+      chats: "1K",
+      hasSubtitles: false,
+    };
+    router.push(`/artist-sns?artistId=${artist.id}&artistName=${artist.name}&activeTab=media&selectedItem=${encodeURIComponent(JSON.stringify(mediaItem))}`);
+  };
 
   return (
     <div className={styles.container}>
@@ -38,7 +75,7 @@ const ArtistPage = async ({ params }: ArtistPageProps) => {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>프로필</h2>
         {artist.members && artist.members.length > 0 && (
-          <> 
+          <>
             <div className={styles.memberGrid}>
               {artist.members.map((member, index) => (
                 <MemberCard key={index} member={member} artistName={artist.name} artistId={artist.id} />
@@ -59,6 +96,7 @@ const ArtistPage = async ({ params }: ArtistPageProps) => {
               date="2024년 8월 2일"
               time="18:00"
               title={`아티스트 라이브 ${index + 1}`}
+              onClick={() => handleLiveCardClick(index)}
             />
           ))}
         </div>
@@ -74,6 +112,7 @@ const ArtistPage = async ({ params }: ArtistPageProps) => {
               thumbnail={`https://via.placeholder.com/200x120?text=Media+${index + 1}`}
               title={`미디어 제목 ${index + 1}`}
               date="2024년 7월 20일"
+              onClick={() => handleMediaCardClick(index)}
             />
           ))}
         </div>
