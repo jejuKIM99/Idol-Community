@@ -17,6 +17,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (초기 개발용)
             .authorizeHttpRequests(auth -> auth
+            	.requestMatchers("/api/user/**").hasRole("USER")
                 .anyRequest().permitAll() // 전체 예외 처리
             );
         return http.build();
