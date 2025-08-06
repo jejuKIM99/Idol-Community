@@ -1,9 +1,13 @@
 package com.weverse.sb.userTest;
 
+import java.time.LocalDateTime;
+import java.util.stream.IntStream;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.weverse.sb.user.entity.User;
 import com.weverse.sb.user.repository.UserRepository;
 import com.weverse.sb.user.service.UserService;
 
@@ -16,7 +20,6 @@ class UserServiceTests {
 	@Autowired
 	private UserRepository userRepository;
 	
-	/*
 	@Test
     void insertUsers() {
         IntStream.rangeClosed(1, 2).forEach(i -> {

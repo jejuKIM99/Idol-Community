@@ -64,6 +64,7 @@ public class PostTest {
 
 	}
 	
+//	특정 아티스트 작성 게시글 조회
 	@Test
 	public void testfilterPost() {
 		PostDTO dto = postController.filterPost(1L);

@@ -51,7 +51,7 @@ public class CommentTest {
 
 		System.out.println("=== 전체 게시글 리스트 ===");
 		dto.getCommentList().forEach(comment -> {
-			System.out.println("ID: " + comment.getId() + ", 작성자: " + comment.getArtist().getStageName());
+			System.out.println("ID: " + comment.getId() + ", 작성자: " + comment.getUser().getName());
 			if (comment.getId() != null) {
 				System.out.println("  ㄴ 내용 : " + comment.getContent());
 				System.out.println("  ㄴ 원글 : " + comment.getPost().getContent());
