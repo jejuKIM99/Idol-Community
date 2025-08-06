@@ -41,11 +41,6 @@ public class AuthController {
         }
     }
     
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpSession session) {
-        session.invalidate(); // 세션 무효화
-        return ResponseEntity.ok("로그아웃 성공");
-    }
 
     @PostMapping("/check-email")
     public ResponseEntity<Map<String, Object>> checkEmail(@RequestBody Map<String, String> req) {
