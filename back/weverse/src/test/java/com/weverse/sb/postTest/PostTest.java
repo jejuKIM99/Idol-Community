@@ -1,19 +1,14 @@
 package com.weverse.sb.postTest;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.weverse.sb.artist.dto.ArtistDTO;
-import com.weverse.sb.artist.entity.Artist;
-import com.weverse.sb.artist.entity.ArtistGroupMap;
 import com.weverse.sb.artist.repository.ArtistRepository;
 import com.weverse.sb.community.controller.PostController;
 import com.weverse.sb.community.dto.PostDTO;
-import com.weverse.sb.community.entity.Post;
 import com.weverse.sb.community.repository.PostRepository;
 import com.weverse.sb.community.service.PostService;
 

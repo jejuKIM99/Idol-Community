@@ -9,6 +9,8 @@ interface PostCardProps {
   postDate: string;
   postImageColor: string;
   postContent: string;
+  likes: number;
+  comments: number;
 }
 
 const PostCard: React.FC<PostCardProps> = ({
@@ -17,6 +19,8 @@ const PostCard: React.FC<PostCardProps> = ({
   postDate,
   postImageColor,
   postContent,
+  likes,
+  comments,
 }) => {
   return (
     <div className={styles.postCard}>
@@ -37,11 +41,11 @@ const PostCard: React.FC<PostCardProps> = ({
       <div className={styles.actions}>
         <button className={styles.actionButton}>
           <FaHeart />
-          <span>Like</span>
+          <span>{likes}</span>
         </button>
         <button className={styles.actionButton}>
           <FaComment />
-          <span>Comment</span>
+          <span>{comments}</span>
         </button>
       </div>
     </div>

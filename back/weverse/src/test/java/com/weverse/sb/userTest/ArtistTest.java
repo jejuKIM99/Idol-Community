@@ -7,8 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.weverse.sb.artist.controller.ArtistController;
 import com.weverse.sb.artist.dto.ArtistDTO;
 import com.weverse.sb.artist.entity.Artist;
-import com.weverse.sb.artist.entity.ArtistGroupMap;
-import com.weverse.sb.artist.repository.ArtistGroupMapRepository;
+import com.weverse.sb.artist.entity.Group;
+import com.weverse.sb.artist.repository.GroupRepository;
 import com.weverse.sb.artist.repository.ArtistRepository;
 
 @SpringBootTest
@@ -18,7 +18,7 @@ class ArtistTest {
 	ArtistRepository artistRepository;
 
 	@Autowired
-	ArtistGroupMapRepository arMapRepository;
+	GroupRepository groupRepository;
 
 	@Autowired
 	ArtistController artistController;
@@ -26,14 +26,15 @@ class ArtistTest {
 	
 	@Test
 	void insertNJZ() {
-		ArtistGroupMap group = ArtistGroupMap.builder()
+		Group group = Group.builder()
 				.groupName("NewJeans")
-				.groupProfile("/images/NewJeans_artistpedia_11.png")
+				.groupProfileImage("/images/NewJeans_artistpedia_11.png")
 				.groupLogo("/images/NewJeans_artistpedia_01.png")
 				.build();
-		arMapRepository.save(group);
+		groupRepository.save(group);
 		
 		String[] memberNames = {"민지", "하니", "다니엘", "해린", "혜인"};
+		String[] memberEngNames = {"Daniel", "Hanny", "다니엘", "해린", "혜인"};
 		
 		for (int i = 0; i < memberNames.length; i++) {
 			String profileImage = String.format("/images/NewJeans_artistpedia_%02d.png", i + 2);
@@ -50,12 +51,12 @@ class ArtistTest {
 	
 	@Test
 	void insertLESSERAFIM() {
-	    ArtistGroupMap group = ArtistGroupMap.builder()
+	    Group group = Group.builder()
 	            .groupName("LESSERAFIM")
-	            .groupProfile("/images/LESSERAFIM_artistpedia_06.png")
+	            .groupProfileImage("/images/LESSERAFIM_artistpedia_06.png")
 	            .groupLogo("/images/LESSERAFIM_artistpedia_07.png")
 	            .build();
-	    arMapRepository.save(group);
+	    groupRepository.save(group);
 
 	    String[] memberNames = {"사쿠라", "김채원", "허윤진", "카즈하", "홍은채"};
 
@@ -74,12 +75,12 @@ class ArtistTest {
 
 	@Test
 	void insertNCTWISH() {
-	    ArtistGroupMap group = ArtistGroupMap.builder()
+	    Group group = Group.builder()
 	            .groupName("NCTWISH")
-	            .groupProfile("/images/NCT_WISH_artistpedia_01.png")
+	            .groupProfileImage("/images/NCT_WISH_artistpedia_01.png")
 	            .groupLogo("/images/NCT_WISH_artistpedia_08.png")
 	            .build();
-	    arMapRepository.save(group);
+	    groupRepository.save(group);
 
 	    String[] memberNames = {"시온", "리쿠", "유우시", "재희", "료", "사쿠야"};
 
@@ -98,12 +99,12 @@ class ArtistTest {
 
 	@Test
 	void insertRIIZE() {
-	    ArtistGroupMap group = ArtistGroupMap.builder()
+	    Group group = Group.builder()
 	            .groupName("RIIZE")
-	            .groupProfile("/images/RIIZE_artistpedia02.png")
+	            .groupProfileImage("/images/RIIZE_artistpedia02.png")
 	            .groupLogo("/images/RIIZE_artistpedia01.png")
 	            .build();
-	    arMapRepository.save(group);
+	    groupRepository.save(group);
 
 	    String[] memberNames = {"쇼타로", "은석", "성찬", "원빈", "소희", "앤톤"};
 
@@ -122,12 +123,12 @@ class ArtistTest {
 
 	@Test
 	void insertSTAYC() {
-	    ArtistGroupMap group = ArtistGroupMap.builder()
+	    Group group = Group.builder()
 	            .groupName("STAYC")
-	            .groupProfile("/images/STAYC_artistpedia_07.png")
+	            .groupProfileImage("/images/STAYC_artistpedia_07.png")
 	            .groupLogo("/images/STAYC_artistpedia_08.png")
 	            .build();
-	    arMapRepository.save(group);
+	    groupRepository.save(group);
 
 	    String[] memberNames = {"수민", "시은", "아이사", "세은", "윤", "재이"};
 
@@ -146,12 +147,12 @@ class ArtistTest {
 
 	@Test
 	void insertTWS() {
-	    ArtistGroupMap group = ArtistGroupMap.builder()
+	    Group group = Group.builder()
 	            .groupName("TWS")
-	            .groupProfile("/images/TWS_artistpedia_02.png")
+	            .groupProfileImage("/images/TWS_artistpedia_02.png")
 	            .groupLogo("/images/TWS_artistpedia_01.png")
 	            .build();
-	    arMapRepository.save(group);
+	    groupRepository.save(group);
 
 	    String[] memberNames = {"신유", "도훈", "영재", "한진", "지훈", "경민"};
 
@@ -170,12 +171,12 @@ class ArtistTest {
 
 	@Test
 	void insertBABYMONSTER() {
-	    ArtistGroupMap group = ArtistGroupMap.builder()
+	    Group group = Group.builder()
 	            .groupName("BABYMONSTER")
-	            .groupProfile("/images/BABYMONSTER_artistpedia_02.png")
+	            .groupProfileImage("/images/BABYMONSTER_artistpedia_02.png")
 	            .groupLogo("/images/BABYMONSTER_artistpedia_01.png")
 	            .build();
-	    arMapRepository.save(group);
+	    groupRepository.save(group);
 
 	    String[] memberNames = {"RUKA", "PHARITA", "ASA", "AHYEON", "RAMI", "RORA", "CHIQUITA"};
 
@@ -194,12 +195,12 @@ class ArtistTest {
 	
 	@Test
 	void insertBLACKPINK() {
-		ArtistGroupMap group = ArtistGroupMap.builder()
+		Group group = Group.builder()
 				.groupName("BLACKPINK")
-				.groupProfile("/images/BLACKPINK_artistpedia_02.png")
+				.groupProfileImage("/images/BLACKPINK_artistpedia_02.png")
 				.groupLogo("/images/BLACKPINK_artistpedia_01.png")
 				.build();
-		arMapRepository.save(group);
+		groupRepository.save(group);
 		
 		String[] memberNames = {"JUNNIE", "JISOO", "ROSÉ", "LISA"};
 		
@@ -218,12 +219,12 @@ class ArtistTest {
 	
 	@Test
 	void insert10CM() {
-		ArtistGroupMap group = ArtistGroupMap.builder()
+		Group group = Group.builder()
 				.groupName("10CM")
-				.groupProfile("/images/10CM_artistpedia_02.png")
+				.groupProfileImage("/images/10CM_artistpedia_02.png")
 				.groupLogo("/images/10CM_artistpedia01.png")
 				.build();
-		arMapRepository.save(group);
+		groupRepository.save(group);
 		
 		String profileImage = String.format("/images/10CM_artistpedia03.png");
 		Artist artist = Artist.builder()
@@ -242,15 +243,15 @@ class ArtistTest {
 
 		System.out.println("=== 전체 아티스트 리스트 ===");
 		dto.getArtistList().forEach(artist -> {
-			System.out.println("ID: " + artist.getId() + ", 이름: " + artist.getStageName());
-			if (artist.getId() != null) {
+			System.out.println("ID: " + artist.getArtistId() + ", 이름: " + artist.getStageName());
+			if (artist.getArtistId() != null) {
 				System.out.println("  그룹명: " + artist.getGroup().getGroupName());
 			}
 		});
 
 		System.out.println("=== 전체 그룹 리스트 ===");
 		dto.getGroupList().forEach(group -> {
-			System.out.println("그룹ID: " + group.getId() + ", 그룹명: " + group.getGroupName());
+			System.out.println("그룹ID: " + group.getGroupId() + ", 그룹명: " + group.getGroupName());
 		});
 
 	}

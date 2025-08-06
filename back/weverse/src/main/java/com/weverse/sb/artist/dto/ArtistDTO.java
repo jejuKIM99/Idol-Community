@@ -3,7 +3,7 @@ package com.weverse.sb.artist.dto;
 import java.util.List;
 
 import com.weverse.sb.artist.entity.Artist;
-import com.weverse.sb.artist.entity.ArtistGroupMap;
+import com.weverse.sb.artist.entity.Group;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +19,7 @@ import lombok.ToString;
 public class ArtistDTO {
 	
 	private List<Artist> artistList;
-	private List<ArtistGroupMap> groupList;
+	private List<Group> groupList;
 	
 
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.weverse.sb.artist.dto.ArtistDTO;
 import com.weverse.sb.artist.entity.Artist;
-import com.weverse.sb.artist.entity.ArtistGroupMap;
+import com.weverse.sb.artist.entity.Group;
 import com.weverse.sb.artist.service.ArtistService;
 
 import lombok.extern.log4j.Log4j2;
@@ -23,7 +23,7 @@ public class ArtistController {
 	@GetMapping("/api/main/artist")
 	public ArtistDTO selectArtist() {
 		List<Artist> artistList = this.artistService.getList();
-		List<ArtistGroupMap> artistGroupList = this.artistService.getGroupList();
+		List<Group> artistGroupList = this.artistService.getGroupList();
 		ArtistDTO dto = ArtistDTO.builder()
 				.artistList(artistList)
 				.groupList(artistGroupList)
