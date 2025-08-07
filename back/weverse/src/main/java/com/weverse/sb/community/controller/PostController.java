@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.weverse.sb.artist.dto.ArtistDTO;
+import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.service.ArtistService;
 import com.weverse.sb.community.dto.PostDTO;
 import com.weverse.sb.community.service.PostService;
@@ -27,20 +28,28 @@ public class PostController {
 	@Autowired
 	ArtistService artistService;
 	
-	// 아티스트 정보 조회
-	@GetMapping("api/artistSNS/home/profile")
+	// 아티스트 정보 조회 (한명)
+	@GetMapping("/api/artistSNS/home/profile")
 	public ArtistDTO selectArtist(@RequestParam("artistId") Long artistId) {
-		ArtistDTO dto = this.artistService.findById(artistId);
-		
-		return dto;
+		return artistService.findById(artistId);
 	}
 	
-	// 게시글 전체조회
+	// 그룹 멤버 정보 조회 (멤버 전부) - 필요하시면 쓰세요
+	@GetMapping("/api/artistSNS/home/profile/group")
+	public ArtistDTO selectGroupArtist(@RequestParam Long groupId) {
+	    List<Artist> artistList = artistService.getArtistDTOList(groupId);
+
+	    ArtistDTO dto = ArtistDTO.builder().artistList(artistList).build();
+
+	    return dto;
+	}
+
 	
+	// 게시글 전체조회
 	//  추후 principal 등으로 현재 접속중인 사용자 정보 가져올거면 
 	// @RequestParam("userID") Long userID 빼도 됨
 	// 일단 지금은 로그인 로직이 없는 관계로 userID 임시 추가
-	@GetMapping("api/artistSNS/home")
+	@GetMapping("/api/artistSNS/home")
 	public PostDTO selectPost(@RequestParam("userID") Long userID, @RequestParam("groupId") Long groupId) {
 		List<PostDTO> postList = this.postService.getPostDTOList(userID, groupId);
 		PostDTO dto = PostDTO.builder().postList(postList).build();
@@ -48,8 +57,18 @@ public class PostController {
 		return dto;
 	}
 
+	// 특정 아티스트 게시글 전체조회
+	@GetMapping("/api/artistSNS/home/artist")
+	public PostDTO filterPost(@RequestParam("artistID") Long id) {
+		List<PostDTO> postList = this.postService.getFilterPostList(id);
+		PostDTO dto = PostDTO.builder().postList(postList).build();
+
+		return dto;
+	} 
+	
+
 	// 게시글 작성
-	@PostMapping("api/artistSNS/home/InputPost")
+	@PostMapping("/api/artistSNS/home/InputPost")
 	public ResponseEntity<String> inputPost(@RequestParam("artistID") Long artistID,
 			@RequestParam("content") String content, @RequestParam("image") String image) {
 	    try {
@@ -60,17 +79,9 @@ public class PostController {
 	    }
 	}
 	
-	// 특정 아티스트 게시글 전체조회
-	@GetMapping("api/artistSNS/home/artist")
-	public PostDTO filterPost(@RequestParam("artistID") Long id) {
-		List<PostDTO> postList = this.postService.getFilterPostList(id);
-		PostDTO dto = PostDTO.builder().postList(postList).build();
-		
-		return dto;
-	} 
 	
 	// 게시글 좋아요 하기
-	@PostMapping("api/artistSNS/home/like")
+	@PostMapping("/api/artistSNS/home/like")
     public ResponseEntity<String> likePost(@RequestParam("postId") Long postId,
     		@RequestParam("userId") Long userId) {
         
@@ -84,7 +95,7 @@ public class PostController {
     }
 	
 	// 게시글 좋아요 취소
-	@PostMapping("api/artistSNS/home/dislike")
+	@PostMapping("/api/artistSNS/home/dislike")
     public ResponseEntity<String> unlikePost(@RequestParam Long postId, @RequestParam Long userId) {
         try {
             postService.deletePostLike(postId, userId);
@@ -95,7 +106,7 @@ public class PostController {
     }
 	
 	// 아티스트 팔로우
-	@PostMapping("api/artistSNS/home/follow")
+	@PostMapping("/api/artistSNS/home/follow")
 	public ResponseEntity<String> followArtist(@RequestParam Long artistId, @RequestParam Long userId) {
 		try {
 			postService.insertFavorite(artistId, userId);
@@ -107,7 +118,7 @@ public class PostController {
 	
 	
 	// 아티스트 팔로우 취소
-	@PostMapping("api/artistSNS/home/unfollow")
+	@PostMapping("/api/artistSNS/home/unfollow")
 	public ResponseEntity<String> unFollowArtist(@RequestParam Long artistId, @RequestParam Long userId) {
 		try {
 			postService.deleteFavorite(artistId, userId);

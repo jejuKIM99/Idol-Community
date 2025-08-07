@@ -37,14 +37,31 @@ public class PostTest {
 	
 	@Test
 	public void testSelectArtist() {
-		Long artistId = 1L;
-		ArtistDTO dto = postController.selectArtist(artistId);
+		Long groupId = 1L;
+		ArtistDTO dto = postController.selectArtist(groupId);
 
 		System.out.println("=== 아티스트 정보 ===");
 	    System.out.println("ID: " + dto.getId() + ", 이름: " + dto.getStageName());
 	    System.out.println("  ㄴ 프로필사진 : " + dto.getProfileImage());
 	    System.out.println("  ㄴ 이메일 : " + dto.getEmail());
-	    System.out.println("  ㄴ 그룹명 : " + dto.getGroupName());
+	}
+	
+	@Test
+	public void testSelectGroupArtist() {
+		Long groupId = 1L;
+		ArtistDTO dto = postController.selectGroupArtist(groupId);
+		
+		System.out.println("=== 그룹 멤버 정보 ===");
+		
+		dto.getArtistList().forEach(artist -> {
+			if (artist.getId() != null) {
+				System.out.println("ID: " + artist.getId() + ", 이름: " + artist.getStageName());
+				System.out.println("  ㄴ 프로필사진 : " + artist.getProfileImage());
+				System.out.println("  ㄴ 이메일 : " + artist.getEmail());
+			}
+		});
+		
+		
 	}
 
 	@Test
