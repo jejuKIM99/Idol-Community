@@ -20,7 +20,7 @@ interface ArtistGridProps {
   groups: Group[];
 }
 
-const ArtistGrid: React.FC<ArtistGridProps> = ({ artists, groups }) => {
+const ArtistGrid: React.FC<ArtistGridProps> = ({ groups }) => {
 
   return (
     <div className={styles.gridContainer}>
@@ -29,7 +29,7 @@ const ArtistGrid: React.FC<ArtistGridProps> = ({ artists, groups }) => {
         {groups.map((group) => (
           <ArtistCard
             key={group.groupId}
-            artist={{
+            group={{
               id: group.groupId,
               name: group.groupName,
               imageUrl: group.groupProfileImage,
