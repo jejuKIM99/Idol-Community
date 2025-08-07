@@ -10,8 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.weverse.sb.artist.dto.ShopArtistDTO;
 import com.weverse.sb.artist.entity.Artist;
-import com.weverse.sb.artist.entity.ArtistGroupMap;
-import com.weverse.sb.artist.repository.ArtistGroupMapRepository;
+import com.weverse.sb.artist.repository.GroupRepository;
 import com.weverse.sb.artist.repository.ArtistRepository;
 import com.weverse.sb.product.service.ProductService;
 import com.weverse.sb.user.entity.User;
@@ -28,7 +27,7 @@ class ShopArtistInsertTests {
 	private ArtistRepository artistRepository;
 	
 	@Autowired
-	private ArtistGroupMapRepository artistGroupMapRepository;
+	private GroupRepository artistGroupMapRepository;
 	
 	/*
 	@Test
