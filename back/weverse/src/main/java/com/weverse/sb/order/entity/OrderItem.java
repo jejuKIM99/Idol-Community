@@ -51,4 +51,16 @@ public class OrderItem {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+    
+    // 주문 항목 생성을 위한 정적 팩토리 메서드
+    public static OrderItem create(Order order, Product product, ProductOption option, int quantity) {
+        OrderItem orderItem = new OrderItem();
+        orderItem.setOrder(order);
+        orderItem.setProduct(product);
+        orderItem.setOption(option);
+        orderItem.setQuantity(quantity);
+        orderItem.setOrderPrice(product.getPrice());
+        return orderItem;
+    }
+    
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.weverse.sb.payment.entity.Payment;
 import com.weverse.sb.product.entity.Product;
+import com.weverse.sb.product.entity.ProductOption;
 import com.weverse.sb.user.entity.User;
 
 import jakarta.persistence.CascadeType;
@@ -92,9 +93,28 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-	public static Order create(User user, Product product, int quantity, int totalPrice) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    // 주문 생성을 위한 정적 팩토리 메서드
+    public static Order create(User user, Product product, ProductOption option, int quantity, Payment payment, int subtotalPrice, int shippingFee, int finalAmount) {
+        Order order = new Order();
+        order.setUser(user);
+        order.setPayment(payment);
+        order.setOrderNumber("ORD" + System.currentTimeMillis());
+        order.setRecipientName(user.getName()); // 기본값으로 유저 이름 사용
+        order.setStatus("PAYMENT_COMPLETED");
+        order.setOrderedAt(LocalDateTime.now());
+        order.setCarrierName("우체국택배");
+
+        // 계산된 금액들을 모두 설정
+        order.setSubtotalPrice(subtotalPrice);
+        order.setShippingFee(shippingFee);
+        order.setCashUsed(finalAmount);
+        order.setTotalPrice((long) finalAmount);
+
+        // 주문 항목 생성 및 추가
+        OrderItem orderItem = OrderItem.create(order, product, option, quantity);
+        order.getOrderItems().add(orderItem);
+
+        return order;
+    }
 
 }

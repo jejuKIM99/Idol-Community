@@ -30,7 +30,7 @@ VALUES (10, 'NCT WISH', 'NCT_WISH_logo.png');
 -- 2. '사쿠야' 아티스트 데이터 생성
 INSERT IGNORE INTO `artist` (artist_id, group_id, stage_name, email, password, birthday)
 VALUES
-    (202, 10, '사쿠야 (NCT WISH)', 'sakuya@example.com', 'password123', NOW());
+    (202, 10, '사쿠야', 'sakuya@example.com', 'password123', '2007-11-18 00:00:00');
 
 
 -- 🗣️ community (커뮤니티 도메인)
@@ -41,15 +41,15 @@ VALUES
 -- 👕 product (상품 도메인)
 -- =================================================================
 -- 1. 상품 카테고리 생성
-INSERT IGNORE INTO `product_category` (category_id, category_name) VALUES (1, 'OFFICIAL FANLIGHT');
+INSERT IGNORE INTO `product_category` (category_id, category_name) VALUES (20, 'PHOTO SET');
 
 -- 2. 'NCT WISH' 공식 응원봉 상품 생성 (product_id: 101)
-INSERT IGNORE INTO `product` (product_id, artist_id, category_id, product_name, price, stock_qty)
-VALUES (101, 202, 10, 1, 'NCT WISH OFFICIAL FANLIGHT', 42000, 200);
+INSERT IGNORE INTO `product` (product_id, artist_id, category_id, product_name, description, price, stock_qty)
+VALUES (201, 202, 20, '[SOLO] SAKUYA Birthday Photo Set', '사쿠야의 생일을 기념하는 솔로 포토 세트입니다.', 18000, 300);
 
 -- 3. 상품 기본 옵션 생성
-INSERT IGNORE INTO `product_option` (option_id, product_id, group_id, option_name, stock_qty)
-VALUES (101, 101, 10, '기본', 200);
+INSERT IGNORE INTO `product_option` (option_id, product_id, option_name, stock_qty)
+VALUES (201, 201, '기본', 300);
 
 
 -- 🚚 order (주문/배송 도메인)
@@ -60,7 +60,7 @@ VALUES (101, 101, 10, '기본', 200);
 -- 💳 payment (결제/재화 도메인)
 -- =================================================================
 -- 1. 젤리 상품 목록 생성
-INSERT INTO jelly_product (jelly_product_id, product_name, price, jelly_amount, bonus_jelly, benefit_description) VALUES
+INSERT IGNORE INTO jelly_product (jelly_product_id, product_name, price, jelly_amount, bonus_jelly, benefit_description) VALUES
 (1, '젤리 4', 1200, 4, NULL, NULL),
 (2, '젤리 8', 2400, 8, NULL, NULL),
 (3, '젤리 20', 6000, 20, 1, '5% 혜택'),

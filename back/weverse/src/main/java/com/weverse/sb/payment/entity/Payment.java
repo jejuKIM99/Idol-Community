@@ -55,4 +55,16 @@ public class Payment {
 
     @Column(name = "payment_gateway", length = 50)
     private String paymentGateway;
+    
+    // Payment 생성을 위한 정적 팩토리 메서드 추가
+    public static Payment create(User user, int amount, String paymentMethod) {
+        Payment payment = new Payment();
+        payment.setUser(user);
+        payment.setAmount(new BigDecimal(amount));
+        payment.setPaymentMethod(paymentMethod);
+        payment.setStatus("COMPLETED");
+        payment.setCurrency("KRW");
+        payment.setPaidAt(LocalDateTime.now());
+        return payment;
+    }
 }
