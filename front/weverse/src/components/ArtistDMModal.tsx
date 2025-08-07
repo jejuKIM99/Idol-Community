@@ -7,7 +7,7 @@ interface ArtistDMModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedArtistName: string;
-  allArtists: { name: string; image: string }[];
+  allArtists: Artist[];
 }
 
 const ArtistDMModal: React.FC<ArtistDMModalProps> = ({ isOpen, onClose, selectedArtistName, allArtists }) => {
@@ -62,7 +62,7 @@ const ArtistDMModal: React.FC<ArtistDMModalProps> = ({ isOpen, onClose, selected
           {currentSelectedArtist && (
             <div className={styles.artistDetail}>
               <div className={styles.artistImage}>
-                <Image src={currentSelectedArtist.image} alt={currentSelectedArtist.name} width={300} height={300} />
+                <Image src={currentSelectedArtist.imageUrl} alt={currentSelectedArtist.name} width={300} height={300} />
               </div>
               <p className={styles.artistDetailName}>{currentSelectedArtist.name}</p>
             </div>

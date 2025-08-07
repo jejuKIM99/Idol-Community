@@ -16,7 +16,7 @@ const NicknamePage = () => {
     e.preventDefault();
     // In a real application, you would save the nickname here.
     // For now, just navigate.
-    router.push(`/artist-sns?artistId=${artistId}&artistName=${artistName}`);
+    router.push(`/artist-sns?artistId=${artistId}&artistName=${artistName}${memberName ? `&memberName=${memberName}` : ''}`);
   };
 
   return (

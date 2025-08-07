@@ -8,9 +8,10 @@ import { FaImage, FaVideo } from 'react-icons/fa';
 
 interface ArtistSNSOverviewProps {
   artistName?: string | null;
+  memberName?: string | null;
 }
 
-const ArtistSNSOverview: React.FC<ArtistSNSOverviewProps> = ({ artistName }) => {
+const ArtistSNSOverview: React.FC<ArtistSNSOverviewProps> = ({ memberName }) => {
   const [activeSubTab, setActiveSubTab] = React.useState('posts');
 
   return (
@@ -18,7 +19,7 @@ const ArtistSNSOverview: React.FC<ArtistSNSOverviewProps> = ({ artistName }) => 
       <div className={styles.section1}>
         <ArtistHeaderInfo
           artistImage="/vercel.svg"
-          artistName={artistName || "Artist Name"}
+          artistName={memberName || "Artist Name"}
           artistBirthday="1997.09.01"
         />
         <button className={styles.followButton}>Follow</button>
@@ -56,12 +57,12 @@ const ArtistSNSOverview: React.FC<ArtistSNSOverviewProps> = ({ artistName }) => 
           </div>
           {activeSubTab === 'posts' && (
             <div className={styles.postList}>
-              <PostCard profileImage="/vercel.svg" nickname="User 1" postDate="2 hours ago" postImageColor="#ffcccb" postContent="This is the first post." />
-              <PostCard profileImage="/next.svg" nickname="User 2" postDate="3 hours ago" postImageColor="#add8e6" postContent="This is the second post." />
-              <PostCard profileImage="/globe.svg" nickname="User 3" postDate="5 hours ago" postImageColor="#90ee90" postContent="This is the third post." />
-              <PostCard profileImage="/file.svg" nickname="User 4" postDate="1 day ago" postImageColor="#ffd700" postContent="This is the fourth post." />
-              <PostCard profileImage="/window.svg" nickname="User 5" postDate="2 days ago" postImageColor="#ffb6c1" postContent="This is the fifth post." />
-              <PostCard profileImage="/vercel.svg" nickname="User 6" postDate="3 days ago" postImageColor="#e6e6fa" postContent="This is the sixth post." />
+              <PostCard profileImage="/vercel.svg" nickname="User 1" postDate="2 hours ago" postImageColor="#ffcccb" postContent="This is the first post." likes={10} comments={5} />
+              <PostCard profileImage="/next.svg" nickname="User 2" postDate="3 hours ago" postImageColor="#add8e6" postContent="This is the second post." likes={20} comments={10} />
+              <PostCard profileImage="/globe.svg" nickname="User 3" postDate="5 hours ago" postImageColor="#90ee90" postContent="This is the third post." likes={30} comments={15} />
+              <PostCard profileImage="/file.svg" nickname="User 4" postDate="1 day ago" postImageColor="#ffd700" postContent="This is the fourth post." likes={40} comments={20} />
+              <PostCard profileImage="/window.svg" nickname="User 5" postDate="2 days ago" postImageColor="#ffb6c1" postContent="This is the fifth post." likes={50} comments={25} />
+              <PostCard profileImage="/vercel.svg" nickname="User 6" postDate="3 days ago" postImageColor="#e6e6fa" postContent="This is the sixth post." likes={60} comments={30} />
             </div>
           )}
           {activeSubTab === 'comments' && (

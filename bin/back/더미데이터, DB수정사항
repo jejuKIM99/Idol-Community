@@ -1,0 +1,20 @@
+-- USER 더미
+INSERT INTO `USER` 
+    (user_id, email, password, name, nickname, phone_number, country, profile_image, jelly_balance, cash_balance, is_email_verified, is_sms_verified, created_at)
+VALUES 
+    (1, 'testuser@example.com', 'hashed_password123', '김위버스', '위버스팬1', '010-1234-5678', 'South Korea', NULL, 0, 0, true, true, NOW());
+
+-- 젤리 더미데이터   
+INSERT INTO jelly_product (jelly_product_id, product_name, price, jelly_amount) VALUES
+(1, '젤리 4', 1200, 4),
+(2, '젤리 8', 2400, 8),
+(3, '젤리 20', 6000, 20),
+(4, '젤리 40', 12000, 40),
+(5, '젤리 60', 18000, 60),
+(6, '젤리 80', 24000, 80),
+(7, '젤리 120', 36000, 120),
+(8, '젤리 160', 48000, 160),
+(9, '젤리 240', 72000, 240);
+commit;
+
+select * from jelly_product;

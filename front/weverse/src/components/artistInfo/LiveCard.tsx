@@ -6,11 +6,12 @@ interface LiveCardProps {
   date: string;
   time: string;
   title: string;
+  onClick: () => void;
 }
 
-const LiveCard: React.FC<LiveCardProps> = ({ thumbnail, date, time, title }) => {
+const LiveCard: React.FC<LiveCardProps> = ({ thumbnail, date, time, title, onClick }) => {
   return (
-    <div className={styles.liveCard}>
+    <div className={styles.liveCard} onClick={onClick}>
       <img src={thumbnail} alt={title} className={styles.thumbnail} />
       <div className={styles.info}>
         <p className={styles.dateTime}>{date} {time}</p>
