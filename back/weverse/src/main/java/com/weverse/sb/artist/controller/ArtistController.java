@@ -11,10 +11,10 @@ import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.entity.Group;
 import com.weverse.sb.artist.service.ArtistService;
 
-
-
+import lombok.extern.log4j.Log4j2;
 
 @RestController
+@Log4j2
 public class ArtistController {
 
 	@Autowired
@@ -28,6 +28,8 @@ public class ArtistController {
 				.artistList(artistList)
 				.groupList(artistGroupList)
 				.build();
+		
 		return dto;
+
 	}
 }

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.entity.Group;
-import com.weverse.sb.artist.repository.ArtistGroupMapRepository;
 import com.weverse.sb.artist.repository.ArtistRepository;
+import com.weverse.sb.artist.repository.GroupRepository;
 
 
 @Service
@@ -18,14 +18,14 @@ public class ArtistService {
 	ArtistRepository artistRepository;
 	
 	@Autowired
-	ArtistGroupMapRepository artistGroupMapRepository;
+	GroupRepository groupRepository;
 	
 	public List<Artist> getList() {
         return artistRepository.findAll();
     }
 	
 	public List<Group> getGroupList() {
-		return artistGroupMapRepository.findAll();
+		return groupRepository.findAll();
 	}
 
 }
