@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './mypage.module.css';
 import {
   FiChevronRight,
   FiBookOpen, FiMic, FiCheckSquare, FiPlayCircle
 } from 'react-icons/fi';
+import { useAuth } from '../context/AuthContext';
 
 // 디지털 코드 입력 모달 컴포넌트
 const DigitalCodeModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
@@ -54,6 +55,55 @@ const serviceLinks: ServiceLink[] = [
 export default function MyPage() {
   const [activeTab, setActiveTab] = useState('media');
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false); // 모달 상태 추가
+  const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { token, isAuthenticated, isLoading: isAuthLoading } = useAuth();
+
+  useEffect(() => {
+    if (isAuthLoading) {
+      return; // Wait for AuthContext to finish loading
+    }
+
+    if (!isAuthenticated || !token) {
+      setLoading(false);
+      setError('로그인이 필요합니다.');
+      return;
+    }
+
+    const fetchUserData = async () => {
+      try {
+                const response = await fetch('http://localhost:80/api/user/me', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUserData(data);
+        } else {
+          const errorText = await response.text();
+          setError(`데이터를 불러오는데 실패했습니다: ${errorText}`);
+        }
+      } catch (err) {
+        setError('네트워크 오류가 발생했습니다.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [token, isAuthenticated]);
+
+  if (loading) {
+    return <div className={styles.pageContainer}><p>로딩 중...</p></div>;
+  }
+
+  if (error) {
+    return <div className={styles.pageContainer}><p>오류: {error}</p></div>;
+  }
 
   return (
     <>
@@ -62,15 +112,15 @@ export default function MyPage() {
           {/* 왼쪽 사이드바 */}
           <aside className={styles.sidebar}>
             <div className={styles.profileSection}>
-              <h2 className={styles.username}>Member_2svqgq</h2>
-              <p className={styles.email}>s20***@naver.com</p>
+              <h2 className={styles.username}>{userData.nickname || userData.name || '사용자'}</h2>
+              <p className={styles.email}>{userData.email}</p>
               <button className={styles.logoutButton}>로그아웃</button>
             </div>
 
             <div className={styles.cashSection}>
               <div className={styles.cashInfo}>
                 <span className={styles.cashIcon}>J</span>
-                <span>0</span>
+                <span>{userData.jellyBalance}</span>
               </div>
               <Link href="/jelly">
                 <button className={styles.chargeButton}>충전</button>
