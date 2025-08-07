@@ -61,5 +61,13 @@ public class User {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+    
+    // 사용자 잔액 차감
+    public void decreaseCash(int amount) {
+        if (this.cashBalance < amount) {
+            // throw new InsufficientCashException("잔액이 부족합니다.");
+        }
+        this.cashBalance -= amount;
+    }
 }
 
