@@ -29,7 +29,7 @@ public class Artist {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id")
     private ArtistGroupMap group;
 
     @Column(name = "stage_name", length = 100, nullable = false)
