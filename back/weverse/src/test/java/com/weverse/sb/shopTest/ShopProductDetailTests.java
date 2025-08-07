@@ -90,7 +90,7 @@ public class ShopProductDetailTests {
                 .price(BigDecimal.valueOf(15000))
                 .stockQty(30)
                 .artist(artist)
-                .groupId(artist.getGroup().getGroupId())
+                .group(artist.getGroup())
                 .category(childCategory)
                 .build()
         );
