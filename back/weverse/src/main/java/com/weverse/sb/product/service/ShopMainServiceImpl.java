@@ -98,6 +98,7 @@ public class ShopMainServiceImpl implements ShopMainService {
                 .bannerId(entity.getBannerId())                          
                 .mainTitle(entity.getMainTitle())
                 .artistId(entity.getArtist().getArtistId())                
+
                 .groupId(entity.getGroupId())                  
                 .subTitle(entity.getSubTitle())
                 .bannerImage(entity.getBannerImage())
@@ -108,6 +109,7 @@ public class ShopMainServiceImpl implements ShopMainService {
         return ShopArtistDTO.builder()
                 .artistId(entity.getArtistId())                           
                 .groupId(entity.getGroup().getGroupId())                  
+
                 .stageName(entity.getStageName())
                 .email(entity.getEmail())
                 .password(entity.getPassword())
@@ -122,6 +124,7 @@ public class ShopMainServiceImpl implements ShopMainService {
     private ShopProductDTO convertToProductDTO(Product entity) {
         return ShopProductDTO.builder()
                 .productId(entity.getId())                           
+
                 .artistId(entity.getArtist().getArtistId())                
                 .categoryId(entity.getCategory().getId())           
                 .productName(entity.getProductName())

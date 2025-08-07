@@ -1,19 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '../app/context/AuthContext';
 import styles from '@/styles/Header.module.css';
 import { FiLogIn, FiUser, FiGift, FiShoppingCart, FiLogOut } from 'react-icons/fi';
 
 const Header = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const isArtistSNSPage = pathname.startsWith('/artist/');
   const { isAuthenticated, logout } = useAuth();
 
   const handleLogout = () => {
     logout();
-    // 로그아웃 후 필요한 추가 작업 (예: 페이지 리로드 또는 리다이렉트)
+    router.push('/login'); // 로그아웃 후 로그인 페이지로 리다이렉트
   };
 
   return (

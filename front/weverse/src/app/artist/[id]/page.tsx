@@ -1,44 +1,132 @@
 'use client';
 
-import { allArtists } from '@/data/artists';
-import { notFound } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { notFound, useRouter, useParams } from 'next/navigation';
+import axios from 'axios';
 import styles from './ArtistPage.module.css';
 import MemberCard from '@/components/artistInfo/MemberCard';
 import LiveCard from '@/components/artistInfo/LiveCard';
 import MediaCard from '@/components/artistInfo/MediaCard';
 import MerchCard from '@/components/artistInfo/MerchCard';
 import AnnouncementCard from '@/components/artistInfo/AnnouncementCard';
-import { useRouter } from 'next/navigation';
 
-interface ArtistPageProps {
-  params: {
-    id: string;
-  };
+interface Member {
+  artistId: number;
+  stageName: string;
+  profileImage: string;
 }
 
-const ArtistPage = ({ params }: ArtistPageProps) => {
-  const { id } = params;
-  const artist = allArtists.find((a) => a.id.toString() === id);
+interface GroupInfo {
+  groupId: number;
+  groupName: string;
+  groupProfileImage: string;
+  groupLogo: string;
+}
+
+interface Streaming {
+  id: number;
+  title: string;
+  thumbnail: string;
+  date: string;
+  time: string;
+}
+
+interface Media {
+  id: number;
+  title: string;
+  thumbnail: string;
+  date: string;
+  time: string;
+}
+
+const ArtistPage = () => {
+  const params = useParams();
+  const id = params.id as string;
+  
+  const [groupInfo, setGroupInfo] = useState<GroupInfo | null>(null);
+  const [artistList, setArtistList] = useState<Member[]>([]);
+  const [liveData, setLiveData] = useState<Streaming[]>([]); // 라이브 데이터 상태 추가
+  const [mediaData, setMediaData] = useState<Media[]>([]); // 라이브 데이터 상태 추가
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  if (!artist) {
-    notFound();
+  useEffect(() => {
+    if (id) {
+      const fetchGroupData = async () => {
+        try {
+          setLoading(true);
+          const response = await axios.get(`http://localhost:80/api/artist/group`, { 
+            params: { groupId: id }
+          });
+          console.log("Group API Response Data:", response.data); // 서버 응답 데이터 전체를 확인하기 위한 로그
+          setGroupInfo(response.data.group);
+          setArtistList(response.data.artists || []);
+          setError(null);
+        } catch (err) {
+          setError('그룹 정보를 불러오는 데 실패했습니다.');
+          console.error('API Error:', err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchGroupData();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    const fetchLiveData = async () => {
+      console.log("fetchLiveData")
+      if (id) {
+        try {
+          console.log("Fetching live data for groupId:", id);
+          const response = await axios.get(`http://localhost:80/api/artistinfo/artistLive`, {
+            params: { groupId: id }
+          });
+          console.log('Live Data Response:', response.data); // API 응답 전체를 다시 확인
+          setLiveData(response.data);
+        } catch (err) {
+          console.error('Failed to fetch live data:', err);
+        }
+      }
+    };
+    fetchLiveData();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchMediaData = async () => {
+      console.log("fetchMediaData")
+      if (id) {
+        try {
+          console.log("Fetching live data for groupId:", id);
+          const response = await axios.get(`http://localhost:80/api/artistinfo/artistMedia`, {
+            params: { groupId: id }
+          });
+          console.log('Media Data Response:', response.data); // API 응답 전체를 다시 확인
+          setMediaData(response.data);
+        } catch (err) {
+          console.error('Failed to fetch live data:', err);
+        }
+      }
+    };
+    fetchMediaData();
+  }, [id]);
+
+  if (loading) {
+    return <div className={styles.centeredMessage}>로딩 중...</div>;
   }
 
-  const handleLiveCardClick = (index: number) => {
-    const liveItem = {
-      thumbnailSrc: `https://via.placeholder.com/250x150?text=Live+${index + 1}`,
-      duration: "1:23:45",
-      title: `아티스트 라이브 ${index + 1}`,
-      views: "1.2M",
-      likes: "250K",
-      chats: "10K",
-      hasSubtitles: true,
-      artistImageSrc: "/images/artist_profile.jpg",
-      artistName: artist.name,
-      uploadDate: "8월 1일 14:30",
-    };
-    router.push(`/artist-sns?artistId=${artist.id}&artistName=${artist.name}&activeTab=live&selectedItem=${encodeURIComponent(JSON.stringify(liveItem))}`);
+  if (error) {
+    return <div className={styles.centeredMessage}>{error}</div>;
+  }
+
+  if (!groupInfo) {
+    notFound();
+    return null;
+  }
+
+  const handleLiveCardClick = (liveItem: Streaming) => {
+    router.push(`/artist-sns?artistId=${groupInfo.groupId}&artistName=${groupInfo.groupName}&activeTab=live&selectedItem=${encodeURIComponent(JSON.stringify(liveItem))}`);
   };
 
   const handleMediaCardClick = (index: number) => {
@@ -46,79 +134,73 @@ const ArtistPage = ({ params }: ArtistPageProps) => {
       thumbnailSrc: `https://via.placeholder.com/200x120?text=Media+${index + 1}`,
       title: `미디어 제목 ${index + 1}`,
       date: "2024년 7월 20일",
-      type: "video", // 또는 "image" 등 실제 데이터에 맞게 설정
+      type: "video",
       artistImageSrc: "/images/artist_profile.jpg",
-      artistName: artist.name,
+      artistName: groupInfo.groupName,
       uploadDate: "2024년 7월 20일",
       views: "100K",
       likes: "10K",
       chats: "1K",
       hasSubtitles: false,
     };
-    router.push(`/artist-sns?artistId=${artist.id}&artistName=${artist.name}&activeTab=media&selectedItem=${encodeURIComponent(JSON.stringify(mediaItem))}`);
+    router.push(`/artist-sns?artistId=${groupInfo.groupId}&artistName=${groupInfo.groupName}&activeTab=media&selectedItem=${encodeURIComponent(JSON.stringify(mediaItem))}`);
   };
 
   return (
     <div className={styles.container}>
-      {/* Introduction Section */}
-      <section className={styles.introductionSection} style={{ backgroundImage: `url(${artist.imageUrl})` }}>
-        <div className={styles.overlay}></div>
+      <section className={styles.introductionSection} >
+        <div className={styles.overlay}><div className={styles.imageContainer} style={{ backgroundImage: `url(http://localhost:80/${groupInfo.groupProfileImage})` }}></div></div>
         <div className={styles.introductionContent}>
-          <h1 className={styles.artistName}>{artist.name}</h1>
+          <h1 className={styles.artistName}>{groupInfo.groupName}</h1>
           <p className={styles.artistDescription}>
-            여기에 {artist.name}에 대한 소개 내용이 들어갑니다. {artist.name}은(는) 전 세계 팬들에게 사랑받는 아티스트입니다. 그들의 음악과 퍼포먼스는 많은 사람들에게 영감을 줍니다.
+            여기에 {groupInfo.groupName}에 대한 소개 내용이 들어갑니다. {groupInfo.groupName}은(는) 전 세계 팬들에게 사랑받는 아티스트입니다. 그들의 음악과 퍼포먼스는 많은 사람들에게 영감을 줍니다.
           </p>
         </div>
       </section>
 
-      {/* Profile Section */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>프로필</h2>
-        {artist.members && artist.members.length > 0 && (
-          <>
-            <div className={styles.memberGrid}>
-              {artist.members.map((member, index) => (
-                <MemberCard key={index} member={member} artistName={artist.name} artistId={artist.id} />
-              ))}
-            </div>
-          </>
+        {artistList && artistList.length > 0 && (
+          <div className={styles.memberGrid}>
+            {artistList.map((member, index) => (
+              <MemberCard key={index} name={member.stageName} imageUrl={member.profileImage} artistName={groupInfo.groupName} artistId={groupInfo.groupId} />
+            ))}
+          </div>
         )}
       </section>
 
-      {/* Live Section */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Live</h2>
         <div className={styles.liveGrid}>
-          {[...Array(3)].map((_, index) => (
+          {liveData.map((live) => (
             <LiveCard
-              key={index}
-              thumbnail={`https://via.placeholder.com/250x150?text=Live+${index + 1}`}
-              date="2024년 8월 2일"
-              time="18:00"
-              title={`아티스트 라이브 ${index + 1}`}
-              onClick={() => handleLiveCardClick(index)}
+              key={live.id} // live.id와 같은 고유한 키를 사용해야 합니다.
+              thumbnail={`http://localhost:80${live.thumbnail}`}
+              date={live.date} // API 응답에 맞게 필드 이름을 조정해야 합니다.
+              time={live.time} // API 응답에 맞게 필드 이름을 조정해야 합니다.
+              title={live.title}
+              onClick={() => handleLiveCardClick(live)}
             />
           ))}
         </div>
       </section>
 
-      {/* Media Section */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>미디어</h2>
         <div className={styles.mediaGrid}>
-          {[...Array(4)].map((_, index) => (
+          {mediaData.map((media) => (
             <MediaCard
-              key={index}
-              thumbnail={`https://via.placeholder.com/200x120?text=Media+${index + 1}`}
-              title={`미디어 제목 ${index + 1}`}
-              date="2024년 7월 20일"
-              onClick={() => handleMediaCardClick(index)}
+              key={media.id} // live.id와 같은 고유한 키를 사용해야 합니다.
+              thumbnail={`http://localhost:80${media.thumbnail}`}
+              date={media.date} // API 응답에 맞게 필드 이름을 조정해야 합니다.
+              time={media.time} // API 응답에 맞게 필드 이름을 조정해야 합니다.
+              title={media.title}
+              onClick={() => handleLiveCardClick(media)}
             />
           ))}
         </div>
       </section>
 
-      {/* Merch Section */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>Merch</h2>
@@ -136,9 +218,8 @@ const ArtistPage = ({ params }: ArtistPageProps) => {
         </div>
       </section>
 
-      <div style={ {width: '96%', height: '2px', background: '#929292', marginBottom: '16px'}}></div>
+      <div style={{ width: '96%', height: '2px', background: '#929292', marginBottom: '16px' }}></div>
 
-      {/* Announcements Section */}
       <section className={styles.section}>
         <div className={styles.announcementList}>
           {[...Array(3)].map((_, index) => (
@@ -150,7 +231,6 @@ const ArtistPage = ({ params }: ArtistPageProps) => {
         </div>
       </section>
 
-      {/* SNS Section */}
       <section className={styles.section}>
         <div className={styles.snsButtonsContainer}>
           <a href="#" target="_blank" rel="noopener noreferrer" className={styles.snsButton}>
@@ -171,7 +251,6 @@ const ArtistPage = ({ params }: ArtistPageProps) => {
         </div>
       </section>
 
-      {/* Community Shortcut Button */}
       <div className={styles.communityButtonContainer}>
         <button className={styles.communityButton}>
           커뮤니티 바로가기

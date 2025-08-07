@@ -30,12 +30,7 @@ public class Artist {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-<<<<<<< HEAD
     private Group group;
-=======
-  
-    private ArtistGroupMap group;
->>>>>>> 2e010c7a5fb945b3bd108c29261d949027950853
 
     @Column(name = "name", length = 100)
     private String name;
