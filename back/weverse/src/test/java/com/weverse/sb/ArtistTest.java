@@ -22,7 +22,7 @@ class ArtistTest {
    ArtistRepository artistRepository;
 
    @Autowired
-   ArtistGroupMapRepository arMapRepository;
+   GroupRepository arMapRepository;
 
    @Autowired
    ArtistController artistController;

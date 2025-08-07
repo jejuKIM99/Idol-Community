@@ -97,7 +97,8 @@ public class ShopMainServiceImpl implements ShopMainService {
         return ShopBannerDTO.builder()
                 .bannerId(entity.getBannerId())                          
                 .mainTitle(entity.getMainTitle())
-                .artistId(entity.getArtist() != null ? entity.getArtist().getId() : null)                
+                .artistId(entity.getArtist().getArtistId())                
+
                 .groupId(entity.getGroupId())                  
                 .subTitle(entity.getSubTitle())
                 .bannerImage(entity.getBannerImage())
@@ -106,8 +107,9 @@ public class ShopMainServiceImpl implements ShopMainService {
 
     private ShopArtistDTO convertToArtistDTO(Artist entity) {
         return ShopArtistDTO.builder()
-                .artistId(entity.getId())                           
-                .groupId(entity.getGroup() != null ? entity.getGroup().getId() : null)                  
+                .artistId(entity.getArtistId())                           
+                .groupId(entity.getGroup().getGroupId())                  
+
                 .stageName(entity.getStageName())
                 .email(entity.getEmail())
                 .password(entity.getPassword())
@@ -122,8 +124,9 @@ public class ShopMainServiceImpl implements ShopMainService {
     private ShopProductDTO convertToProductDTO(Product entity) {
         return ShopProductDTO.builder()
                 .productId(entity.getId())                           
-                .artistId(entity.getArtist() != null ? entity.getArtist().getId() : null)                
-                .categoryId(entity.getCategory() != null ? entity.getCategory().getId() : null)           
+
+                .artistId(entity.getArtist().getArtistId())                
+                .categoryId(entity.getCategory().getId())           
                 .productName(entity.getProductName())
                 .description(entity.getDescription())
                 .price(entity.getPrice())
@@ -160,7 +163,7 @@ public class ShopMainServiceImpl implements ShopMainService {
                 .price(product.getPrice())
                 .stockQty(product.getStockQty())
                 .groupId(product.getGroupId())
-                .artistId(product.getArtist().getId())
+                .artistId(product.getArtist().getArtistId())
 
                 .category(category != null ? ShopProductDetailDTO.CategoryDTO.builder()
                         .categoryId(category.getId())

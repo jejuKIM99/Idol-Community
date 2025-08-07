@@ -12,7 +12,7 @@ import com.weverse.sb.product.entity.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 	// 기본 버전 (LAZY 로딩 주의)
-    List<Product> findByArtist_Id(Long artistId);
+    List<Product> findByArtist_ArtistId(Long artistId);
 
     // 최적화 버전 (이미지와 카테고리를 같이 가져오는 fetch join)
     @Query("SELECT DISTINCT p FROM Product p " +

@@ -27,10 +27,10 @@ public class ProductNotice {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column(name = "product_name", length = 200, nullable = false)
+    @Column(name = "product_name", length = 200)
     private String productName;
 
     @Column(name = "material", length = 100)

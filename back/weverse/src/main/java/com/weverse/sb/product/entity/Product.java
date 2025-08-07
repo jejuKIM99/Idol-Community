@@ -41,13 +41,13 @@ public class Product {
     @JoinColumn(name = "category_id")
     private ProductCategory category;
 
-    @Column(name = "product_name", length = 200, nullable = false)
+    @Column(name = "product_name", length = 200)
     private String productName;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "price", precision = 15, scale = 2, nullable = false)
+    @Column(name = "price", precision = 15, scale = 2)
     private BigDecimal price;
 
     @Column(name = "stock_qty")

@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.weverse.sb.artist.entity.Artist;
-import com.weverse.sb.artist.entity.ArtistGroupMap;
-import com.weverse.sb.artist.repository.ArtistGroupMapRepository;
+import com.weverse.sb.artist.repository.GroupRepository;
 import com.weverse.sb.artist.repository.ArtistRepository;
 import com.weverse.sb.product.dto.ProductDTO;
 import com.weverse.sb.product.entity.Product;
@@ -42,7 +41,7 @@ public class ProductDataTest {
 	private ArtistRepository artistRepository;
 	
 	@Autowired
-	private ArtistGroupMapRepository artistGroupMapRepository;
+	private GroupRepository artistGroupMapRepository;
 
     /*
     @Test

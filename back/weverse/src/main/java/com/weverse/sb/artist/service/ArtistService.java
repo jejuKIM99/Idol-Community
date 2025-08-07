@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.weverse.sb.artist.dto.ArtistInfoResponseDTO;
 import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.entity.Group;
+import com.weverse.sb.artist.repository.GroupRepository;
+
 import com.weverse.sb.artist.repository.ArtistRepository;
 import com.weverse.sb.artist.repository.GroupRepository;
 import com.weverse.sb.media.entity.Streaming;
@@ -25,6 +27,7 @@ public class ArtistService {
 	ArtistRepository artistRepository;
 	
 	@Autowired
+
 	GroupRepository groupRepository;
 	
 	@Autowired

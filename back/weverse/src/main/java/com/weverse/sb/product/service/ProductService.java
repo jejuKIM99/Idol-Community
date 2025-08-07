@@ -68,8 +68,8 @@ public interface ProductService {
 	
 	default ShopArtistDTO entityToDTO(Artist artist) {
 	    return ShopArtistDTO.builder()
-	            .artistId(artist.getId())
-	            .groupId(artist.getGroup().getId())
+	            .artistId(artist.getArtistId())
+	            .groupId(artist.getGroup().getGroupId())
 	            .stageName(artist.getStageName())
 	            .email(artist.getEmail())
 	            .password(artist.getPassword())

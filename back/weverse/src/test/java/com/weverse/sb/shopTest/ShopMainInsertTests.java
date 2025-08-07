@@ -100,7 +100,7 @@ public class ShopMainInsertTests {
         
         ShopProductDTO dto = ShopProductDTO.builder()
                 .productId(product.getId())
-                .artistId(product.getArtist().getId())
+                .artistId(product.getArtist().getArtistId())
                 .categoryId(product.getCategory() != null ? product.getCategory().getId() : null)
                 .productName(product.getProductName())
                 .description(product.getDescription())

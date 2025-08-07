@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.weverse.sb.artist.entity.Artist;
+import com.weverse.sb.artist.entity.Group;
 import com.weverse.sb.artist.repository.ArtistRepository;
+import com.weverse.sb.artist.repository.GroupRepository;
 import com.weverse.sb.product.dto.ShopProductDetailDTO;
 import com.weverse.sb.product.entity.Product;
 import com.weverse.sb.product.entity.ProductCategory;
@@ -36,12 +39,26 @@ public class ShopProductDetailTests {
     @Autowired private ProductOptionRepository productOptionRepository;
     @Autowired private ProductNoticeRepository productNoticeRepository;
     @Autowired private ProductCategoryRepository productCategoryRepository;
+    @Autowired private GroupRepository groupRepository;
 
     @Autowired private ShopMainService shopMainService;
 
     @Test
     @DisplayName("상품 상세정보 저장 및 조회 테스트")
     void insertAndFetchProductDetail() {
+       
+       IntStream.rangeClosed(1, 3).forEach(i -> {
+            Group groupMap = Group.builder()
+                    .groupName("Group" + i)
+                    .groupProfileImage("This is the profile of Group" + i)
+                    .groupLogo("group" + i + "_logo.png")
+                    .build();
+
+            this.groupRepository.save(groupMap);
+        });
+       
+       Group group = groupRepository.findById(1L).orElseThrow();
+       
         // given
         Artist artist = artistRepository.save(
             Artist.builder()
@@ -52,6 +69,7 @@ public class ShopProductDetailTests {
                 .snsUrl("http://sns.com")
                 .birthday(LocalDateTime.of(1995, 5, 5, 0, 0))
                 .statusMessage("Hi")
+                .group(group)
                 .dmNickname("dmTest")
                 .build()
         );
@@ -72,6 +90,7 @@ public class ShopProductDetailTests {
                 .price(BigDecimal.valueOf(15000))
                 .stockQty(30)
                 .artist(artist)
+                .groupId(artist.getGroup().getGroupId())
                 .category(childCategory)
                 .build()
         );
