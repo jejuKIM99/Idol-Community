@@ -40,4 +40,10 @@ public class JellyProduct {
 
     @Column(name = "benefitDescription")
     private String benefitDescription;
+    
+    
+    public int getBonusJellyValue() {
+        return (this.bonusJelly != null) ? this.bonusJelly : 0;
+    }
+
 }

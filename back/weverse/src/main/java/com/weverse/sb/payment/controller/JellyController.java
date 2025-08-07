@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.weverse.sb.payment.dto.JellyChargeReadyResponseDTO;
 import com.weverse.sb.payment.dto.JellyChargeRequestDTO;
-import com.weverse.sb.payment.dto.JellyChargeResponseDTO;
 import com.weverse.sb.payment.dto.JellyProductResponseDTO;
+import com.weverse.sb.payment.dto.PaymentVerificationRequestDTO;
+import com.weverse.sb.payment.service.JellyPaymentProcessor;
 import com.weverse.sb.payment.service.JellyService;
+import com.weverse.sb.payment.service.PaymentVerificationService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class JellyController {
 
     private final JellyService jellyService;
+    private final PaymentVerificationService paymentVerificationService;
+    private final JellyPaymentProcessor jellyPaymentProcessor;
 
     @GetMapping("/products")
     public ResponseEntity<List<JellyProductResponseDTO>> getJellyProducts() {
@@ -31,14 +36,30 @@ public class JellyController {
     }
     
     @PostMapping("/charge")
-    public ResponseEntity<JellyChargeResponseDTO> chargeJelly(
+    public ResponseEntity<?> chargeJelly(
             @RequestBody JellyChargeRequestDTO requestDto,
             @RequestParam("userId") Long userId //@AuthenticationPrincipal UserDetails userDetails
     ) {
-        JellyChargeResponseDTO response = jellyService.chargeJelly(userId, requestDto);
-        return ResponseEntity.ok(response);
+    	try {
+            // imp_uid가 없으면 '결제 준비' 단계로 판단
+            if (requestDto.getImpUid() == null) {
+
+                // 1. 결제 준비 로직 호출
+                JellyChargeReadyResponseDTO response = jellyService.prepareCharge(requestDto, userId);
+                return ResponseEntity.ok(response);
+
+            } else { // imp_uid가 있으면 '결제 검증' 단계로 판단
+
+                // 2. 결제 검증 로직 호출
+            	PaymentVerificationRequestDTO verificationRequest = PaymentVerificationRequestDTO.from(requestDto);
+                paymentVerificationService.process(verificationRequest, jellyPaymentProcessor);
+
+                // 성공 시에는 별도의 본문 없이 200 OK만 반환
+                return ResponseEntity.ok().build();
+            }
+        } catch (Exception e) {
+            // 예외 종류에 따라 다른 상태 코드 반환 필요
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
-    
-    
-    
 }

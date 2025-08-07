@@ -1,4 +1,4 @@
-package com.weverse.sb.payment.dto;
+  package com.weverse.sb.payment.dto;
 
 import java.math.BigDecimal;
 

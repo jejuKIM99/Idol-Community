@@ -2,18 +2,20 @@ package com.weverse.sb.payment.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.weverse.sb.payment.dto.JellyChargeReadyResponseDTO;
 import com.weverse.sb.payment.dto.JellyChargeRequestDTO;
 import com.weverse.sb.payment.dto.JellyChargeResponseDTO;
 import com.weverse.sb.payment.dto.JellyProductResponseDTO;
 import com.weverse.sb.payment.entity.JellyHistory;
 import com.weverse.sb.payment.entity.JellyProduct;
 import com.weverse.sb.payment.entity.JellyPurchase;
-import com.weverse.sb.payment.entity.Payment;
+import com.weverse.sb.payment.entity.Payment; // 우리 시스템의 Payment 엔티티
 import com.weverse.sb.payment.repository.JellyHistoryRepository;
 import com.weverse.sb.payment.repository.JellyProductRepository;
 import com.weverse.sb.payment.repository.JellyPurchaseRepository;
@@ -33,82 +35,94 @@ public class JellyService {
     private final JellyHistoryRepository jellyHistoryRepository;
     private final PaymentRepository paymentRepository;
 
+    /**
+     * 젤리 상품 목록을 조회합니다.
+     * @return 젤리 상품 DTO 목록
+     */
     @Transactional(readOnly = true) // 조회 전용 트랜잭션
     public List<JellyProductResponseDTO> getJellyProductList() {
         return jellyProductRepository.findAll().stream()
             .map(JellyProductResponseDTO::fromEntity) 
             .collect(Collectors.toList());
-        
     }
-    
-    @Transactional // 데이터 변경이 여러 번 일어나므로 트랜잭션 필수!
-    public JellyChargeResponseDTO chargeJelly(Long userId, JellyChargeRequestDTO requestDto) {
-        // 1. 사용자 및 상품 조회
+
+    /**
+     * 클라이언트의 젤리 충전 요청을 받아, 결제를 위한 사전 준비를 수행합니다.
+     * @param requestDto 상품 ID가 담긴 요청 DTO
+     * @param userId     사용자 ID
+     * @return PG사 결제창에 필요한 정보가 담긴 DTO
+     */
+    @Transactional
+    public JellyChargeReadyResponseDTO prepareCharge(JellyChargeRequestDTO requestDto, Long userId) {
+        // 1. 사용자 및 상품 정보 조회
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found")); // 적절한 예외 처리 필요
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. ID: " + userId));
+        
         JellyProduct product = jellyProductRepository.findById(requestDto.getProductId())
-            .orElseThrow(() -> new RuntimeException("Jelly product not found"));
+                .orElseThrow(() -> new IllegalArgumentException("젤리 상품을 찾을 수 없습니다. ID: " + requestDto.getProductId()));
 
-        // 2. (가상)결제 처리
-        Payment payment = Payment.builder()
-        	.user(user) 
-            .amount(product.getPrice())
-            .paymentMethod(requestDto.getPaymentMethod())
-            .status("PAID")
-            .currency("KRW")
-            .build();
-        paymentRepository.save(payment);
+        // 2. 고유 주문번호(merchant_uid) 생성
+        // 형식: "jelly_랜덤문자열" (e.g., jelly_a1b2c3d4-e5f6-...)
+        String merchantUid = "jelly_" + UUID.randomUUID().toString();
 
-        // 3. 젤리 구매 내역 생성
+        // 3. '결제 대기'(PENDING) 상태의 주문(JellyPurchase) 엔티티를 생성하여 DB에 저장
         JellyPurchase purchase = JellyPurchase.builder()
-            .user(user)
-            .jellyProduct(product)
-            .payment(payment)
-            .paidAt(LocalDateTime.now())
-            .build();
+                .user(user)
+                .jellyProduct(product)
+                .amount(product.getPrice())
+                .merchantUid(merchantUid)
+                .status("PENDING") // 초기 상태는 '대기'
+                .paidAt(LocalDateTime.now())
+                .build();
+        
         jellyPurchaseRepository.save(purchase);
 
-        // [수정 1] 사용자 젤리 잔액 업데이트 로직 변경
+        // 4. 프론트엔드 결제창에 필요한 정보들을 DTO에 담아 반환
+        return JellyChargeReadyResponseDTO.builder()
+                .merchantUid(merchantUid)           // 방금 생성한 고유 주문번호
+                .productName(product.getProductName()) // 상품명
+                .amount(product.getPrice())         // 서버에서 확정한 결제 금액
+                .buyerName(user.getName())      // 구매자 이름
+                .buyerEmail(user.getEmail())        // 구매자 이메일
+                .build();
+    }
+
+	public JellyChargeResponseDTO finalizeJellyCharge(com.siot.IamportRestClient.response.Payment paymentData, JellyPurchase purchase) {
+		// 1. 사용자 및 상품 조회
+		User user = purchase.getUser();
+        JellyProduct product = purchase.getJellyProduct();
+
+        // 2. 우리 시스템의 최종 Payment 엔티티 생성 및 저장
+        Payment payment = Payment.builder()
+            .user(user)
+            .amount(paymentData.getAmount())
+            .paymentMethod(paymentData.getPayMethod())
+            .status("PAID") // 상태를 명확하게 'PAID'로 저장
+            .impUid(paymentData.getImpUid())
+            .merchantUid(purchase.getMerchantUid()) // purchase에서 merchantUid 가져오기
+            .currency("KRW")
+            .paidAt(LocalDateTime.now()) // 결제 완료 시점 기록
+            .build();
+        paymentRepository.save(payment);
+        
+        // 3. 기존 JellyPurchase 엔티티에 최종 결제 정보(Payment)를 연결하고 상태 변경
+        purchase.completePurchase(payment); // 상태를 'PAID'로 변경하고 Payment 연결
+
+        // 4. 사용자 젤리 잔액 업데이트 (기존 로직과 동일)
         int balanceBefore = user.getJellyBalance();
-        int baseJelly = product.getJellyAmount();
-        // 보너스 젤리가 null일 경우를 대비하여 0으로 처리
-        int bonusJelly = (product.getBonusJelly() != null) ? product.getBonusJelly() : 0;
-        int totalAddedJelly = baseJelly + bonusJelly;
+        int totalAddedJelly = product.getJellyAmount() + product.getBonusJellyValue();
         int balanceAfter = balanceBefore + totalAddedJelly;
         user.setJellyBalance(balanceAfter);
-        // userRepository.save(user); // @Transactional 어노테이션 덕분에 마지막에 한번만 저장해도 변경사항이 반영됩니다. (더티 체킹)
 
-        // [수정 2] 젤리 변동 내역(History) 기록 방식 변경
-        // 5-1. 기본 젤리 충전 내역 기록
-        JellyHistory chargeHistory = JellyHistory.builder()
-            .user(user)
-            .changeAmount(baseJelly)
-            .balanceAfter(balanceBefore + baseJelly) // 기본 젤리만 더해진 시점의 잔액
-            .changeType("CHARGE")
-            .description(product.getProductName() + " 충전")
-            .createdAt(LocalDateTime.now())
-            .build();
-        jellyHistoryRepository.save(chargeHistory);
+        // 5. 젤리 변동 내역(History) 기록
+        JellyHistory.logJellyTransaction(jellyHistoryRepository, user, product, balanceBefore);
 
-        // 5-2. 보너스 젤리 적립 내역 기록 (보너스가 있을 경우에만)
-        if (bonusJelly > 0) {
-            JellyHistory bonusHistory = JellyHistory.builder()
-                .user(user)
-                .changeAmount(bonusJelly)
-                .balanceAfter(balanceAfter) // 보너스까지 모두 더해진 최종 잔액
-                .changeType("BONUS")
-                .description(product.getBenefitDescription()) // DB에 저장된 혜택 설명 사용
-                .createdAt(LocalDateTime.now().plusSeconds(1)) // 순서 보장을 위해 약간의 시간차
-                .build();
-            jellyHistoryRepository.save(bonusHistory);
-        }
-
-        // [수정 3] 응답 DTO(ResponseDTO) 생성 로직 변경
+        // 6. 최종 응답 DTO 생성 및 반환
         return JellyChargeResponseDTO.builder()
             .purchaseId(purchase.getJellyPurchaseId())
             .productName(product.getProductName())
-            .chargedJelly(totalAddedJelly) // 기본+보너스를 합산한 총 충전 젤리
-            .balanceAfter(balanceAfter)     // 최종 잔액
+            .chargedJelly(totalAddedJelly)
+            .balanceAfter(balanceAfter)
             .build();
-    }
+	}
 }
