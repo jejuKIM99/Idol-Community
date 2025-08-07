@@ -18,10 +18,10 @@ import com.weverse.sb.media.entity.UploadedVideo;
 import com.weverse.sb.media.repository.StreamingRepository;
 import com.weverse.sb.product.entity.Product;
 
-
-
+import lombok.extern.log4j.Log4j2;
 
 @RestController
+@Log4j2
 public class ArtistController {
 
 	@Autowired
@@ -39,7 +39,9 @@ public class ArtistController {
 				.artistList(artistList)
 				.groupList(artistGroupList)
 				.build();
+		
 		return dto;
+
 	}
 	// 그룹 조회 함수
 	@GetMapping("/api/artist/group")
@@ -67,3 +69,4 @@ public class ArtistController {
 	    return ResponseEntity.ok(videos);
 	}
 }
+

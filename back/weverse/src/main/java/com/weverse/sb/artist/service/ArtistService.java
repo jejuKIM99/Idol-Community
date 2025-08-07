@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.weverse.sb.artist.dto.ArtistInfoResponseDTO;
 import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.entity.Group;
-import com.weverse.sb.artist.repository.ArtistGroupMapRepository;
 import com.weverse.sb.artist.repository.ArtistRepository;
 import com.weverse.sb.artist.repository.GroupRepository;
 import com.weverse.sb.media.entity.Streaming;
@@ -17,6 +16,8 @@ import com.weverse.sb.media.repository.StreamingRepository;
 import com.weverse.sb.media.repository.UploadedVideoRepository;
 import com.weverse.sb.product.repository.ProductRepository;
 
+
+
 @Service
 public class ArtistService {
 	
@@ -24,7 +25,7 @@ public class ArtistService {
 	ArtistRepository artistRepository;
 	
 	@Autowired
-	ArtistGroupMapRepository artistGroupMapRepository;
+	GroupRepository groupRepository;
 	
 	@Autowired
 	private GroupRepository groupRepository;
@@ -44,7 +45,7 @@ public class ArtistService {
 	
 	// 그룹 조회 서비스
 	public List<Group> getGroupList() {
-		return artistGroupMapRepository.findAll();
+		return groupRepository.findAll();
 	}
 	public ArtistInfoResponseDTO getArtistInfoByGroupId(Long groupId) {
 	    // 그룹 조회
