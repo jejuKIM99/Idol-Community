@@ -2,12 +2,14 @@ package com.weverse.sb.user.service;
 
 import java.time.LocalDateTime;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.weverse.sb.user.dto.SignupRequestDto;
 import com.weverse.sb.user.entity.User;
+import com.weverse.sb.user.enums.Role;
 import com.weverse.sb.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -43,7 +45,7 @@ public class AuthService {
                 .email(request.getEmail())
                 .password(encodedPassword)
                 .nickname(nickname)
-                .role("USER")
+                .role(Role.ROLE_USER)
                 .name("회원")                     // ✅ 더미 값
                 .phoneNumber("010-0000-0000")     // ✅ 더미 값
                 .country("KR")                    // ✅ 더미 값
@@ -61,7 +63,7 @@ public class AuthService {
     public User login(String email, String password) {
         // 1. 이메일로 사용자 조회
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+            .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 이메일입니다."));
 
         // 평문 vs 암호화된 비번 비교!
         if (!passwordEncoder.matches(password, user.getPassword())) {

@@ -17,7 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.weverse.sb.config.JwtUtil;
+import com.weverse.sb.security.JwtUtil;
 import com.weverse.sb.user.dto.UserSettingsDto;
 import com.weverse.sb.user.service.JwtUserService;
 

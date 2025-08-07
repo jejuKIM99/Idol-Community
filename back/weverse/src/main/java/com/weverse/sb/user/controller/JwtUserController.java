@@ -8,12 +8,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.weverse.sb.config.JwtUtil;
+import com.weverse.sb.security.JwtUtil;
 import com.weverse.sb.user.dto.UpdateProfileRequestDto;
 import com.weverse.sb.user.dto.UserSettingsDto;
 import com.weverse.sb.user.service.JwtUserService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -41,7 +42,7 @@ public class JwtUserController {
     @PutMapping("/me")
     public ResponseEntity<UserSettingsDto> updateMySettings(
             HttpServletRequest request,
-            @RequestBody UpdateProfileRequestDto updateDto) {
+            @RequestBody @Valid UpdateProfileRequestDto updateDto) {
 
         String token = jwtUtil.resolveToken(request);
         if (token == null || !jwtUtil.isTokenValid(token)) {

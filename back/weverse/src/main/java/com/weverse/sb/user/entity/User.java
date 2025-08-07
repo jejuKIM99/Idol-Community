@@ -2,8 +2,12 @@ package com.weverse.sb.user.entity;
 
 import java.time.LocalDateTime;
 
+import com.weverse.sb.user.enums.Role;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,8 +36,8 @@ public class User {
     @Column(name = "password", length = 255, nullable = false)
     private String password;
     
-    @Column(name = "role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role; // ROLE_USER, ROLE_ADMIN
 
     @Column(name = "name", length = 100, nullable = false)
     private String name;

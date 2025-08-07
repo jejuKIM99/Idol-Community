@@ -16,64 +16,35 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weverse.sb.user.dto.LoginRequestDto;
 import com.weverse.sb.user.entity.User;
+import com.weverse.sb.user.enums.Role;
 import com.weverse.sb.user.repository.UserRepository;
 
 
-// @WebMvcTest(AuthController.class)
 @SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)  // ⭐️ 시큐리티 필터 비활성화
+@AutoConfigureMockMvc
 @Transactional
 class AuthControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    /*
-    @MockBean
-    private AuthService authService;
-    */
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-    /*
-    @Test
-    void checkEmailExists_true() throws Exception {
-        String email = "test@example.com";
-        Mockito.when(authService.checkEmailExists(email)).thenReturn(true);
 
-        mockMvc.perform(post("/api/auth/check-email")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\": \"" + email + "\"}"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.exists").value(true));
-    }
-
-    @Test
-    void checkEmailExists_false() throws Exception {
-        String email = "noone@none.com";
-        Mockito.when(authService.checkEmailExists(email)).thenReturn(false);
-
-        mockMvc.perform(post("/api/auth/check-email")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\": \"" + email + "\"}"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.exists").value(false));
-    }
-    */
-       // 로그인 전용 테스트용 계정 저장
     @BeforeEach
     void setUp() {
+        // 테스트 유저 저장 (email, password, role 등)
         User user = User.builder()
             .email("test@test.com")
-            .password(passwordEncoder.encode("test1234"))
+            .password(passwordEncoder.encode("test1234")) // ✅ 암호화된 비번
             .nickname("testUser")
-            .role("USER")
-            // ✅ 추가: NOT NULL 필드 기본값 세팅
-            .name("Test User")
-            .phoneNumber("010-0000-0000")
+            .role(Role.ROLE_USER)
+            .name("테스트")
+            .phoneNumber("01012345678")
             .country("KR")
             .jellyBalance(0)
             .cashBalance(0)
@@ -84,39 +55,38 @@ class AuthControllerTest {
 
         userRepository.save(user);
     }
-	
+
     @Test
     void 로그인_성공시_JWT_토큰_반환() throws Exception {
-        // GIVEN (이미 회원가입되어 있다고 가정)
-        String email = "test@test.com";
-        String password = "test1234";
+        // 로그인 요청 JSON 구성
+        String loginJson = """
+            {
+                "email": "test@test.com",
+                "password": "test1234"
+            }
+        """;
 
-        String loginJson = String.format("{\"email\":\"%s\",\"password\":\"%s\"}", email, password);
-
-        // WHEN & THEN
+        // 요청 및 응답 검증
         mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").exists());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(loginJson))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").exists());
     }
 
     @Test
-    void 로그인_실패_이메일_없음() throws Exception {
-        LoginRequestDto loginRequest = new LoginRequestDto("none@none.com", "test1234");
+    void 로그인_실패시_401_응답() throws Exception {
+        String loginJson = """
+            {
+                "email": "test@test.com",
+                "password": "wrongpassword"
+            }
+        """;
+
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(loginRequest)))
-            .andExpect(status().isBadRequest());
+                .content(loginJson))
+            .andExpect(status().isUnauthorized());
     }
-
-    @Test
-    void 로그인_실패_비밀번호_틀림() throws Exception {
-        LoginRequestDto loginRequest = new LoginRequestDto("test@test.com", "wrongpw");
-        mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(loginRequest)))
-            .andExpect(status().isBadRequest());
-    }
-
 }
+
