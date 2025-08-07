@@ -1,5 +1,6 @@
 package com.weverse.sb.artist.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.weverse.sb.artist.entity.Artist;
@@ -17,8 +18,32 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ArtistDTO {
+
+	private Long id;
 	
+	private Long groupId;
+	
+	private String groupName;
+	
+	private String name;
+
+	private String stageName;
+
+	private String email;
+
+	private String password;
+
+	private String profileImage;
+
+	private String snsUrl;
+
+	private LocalDateTime birthday;
+
+	private String statusMessage;
+
+	private String dmNickname;
+
 	private List<Artist> artistList;
 	private List<Group> groupList;
-	
+
 }

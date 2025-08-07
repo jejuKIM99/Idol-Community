@@ -18,15 +18,19 @@ public class PostDTO {
 	
 	private Long postId;
     private Long artistId;
+    private Long groupId;
+    private Long userId;
     private String content;
     private String image;
     private Integer likeCount;
     private LocalDateTime createdAt;
+    private String authorType;
     private String artistName;
 	
     private List<PostDTO> postList;
 	
     private Integer commentCount;
     private boolean likedByUser;
+    private boolean followByUser;
 
 }

@@ -8,4 +8,8 @@ import com.weverse.sb.user.entity.Favorite;
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Long>{
 
+	boolean existsByUserUserIdAndArtistId(Long userId, Long artistId);
+
+	void deleteByUserUserIdAndArtistId(Long userId, Long artistId);
+
 }

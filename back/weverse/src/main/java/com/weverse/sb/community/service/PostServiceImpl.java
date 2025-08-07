@@ -17,7 +17,9 @@ import com.weverse.sb.community.entity.PostLike;
 import com.weverse.sb.community.repository.CommentRepository;
 import com.weverse.sb.community.repository.PostLikeRepository;
 import com.weverse.sb.community.repository.PostRepository;
+import com.weverse.sb.user.entity.Favorite;
 import com.weverse.sb.user.entity.User;
+import com.weverse.sb.user.repository.FavoriteRepository;
 import com.weverse.sb.user.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -44,16 +46,22 @@ public class PostServiceImpl implements PostService{
 	
 	@Autowired
 	private PostLikeRepository likeRepository;
+	
+	@Autowired
+	private FavoriteRepository favoriteRepository;
 
 	@Override
-	public List<PostDTO> getPostDTOList() {
-		List<Post> postList = postRepository.findAll();
+	public List<PostDTO> getPostDTOList(Long userId, Long groupId) {
+		List<Post> postList = postRepository.findByGroup_IdAndAuthorType(groupId, "artist");
 		List<PostDTO> dtoList = new ArrayList<>();
 
 		for (Post post : postList) {
 		    int commentCount = commentRepository.countByPostId(post.getId());
 		    int likeCount = likeRepository.countByPostId(post.getId());
-		    Long artistId = (post.getArtist() != null) ? post.getArtist().getArtistId() : null;
+		    boolean likeByUser = postLikeRepository.existsByUserUserIdAndPostId(userId, post.getId() );
+		    boolean followByUser = favoriteRepository.existsByUserUserIdAndArtistId(userId, post.getArtist().getId());
+		    
+		    Long artistId = (post.getArtist() != null) ? post.getArtist().getId() : null;
 
 		    PostDTO dto = PostDTO.builder()
 		            .postId(post.getId())
@@ -64,6 +72,8 @@ public class PostServiceImpl implements PostService{
 		            .artistId(artistId)
 		            .artistName(post.getArtist().getStageName())
 		            .commentCount(commentCount)
+		            .likedByUser(likeByUser)
+		            .followByUser(followByUser)
 		            .build();
 
 		    dtoList.add(dto);
@@ -77,10 +87,11 @@ public class PostServiceImpl implements PostService{
 		
 		Artist artist = artistRepository.findById(artistID)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid artist ID"));
-        
+		
         Group group = artist.getGroup();
         
-        String groupName = group.getGroupName();
+        String groupName = group.getName();
+        
 
 		int randomNum = ThreadLocalRandom.current().nextInt(1, 5);
         String formattedNum = String.format("%02d", randomNum);
@@ -93,6 +104,7 @@ public class PostServiceImpl implements PostService{
                 .image(image)
                 .likeCount(0)
                 .createdAt(LocalDateTime.now())
+                .authorType("artist")
                 .build();
 
         postRepository.save(post);
@@ -101,12 +113,12 @@ public class PostServiceImpl implements PostService{
 	@Override
 	public List<PostDTO> getFilterPostList(Long id) {
 		
-		List<Post> postList = postRepository.findByArtistArtistId(id);
+		List<Post> postList = postRepository.findByArtist_IdAndAuthorType(id, "artist");
 		List<PostDTO> dtoList = new ArrayList<>();
 
 		for (Post post : postList) {
 		    int commentCount = commentRepository.countByPostId(post.getId());
-		    Long artistId = post.getArtist().getArtistId();
+		    Long artistId = post.getArtist().getId();
 
 		    PostDTO dto = PostDTO.builder()
 		            .postId(post.getId())
@@ -166,6 +178,107 @@ public class PostServiceImpl implements PostService{
         post.setLikeCount(post.getLikeCount() - 1);
         postRepository.save(post);
     }
+
+	@Override
+	@Transactional
+	public void insertFavorite(Long artistId, Long userId) {
+		
+		Artist artist = artistRepository.findById(artistId)
+	            .orElseThrow(() -> new IllegalArgumentException("Invalid artist ID"));
+
+	    User user = userRepository.findById(userId)
+	            .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+
+	    if (favoriteRepository.existsByUserUserIdAndArtistId(userId, artistId)) {
+	        throw new IllegalStateException("Already followed");
+	    }
+
+	    Favorite favorite = Favorite.builder()
+	            .artist(artist)
+	            .user(user)
+	            .createdAt(LocalDateTime.now())
+	            .build();
+
+	    favoriteRepository.save(favorite);
+
+		
+	}
+
+	@Override
+	@Transactional
+	public void deleteFavorite(Long artistId, Long userId) {
+		
+		if (!favoriteRepository.existsByUserUserIdAndArtistId(userId, artistId)) {
+            throw new IllegalStateException("follow does not exist");
+        }
+
+        favoriteRepository.deleteByUserUserIdAndArtistId(userId, artistId);
+		
+	}
+
+
+	@Override
+	public List<PostDTO> getFanPostDTOList(Long groupId) {
+		
+		List<Post> post = postRepository.findByGroup_IdAndAuthorType(groupId, "user");
+		List<PostDTO> postList = new ArrayList<>();
+		
+		
+		for (Post fanpost : post) {
+			
+			int commentCount = commentRepository.countByPostId(fanpost.getId());
+			
+			PostDTO dto = PostDTO.builder()
+					.postId(fanpost.getId())
+		            .groupId(groupId)
+		            .artistName(fanpost.getArtist().getStageName())
+		            .userId(fanpost.getUser().getUserId())
+		            .content(fanpost.getContent())
+		            .image(fanpost.getImage())
+		            .commentCount(commentCount)
+		            .createdAt(fanpost.getCreatedAt())
+		            .likeCount(fanpost.getLikeCount())
+		            .build();
+			
+			postList.add(dto);
+		}
+		
+		return postList;
+		
+	}
+
+	@Override
+	public void inputFanPost(Long artistID, String content, Long userId) {
+		
+		Artist artist = artistRepository.findById(artistID)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid artist ID"));
+		
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid User ID"));
+		
+        Group group = artist.getGroup();
+        
+        String groupName = group.getName();
+        
+
+		int randomNum = ThreadLocalRandom.current().nextInt(1, 5);
+        String formattedNum = String.format("%02d", randomNum);
+
+        String image = "/images/" + groupName + "/" + groupName + "_profile/"  + groupName + "_media_" + formattedNum + ".png";
+        
+        Post post = Post.builder()
+        		.user(user)
+                .artist(artist)
+                .content(content)
+                .image(image)
+                .likeCount(0)
+                .createdAt(LocalDateTime.now())
+                .authorType("user")
+                .build();
+
+        postRepository.save(post);
+		
+	}
 	
 
 }

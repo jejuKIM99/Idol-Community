@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.weverse.sb.artist.dto.ArtistDTO;
+import com.weverse.sb.artist.service.ArtistService;
 import com.weverse.sb.community.dto.PostDTO;
 import com.weverse.sb.community.service.PostService;
 
-import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 
 @RestController
@@ -23,12 +24,27 @@ public class PostController {
 	@Autowired
 	PostService postService;
 	
-	// 게시글 전체조회
-	@GetMapping("api/artistSNS/home")
-	public PostDTO selectPost() {
-		List<PostDTO> postList = this.postService.getPostDTOList();
-		PostDTO dto = PostDTO.builder().postList(postList).build();
+	@Autowired
+	ArtistService artistService;
+	
+	// 아티스트 정보 조회
+	@GetMapping("api/artistSNS/home/profile")
+	public ArtistDTO selectArtist(@RequestParam("artistId") Long artistId) {
+		ArtistDTO dto = this.artistService.findById(artistId);
 		
+		return dto;
+	}
+	
+	// 게시글 전체조회
+	
+	//  추후 principal 등으로 현재 접속중인 사용자 정보 가져올거면 
+	// @RequestParam("userID") Long userID 빼도 됨
+	// 일단 지금은 로그인 로직이 없는 관계로 userID 임시 추가
+	@GetMapping("api/artistSNS/home")
+	public PostDTO selectPost(@RequestParam("userID") Long userID, @RequestParam("groupId") Long groupId) {
+		List<PostDTO> postList = this.postService.getPostDTOList(userID, groupId);
+		PostDTO dto = PostDTO.builder().postList(postList).build();
+
 		return dto;
 	}
 
@@ -55,7 +71,6 @@ public class PostController {
 	
 	// 게시글 좋아요 하기
 	@PostMapping("api/artistSNS/home/like")
-	@Transactional
     public ResponseEntity<String> likePost(@RequestParam("postId") Long postId,
     		@RequestParam("userId") Long userId) {
         
@@ -70,7 +85,6 @@ public class PostController {
 	
 	// 게시글 좋아요 취소
 	@PostMapping("api/artistSNS/home/dislike")
-	@Transactional
     public ResponseEntity<String> unlikePost(@RequestParam Long postId, @RequestParam Long userId) {
         try {
             postService.deletePostLike(postId, userId);
@@ -80,6 +94,27 @@ public class PostController {
         }
     }
 	
+	// 아티스트 팔로우
+	@PostMapping("api/artistSNS/home/follow")
+	public ResponseEntity<String> followArtist(@RequestParam Long artistId, @RequestParam Long userId) {
+		try {
+			postService.insertFavorite(artistId, userId);
+			return ResponseEntity.ok("success");
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("fail: " + e.getMessage());
+		}
+	}
 	
-
+	
+	// 아티스트 팔로우 취소
+	@PostMapping("api/artistSNS/home/unfollow")
+	public ResponseEntity<String> unFollowArtist(@RequestParam Long artistId, @RequestParam Long userId) {
+		try {
+			postService.deleteFavorite(artistId, userId);
+			return ResponseEntity.ok("success");
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("fail: " + e.getMessage());
+		}
+	}
+	
 }

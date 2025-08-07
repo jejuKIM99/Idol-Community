@@ -24,14 +24,14 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "group_id") 
-    private long groupId;
+    private long id;
     
     @Column(name = "group_name")
-    private String groupName;
+    private String name;
     
     @Column(name = "group_profile_image")
-    private String groupProfileImage;
+    private String groupImage;
     
     @Column(name = "group_logo")
-    private String groupLogo;
+    private String logo;
 }
