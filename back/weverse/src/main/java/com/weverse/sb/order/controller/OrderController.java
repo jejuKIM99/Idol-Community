@@ -14,7 +14,8 @@ import com.weverse.sb.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/orders")
+// @RequestMapping("/api/orders")
+@RequestMapping("/api/shop")
 @RequiredArgsConstructor
 public class OrderController {
 
