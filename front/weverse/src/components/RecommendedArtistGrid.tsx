@@ -7,12 +7,7 @@ import styles from '@/styles/RecommendedArtistGrid.module.css';
 import { FiRefreshCw } from 'react-icons/fi';
 
 interface RecommendedArtistGridProps {
-  artists: {
-    id: number;
-    name: string;
-    image: string;
-    description: string;
-  }[];
+  artists: Artist[];
   onArtistClick: (artistName: string) => void;
   onRefreshClick: () => void;
 }
