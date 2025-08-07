@@ -1,0 +1,30 @@
+
+.artistHeaderInfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.artistImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.infoText {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.artistName {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.artistBirthday {
+  font-size: 14px;
+  color: #888;
+}

@@ -1,0 +1,36 @@
+.card {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 50px;
+  background-color: #fff;
+  transition: box-shadow 0.3s;
+  height: 90px;
+    color: black;
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+
+.card img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  background: #9b9b9bb6;
+  margin-right: 5px;
+  border-radius: 50%;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.name {
+  font-weight: bold;
+}

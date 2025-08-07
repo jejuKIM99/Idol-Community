@@ -1,0 +1,92 @@
+/* app/mypage/coupons/coupons.module.css */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    background-color: #fff;
+    min-height: calc(100vh - 60px);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 2.5rem;
+    text-align: left;
+}
+
+.registerSection {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.couponInput {
+    flex-grow: 1;
+    padding: 14px 16px;
+    font-size: 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.couponInput::placeholder {
+    color: #adb5bd;
+}
+
+.registerButton {
+    padding: 0 2rem;
+    font-size: 16px;
+    font-weight: 600;
+    color: #495057;
+    background-color: #f1f3f5;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.tabContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.tabs {
+    display: flex;
+}
+
+.tab {
+    padding: 1rem 0.5rem;
+    margin-right: 1.5rem;
+    font-size: 16px;
+    font-weight: 500;
+    color: #868e96;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+}
+
+.tab.active {
+    color: #212529;
+    font-weight: 700;
+    border-bottom-color: #212529;
+}
+
+.couponCount {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 14px;
+    color: #868e96;
+}
+
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 40vh;
+    color: #adb5bd;
+    font-size: 16px;
+    font-weight: 500;
+}

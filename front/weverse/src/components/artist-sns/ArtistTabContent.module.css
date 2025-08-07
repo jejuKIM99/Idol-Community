@@ -1,0 +1,66 @@
+
+.container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.leftSection {
+  flex: 2;
+  border-radius: 8px;
+}
+
+.rightSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.storySection {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 10px; /* For scrollbar */
+  margin-bottom: 20px;
+}
+
+.artistPostList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.noticeSection {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: left;
+}
+
+.noticeTitle {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.noticeList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.noticeList li {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.noticeList li:last-child {
+  margin-bottom: 0;
+}

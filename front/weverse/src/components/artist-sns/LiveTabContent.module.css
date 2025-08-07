@@ -1,0 +1,21 @@
+.liveTabContainer {
+  background-color: black;
+  color: white;
+}
+
+.contentSection {
+  padding: 20px;
+}
+
+.liveSectionTitle {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.liveVideoGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+}
