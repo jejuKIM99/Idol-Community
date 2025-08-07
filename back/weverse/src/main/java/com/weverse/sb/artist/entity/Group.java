@@ -2,8 +2,11 @@ package com.weverse.sb.artist.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+<<<<<<< HEAD
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+=======
+>>>>>>> 2e010c7a5fb945b3bd108c29261d949027950853
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
@@ -23,7 +26,10 @@ import lombok.Setter;
 public class Group {
     @Id
     @JoinColumn(name = "group_id")
+<<<<<<< HEAD
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+=======
+>>>>>>> 2e010c7a5fb945b3bd108c29261d949027950853
     private long groupId;
     
     @Column(name = "group_name")

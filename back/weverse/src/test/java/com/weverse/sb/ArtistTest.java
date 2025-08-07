@@ -8,7 +8,11 @@ import com.weverse.sb.artist.controller.ArtistController;
 import com.weverse.sb.artist.dto.ArtistDTO;
 import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.entity.Group;
+<<<<<<< HEAD
 import com.weverse.sb.artist.repository.GroupRepository;
+=======
+import com.weverse.sb.artist.repository.ArtistGroupMapRepository;
+>>>>>>> 2e010c7a5fb945b3bd108c29261d949027950853
 import com.weverse.sb.artist.repository.ArtistRepository;
 
 
@@ -19,12 +23,20 @@ class ArtistTest {
 	ArtistRepository artistRepository;
 	
 	@Autowired
+<<<<<<< HEAD
 	GroupRepository arMapRepository;
+=======
+	ArtistGroupMapRepository arMapRepository;
+>>>>>>> 2e010c7a5fb945b3bd108c29261d949027950853
 	
 	@Autowired
 	ArtistController artistController;
 	
+<<<<<<< HEAD
 	/*
+=======
+
+>>>>>>> 2e010c7a5fb945b3bd108c29261d949027950853
 	   @Test
 	   void insertArtist() {
 		   
@@ -33,7 +45,11 @@ class ArtistTest {
 			 * .groupProfileImage("/images/NewJeans_artistpedia_11.png")
 			 * .groupLogo("/images/NewJeans_artistpedia_01.png") .build();
 			 * arMapRepository.save(group);
+<<<<<<< HEAD
 			 
+=======
+			 */
+>>>>>>> 2e010c7a5fb945b3bd108c29261d949027950853
 		   
 		   Group group = Group.builder() .groupId(1l) .groupName("NewJeans")
 					 .groupProfileImage("/images/NewJeans_artistpedia_11.png")
@@ -82,9 +98,12 @@ class ArtistTest {
 
 	   }
 	   
+<<<<<<< HEAD
 	   */
 	
 	/*
+=======
+>>>>>>> 2e010c7a5fb945b3bd108c29261d949027950853
 	   @Test
 	    public void testAllArtistsAndGroups() {
 	        ArtistDTO dto = artistController.selectArtist();
@@ -103,5 +122,8 @@ class ArtistTest {
 	        });
 
 	   }
+<<<<<<< HEAD
 	   */
+=======
+>>>>>>> 2e010c7a5fb945b3bd108c29261d949027950853
 }
