@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.weverse.sb.artist.entity.Artist;
+import com.weverse.sb.artist.entity.Group;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -46,6 +47,9 @@ public class Product {
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+    
+    @Column(name = "thumbnail", columnDefinition = "TEXT")
+    private String thumbnail;
 
     @Column(name = "price", precision = 15, scale = 2)
     private BigDecimal price;
@@ -53,8 +57,9 @@ public class Product {
     @Column(name = "stock_qty")
     private Integer stockQty = 0;
     
-    @Column(name = "group_id")
-    private Long groupId;
+    @ManyToOne
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group; // 'group' 필드가 존재
     
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images;

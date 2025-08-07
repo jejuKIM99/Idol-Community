@@ -113,7 +113,7 @@ const WeverseShopPage = () => {
           <div className={`${styles.recommendedArtistsList} ${styles.desktopOnly}`}>
             {shopData.artists.map(artist => (
               <Link href={`/shop/${encodeURIComponent(artist.stageName)}`} key={artist.artistId} className={styles.artistItem}>
-                <img src={artist.profileImage} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
+                <img src={`http://localhost:80${artist.profileImage}`} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
                 <span className={styles.artistName}>{artist.stageName}</span>
               </Link>
             ))}
@@ -128,7 +128,7 @@ const WeverseShopPage = () => {
               {shopData.artists.map(artist => (
                 <SwiperSlide key={artist.artistId} style={{ width: 'auto' }}>
                   <Link href={`/shop/${encodeURIComponent(artist.stageName)}`} className={styles.artistItem}>
-                    <img src={artist.profileImage} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
+                    <img src={`http://localhost:80${artist.profileImage}`} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
                     <span className={styles.artistName}>{artist.stageName}</span>
                   </Link>
                 </SwiperSlide>

@@ -20,5 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
            "JOIN FETCH p.category " +
            "WHERE p.artist.id = :artistId")
     List<Product> findByArtistIdWithImagesAndCategory(@Param("artistId") Long artistId);
+
+	List<Product> findByGroup_GroupId(Long groupId);
 	
 }
