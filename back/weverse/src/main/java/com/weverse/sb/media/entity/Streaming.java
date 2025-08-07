@@ -3,6 +3,7 @@ package com.weverse.sb.media.entity;
 import java.time.LocalDateTime;
 
 import com.weverse.sb.artist.entity.Artist;
+import com.weverse.sb.artist.entity.Group;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +29,7 @@ public class Streaming {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "streaming_id")
-    private Long id;
+    private Long streamingId;
 
     @ManyToOne
     @JoinColumn(name = "owner_artist_id", nullable = false)
@@ -38,10 +39,10 @@ public class Streaming {
     @JoinColumn(name = "streamer_artist_id", nullable = false)
     private Artist streamer;
 
-    @Column(name = "video_id", length = 255, nullable = false)
+    @Column(name = "video_id", nullable = false, length = 255)
     private String videoId;
 
-    @Column(name = "title", length = 255, nullable = false)
+    @Column(name = "title", nullable = false, length = 255)
     private String title;
 
     @Column(name = "created_at", nullable = false)
@@ -49,4 +50,8 @@ public class Streaming {
 
     @Column(name = "scheduled_at")
     private LocalDateTime scheduledAt;
+
+    @ManyToOne
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group;
 }

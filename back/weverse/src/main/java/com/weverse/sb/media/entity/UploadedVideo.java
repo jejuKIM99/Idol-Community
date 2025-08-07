@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.weverse.sb.artist.entity.Artist;
+import com.weverse.sb.artist.entity.Group;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,4 +50,8 @@ public class UploadedVideo {
 
     @Column(name = "scheduled_at")
     private LocalDateTime scheduledAt;
+    
+    @ManyToOne
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group;
 }
