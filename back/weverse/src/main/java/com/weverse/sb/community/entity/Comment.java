@@ -3,6 +3,7 @@ package com.weverse.sb.community.entity;
 import java.time.LocalDateTime;
 
 import com.weverse.sb.artist.entity.Artist;
+import com.weverse.sb.artist.entity.Group;
 import com.weverse.sb.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -38,6 +39,10 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "artist_id")
     private Artist artist;
+    
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
@@ -48,4 +53,7 @@ public class Comment {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+    
+    @Column(name = "author_type", nullable = false)
+    private String authorType; 
 }
