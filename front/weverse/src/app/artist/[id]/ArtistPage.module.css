@@ -25,8 +25,6 @@ body {
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  background-size: cover;
-  background-position: center;
   color: white;
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
@@ -40,18 +38,27 @@ body {
   right: 0;
   bottom: 0;
   margin: 0 auto;
-  background: linear-gradient(to top, rgb(0, 0, 0), rgba(0,0,0,0)); /* Fade out effect */
-  background-color: rgba(255, 255, 255, 0.4); /* Overlay for better text readability */
+  background-image: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0)); /* Fade out effect */
+  background-size: cover;
+  background-position: center;
+}
+
+.overlay .imageContainer {
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: -1;
 }
 
 .introductionContent {
   position: absolute;
-  bottom: 100px;
+  bottom: 70px;
   z-index: 1;
   text-align: center;
   padding: 20px;
   width: 50%;
-  background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0)); /* Fade out effect */
 }
 
 .artistName {

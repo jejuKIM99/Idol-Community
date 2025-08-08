@@ -1,3 +1,4 @@
+
 package com.weverse.sb.artist.service;
 
 import java.util.List;
@@ -10,6 +11,8 @@ import com.weverse.sb.artist.dto.ArtistInfoResponseDTO;
 import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.entity.Board;
 import com.weverse.sb.artist.entity.Group;
+import com.weverse.sb.artist.repository.GroupRepository;
+
 import com.weverse.sb.artist.repository.ArtistRepository;
 import com.weverse.sb.artist.repository.BoardRepository;
 import com.weverse.sb.artist.repository.GroupRepository;
@@ -17,6 +20,7 @@ import com.weverse.sb.media.entity.Streaming;
 import com.weverse.sb.media.entity.UploadedVideo;
 import com.weverse.sb.media.repository.StreamingRepository;
 import com.weverse.sb.media.repository.UploadedVideoRepository;
+import com.weverse.sb.product.dto.ProductArtistInfoDTO;
 import com.weverse.sb.product.entity.Product;
 import com.weverse.sb.product.repository.ProductRepository;
 
@@ -104,6 +108,12 @@ public class ArtistService {
 	            .groupId(groupId)
 	            .build();
 	}
+	
+	
+	
+	
+	
+	
 	
 	
     /*

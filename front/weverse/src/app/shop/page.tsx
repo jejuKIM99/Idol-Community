@@ -13,26 +13,96 @@ import { FiSearch } from 'react-icons/fi';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import styles from './Shop.module.css';
-import { allArtists, bestProducts, notices, Artist } from '@/data/mockData';
+// import { allArtists, bestProducts, notices, Artist } from '@/data/mockData'; // 목업 데이터 제거
+
+interface ShopArtistDTO {
+  artistId: number;
+  groupId: number;
+  stageName: string;
+  email: string;
+  password?: string;
+  profileImage: string;
+  snsUrl: string;
+  birthday: string;
+  statusMessage: string;
+  dmNickname: string;
+}
+
+interface ShopProductDTO {
+  productId: number;
+  productName: string;
+  price: number;
+  productImage: string;
+  artistId: number;
+  artistName: string;
+}
+
+interface ShopBannerDTO {
+  bannerId: number;
+  imageUrl: string;
+  linkUrl: string;
+}
+
+interface ShopNoticeDTO {
+  noticeId: number;
+  title: string;
+  content: string;
+  createdAt: string;
+}
+
+interface ShopMainResponseDTO {
+  banners: ShopBannerDTO[];
+  artists: ShopArtistDTO[];
+  products: ShopProductDTO[];
+  notices: ShopNoticeDTO[];
+}
 
 const WeverseShopPage = () => {
-  const [recommendedArtists, setRecommendedArtists] = useState<Artist[]>([]);
+  const [shopData, setShopData] = useState<ShopMainResponseDTO | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const shuffled = [...allArtists].sort(() => 0.5 - Math.random());
-    setRecommendedArtists(shuffled);
+    const fetchShopData = async () => {
+      try {
+        const response = await fetch('http://localhost:80/api/shop/main');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: ShopMainResponseDTO = await response.json();
+        setShopData(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchShopData();
   }, []);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  if (loading) {
+    return <div className={styles.container}><p>로딩 중...</p></div>;
+  }
+
+  if (error) {
+    return <div className={styles.container}><p>오류: {error}</p></div>;
+  }
+
+  if (!shopData) {
+    return <div className={styles.container}><p>데이터를 불러올 수 없습니다.</p></div>;
+  }
 
   return (
     <>
       <Header />
       
       <main className={styles.container}>
-        <MainBanner />
+        <MainBanner banners={shopData.banners} />
 
         {/* --- 추천 아티스트 --- */}
         <section className={styles.section}>
@@ -41,10 +111,10 @@ const WeverseShopPage = () => {
           </div>
           {/* Desktop View */}
           <div className={`${styles.recommendedArtistsList} ${styles.desktopOnly}`}>
-            {recommendedArtists.map(artist => (
-              <Link href={`/shop/${encodeURIComponent(artist.name)}`} key={artist.id} className={styles.artistItem}>
-                <img src={artist.logoUrl} alt={`${artist.name} logo`} className={styles.artistLogo} />
-                <span className={styles.artistName}>{artist.name}</span>
+            {shopData.artists.map(artist => (
+              <Link href={`/shop/${encodeURIComponent(artist.stageName)}`} key={artist.artistId} className={styles.artistItem}>
+                <img src={`http://localhost:80${artist.profileImage}`} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
+                <span className={styles.artistName}>{artist.stageName}</span>
               </Link>
             ))}
           </div>
@@ -55,11 +125,11 @@ const WeverseShopPage = () => {
               slidesPerView={'auto'}
               className="artist-swiper"
             >
-              {recommendedArtists.map(artist => (
-                <SwiperSlide key={artist.id} style={{ width: 'auto' }}>
-                  <Link href={`/shop/${encodeURIComponent(artist.name)}`} className={styles.artistItem}>
-                    <img src={artist.logoUrl} alt={`${artist.name} logo`} className={styles.artistLogo} />
-                    <span className={styles.artistName}>{artist.name}</span>
+              {shopData.artists.map(artist => (
+                <SwiperSlide key={artist.artistId} style={{ width: 'auto' }}>
+                  <Link href={`/shop/${encodeURIComponent(artist.stageName)}`} className={styles.artistItem}>
+                    <img src={`http://localhost:80${artist.profileImage}`} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
+                    <span className={styles.artistName}>{artist.stageName}</span>
                   </Link>
                 </SwiperSlide>
               ))}
@@ -72,18 +142,18 @@ const WeverseShopPage = () => {
         </section>
 
         {/* --- 아티스트별 상품 섹션 (동적 생성) --- */}
-        {recommendedArtists.map(artist => (
-          <ArtistProductSection key={artist.id} artist={artist} />
+        {shopData.artists.map(artist => (
+          <ArtistProductSection key={artist.artistId} artist={artist} products={shopData.products.filter(p => p.artistId === artist.artistId)} />
         ))}
 
-        <BestProductSection products={bestProducts} />
-        <NoticeSection notices={notices} title="Notice" />
+        <BestProductSection products={shopData.products} />
+        <NoticeSection notices={shopData.notices} title="Notice" />
       </main>
 
       <ArtistSearchModal
         isOpen={isModalOpen}
         onClose={closeModal}
-        artists={allArtists}
+        artists={shopData.artists}
       />
     </>
   );

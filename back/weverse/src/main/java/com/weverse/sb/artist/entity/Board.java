@@ -42,9 +42,6 @@ public class Board {
 	@Column(name = "content", columnDefinition = "TEXT", nullable = false)
 	private String content;
 
-	@Column(name = "thumbnail_image", length = 2083)
-	private String thumbnailImage;
-
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
 
