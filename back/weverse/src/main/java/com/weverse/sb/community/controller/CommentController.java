@@ -26,8 +26,8 @@ public class CommentController {
 	CommentService commentService;
 	
 	@GetMapping("api/artistSNS/home/post")
-	public CommentDTO selectPostCommend(@RequestParam("postId") Long postId) {
-		List<Comment> commentList = this.commentService.getCommentList(postId);
+	public CommentDTO selectPostCommend(@RequestParam("groupId") Long groupId) {
+		List<Comment> commentList = this.commentService.getCommentList(groupId);
 		CommentDTO dto = CommentDTO.builder().commentList(commentList).build();
 		
 		return dto;
@@ -37,9 +37,10 @@ public class CommentController {
 	@PostMapping("api/artistSNS/home/InputComment")
 	public ResponseEntity<String> inputComment(@RequestParam("postId") Long postId, 
 			@RequestParam("content") String content,
-			@RequestParam("userId") Long userId) {
+			@RequestParam("userId") Long userId,
+			@RequestParam("authorType") String authorType) {
 	    try {
-	        commentService.inputComment(postId, content, userId);
+	        commentService.inputComment(postId, content, userId, authorType);
 	        return ResponseEntity.ok("success");
 	    } catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("fail");
