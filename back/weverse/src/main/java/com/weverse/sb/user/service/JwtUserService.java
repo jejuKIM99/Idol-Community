@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.weverse.sb.user.dto.UpdateProfileRequestDto;
 import com.weverse.sb.user.dto.UserSettingsDto;
+import com.weverse.sb.user.dto.UserDTO;
 import com.weverse.sb.user.entity.User;
 import com.weverse.sb.user.repository.UserRepository;
 
@@ -37,6 +38,27 @@ public class JwtUserService {
         );
     }
     
+    // 내 정보 조회 (UserDTO 반환)
+    public UserDTO getUserInfoByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다. email=" + email));
+
+        return UserDTO.builder()
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .phoneNumber(user.getPhoneNumber())
+                .country(user.getCountry())
+                .profileImage(user.getProfileImage())
+                .jellyBalance(user.getJellyBalance())
+                .cashBalance(user.getCashBalance())
+                .isEmailVerified(user.getIsEmailVerified())
+                .isSmsVerified(user.getIsSmsVerified())
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
+
     // 내 정보 변경
     @Transactional
     public UserSettingsDto updateUserSettingsByEmail(String email, UpdateProfileRequestDto dto) {

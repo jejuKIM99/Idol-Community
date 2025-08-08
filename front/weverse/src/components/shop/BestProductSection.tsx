@@ -8,11 +8,20 @@ import 'swiper/css';
 import 'swiper/css/grid';
 import 'swiper/css/navigation';
 import styles from './BestProductSection.module.css';
-import { Product } from '@/data/mockData';
+// import { Product } from '@/data/mockData'; // 목업 데이터 제거
 import ProductCard from './ProductCard';
 
+interface ShopProductDTO {
+  productId: number;
+  productName: string;
+  price: number;
+  productImage: string;
+  artistId: number;
+  artistName: string;
+}
+
 interface Props {
-  products: Product[];
+  products: ShopProductDTO[];
   title?: string;
 }
 
@@ -26,7 +35,7 @@ const BestProductSection = ({ products, title = "Best" }: Props) => {
       {/* Desktop Grid View */}
       <div className={`${styles.productGrid} ${styles.desktopOnly}`}>
         {products.map(product => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.productId} product={product} />
         ))}
       </div>
 
@@ -44,7 +53,7 @@ const BestProductSection = ({ products, title = "Best" }: Props) => {
           className="best-product-swiper"
         >
           {products.map(product => (
-            <SwiperSlide key={product.id} style={{ height: 'auto' }}>
+            <SwiperSlide key={product.productId} style={{ height: 'auto' }}>
               <ProductCard product={product} />
             </SwiperSlide>
           ))}
