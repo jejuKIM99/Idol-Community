@@ -1,7 +1,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
@@ -13,24 +13,139 @@ import ArtistInfoCard from './ArtistInfoCard';
 import MembershipCard from './MembershipCard';
 import ProfileCard from './ProfileCard';
 import { FaImage, FaVideo } from 'react-icons/fa';
+import axios from 'axios';
 
 interface FanTabContentProps {
+  artistId?: string | null;
+  groupId?: string | null;
   artistName?: string | null;
 }
 
-const posts = [
-  { artistImage: '/next.svg', artistName: 'Artist 1', postContent: 'Post content 1' },
-  { artistImage: '/vercel.svg', artistName: 'Artist 2', postContent: 'Post content 2' },
-  { artistImage: '/globe.svg', artistName: 'Artist 3', postContent: 'Post content 3' },
-  { artistImage: '/file.svg', artistName: 'Artist 4', postContent: 'Post content 4' },
-  { artistImage: '/window.svg', artistName: 'Artist 5', postContent: 'Post content 5' },
-  { artistImage: '/next.svg', artistName: 'Artist 6', postContent: 'Post content 6' },
-  { artistImage: '/vercel.svg', artistName: 'Artist 7', postContent: 'Post content 7' },
-  { artistImage: '/globe.svg', artistName: 'Artist 8', postContent: 'Post content 8' },
-  { artistImage: '/file.svg', artistName: 'Artist 9', postContent: 'Post content 9' },
-];
+interface TopPost {
+  artistId: number;
+  image: string;
+  artistName: string;
+  content: string;
+}
+interface Post {
+  postId: number;
+  artistName: string;
+  profileImage: string;
+  nickname: string;
+  postDate: string;
+  postContent: string;
+  createdAt: string;
+  likeCount: number;
+  commentCount: number;
+  image: string;
+}
+interface Profile {
+  artistId: number;
+  birthday: string;
+  profileImage: string;
+  stageName: string;
+}
+// ===================================
+interface User {
+  userId: number;
+  profileImage: string;
+  nickname: string;
+}
 
-const FanTabContent: React.FC<FanTabContentProps> = ({ artistName }) => {
+interface Notice {
+  artistId: number;
+  birthday: string;
+  profileImage: string;
+  stageName: string;
+}
+
+const FanTabContent: React.FC<FanTabContentProps> = ({ artistId, groupId, artistName }) => {
+
+  const [post, setPost] = useState<TopPost[]>([]); // 라이브 데이터 상태 추가
+  const [fanPost, setFanPost] = useState<Post[]>([]); // 라이브 데이터 상태 추가
+  const [profile, setProfile] = useState<Profile[]>([]); // 라이브 데이터 상태 추가
+  const [user, setUser] = useState<User[]>([]); // 라이브 데이터 상태 추가
+  const [notice, setNotice] = useState<Notice[]>([]); // 라이브 데이터 상태 추가
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchNotice = async () => {
+      console.log("fetchProfile")
+      if (artistId) {
+        try {
+          console.log("Fetching notice data for artistId:", artistId);
+          const response = await axios.get(`http://localhost:80/api/artistSNS/home/profile`, {
+            params: { artistId: artistId }
+          });
+          console.log('profile Data Response:', response.data); // API 응답 전체를 다시 확인
+          setProfile(response.data);
+        } catch (err) {
+          console.error('Failed to fetch notice data:', err);
+        }
+      }
+    };
+    fetchNotice();
+  }, [artistId]);
+
+  useEffect(() => {
+    const sessionData = sessionStorage.getItem('user');
+    if (sessionData) {
+      const user = JSON.parse(sessionData);
+      console.log('Session User Info:', user);
+    }
+    const fetchNotice = async () => {
+      console.log("fetchPost")
+      if (groupId) {
+        try {
+          console.log("Fetching post data for artistId:", groupId);
+          const response = await axios.get(`http://localhost:80/api/artistSNS/latestPost`, {
+            params: { userId: 1, groupId: groupId }
+          });
+          console.log('Latest Post Data Response:', response.data); // API 응답 전체를 다시 확인
+          setPost(response.data.postList);
+        } catch (err) {
+          console.error('Failed to fetch post data:', err);
+        }
+      }
+    };
+    fetchNotice();
+  }, [groupId]);
+
+  useEffect(() => {
+    const fetchFanPost = async () => {
+      console.log("fetchPost")
+      if (groupId) {
+        try {
+          console.log("Fetching post data for artistId:", groupId);
+          const response = await axios.get(`http://localhost:80/api/artistSNS/fan`, {
+            params: { groupId: groupId }
+          });
+          console.log('fans Post Data Response:', response.data.postList); // API 응답 전체를 다시 확인
+          setFanPost(response.data.postList);
+        } catch (err) {
+          console.error('Failed to fetch post data:', err);
+        }
+      }
+    };
+    fetchFanPost();
+  }, [groupId]);
+
+  useEffect(() => {
+    const fetchFanPost = async () => {
+      console.log("fetchUser")
+      try {
+        const response = await axios.get(`http://localhost:80/api/artistSNS/fan/myProfile`, {
+          params: { userId: 1 }
+        });
+        console.log('user Post Data Response:', response.data); // API 응답 전체를 다시 확인
+        setUser(response.data);
+      } catch (err) {
+        console.error('Failed to fetch post data:', err);
+      }
+    };
+    fetchFanPost();
+  }, [groupId]);
   return (
     <div className={styles.fanContainer}>
       <div className="swiper-button-prev" style={ {position:'absolute', top:'42px', left:'-54px'} }></div>
@@ -46,7 +161,7 @@ const FanTabContent: React.FC<FanTabContentProps> = ({ artistName }) => {
           }}
           className={styles.swiperSection}
         >
-          {posts.map((post, index) => (
+          {post.map((post, index) => (
             <SwiperSlide key={index}>
               <PostSlide {...post} />
             </SwiperSlide>
@@ -71,13 +186,20 @@ const FanTabContent: React.FC<FanTabContentProps> = ({ artistName }) => {
             </select>
           </div>
           <div className={styles.postList}>
-            <PostCard profileImage="/vercel.svg" nickname="User 1" postDate="2 hours ago" postImageColor="#ffcccb" postContent="This is the first post." />
-            <PostCard profileImage="/next.svg" nickname="User 2" postDate="3 hours ago" postImageColor="#add8e6" postContent="This is the second post." />
-            <PostCard profileImage="/globe.svg" nickname="User 3" postDate="5 hours ago" postImageColor="#90ee90" postContent="This is the third post." />
-            <PostCard profileImage="/file.svg" nickname="User 4" postDate="1 day ago" postImageColor="#ffd700" postContent="This is the fourth post." />
-            <PostCard profileImage="/window.svg" nickname="User 5" postDate="2 days ago" postImageColor="#ffb6c1" postContent="This is the fifth post." />
-            <PostCard profileImage="/vercel.svg" nickname="User 6" postDate="3 days ago" postImageColor="#e6e6fa" postContent="This is the sixth post." />
+            {fanPost.map((post) => (
+              <PostCard
+                key={post.postId}
+                profileImage={profile.profileImage}
+                nickname={post.artistName}
+                postDate={post.createdAt}
+                postContent={post.postContent}
+                likes={post.likeCount}
+                comments={post.commentCount}
+                img={post.image}
+              />
+            ))}
           </div>
+
         </div>
         <div className={styles.rightSection}>
           <ArtistInfoCard
@@ -86,7 +208,7 @@ const FanTabContent: React.FC<FanTabContentProps> = ({ artistName }) => {
             artistName={artistName || "Artist Name"}
           />
           <MembershipCard artistName={artistName || "Artist Name"} />
-          <ProfileCard profileImage="/vercel.svg" nickname="My Profile" followerCount={12345} />
+          <ProfileCard profileImage={`http://localhost:80${user.profileImage}`} nickname={user.nickname} followerCount={16545} />
           <div className={styles.noticeSection}>
             <h3 className={styles.noticeTitle}>Notice</h3>
             <ul className={styles.noticeList}>

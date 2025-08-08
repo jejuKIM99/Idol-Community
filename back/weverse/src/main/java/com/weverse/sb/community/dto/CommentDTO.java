@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 public class CommentDTO {
 
     private Long userId;
+    private Long groupId;
     private Long artistId;
     private Long postId;
     private String content;

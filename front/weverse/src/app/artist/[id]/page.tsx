@@ -9,6 +9,7 @@ import LiveCard from '@/components/artistInfo/LiveCard';
 import MediaCard from '@/components/artistInfo/MediaCard';
 import MerchCard from '@/components/artistInfo/MerchCard';
 import AnnouncementCard from '@/components/artistInfo/AnnouncementCard';
+import { group } from 'console';
 
 interface Member {
   artistId: number;
@@ -21,12 +22,18 @@ interface GroupInfo {
   groupName: string;
   groupProfileImage: string;
   groupLogo: string;
+  groupYoutube: string;
+  groupHomepage: string;
+  groupX: string;
+  groupTikTok: string;
+  groupInstagram: string;
 }
 
 interface Streaming {
   id: number;
   title: string;
   thumbnail: string;
+  videoId: string;
   date: string;
   time: string;
 }
@@ -35,6 +42,7 @@ interface Media {
   id: number;
   title: string;
   thumbnail: string;
+  videoId: string;
   date: string;
   time: string;
 }
@@ -186,20 +194,7 @@ const ArtistPage = () => {
     router.push(`/artist-sns?artistId=${groupInfo.groupId}&artistName=${groupInfo.groupName}&activeTab=live&selectedItem=${encodeURIComponent(JSON.stringify(liveItem))}`);
   };
 
-  const handleMediaCardClick = (index: number) => {
-    const mediaItem = {
-      thumbnailSrc: `https://via.placeholder.com/200x120?text=Media+${index + 1}`,
-      title: `미디어 제목 ${index + 1}`,
-      date: "2024년 7월 20일",
-      type: "video",
-      artistImageSrc: "/images/artist_profile.jpg",
-      artistName: groupInfo.groupName,
-      uploadDate: "2024년 7월 20일",
-      views: "100K",
-      likes: "10K",
-      chats: "1K",
-      hasSubtitles: false,
-    };
+  const handleMediaCardClick = (mediaItem: Media) => {
     router.push(`/artist-sns?artistId=${groupInfo.groupId}&artistName=${groupInfo.groupName}&activeTab=media&selectedItem=${encodeURIComponent(JSON.stringify(mediaItem))}`);
   };
 
@@ -220,7 +215,7 @@ const ArtistPage = () => {
         {artistList && artistList.length > 0 && (
           <div className={styles.memberGrid}>
             {artistList.map((member, index) => (
-              <MemberCard key={index} name={member.stageName} imageUrl={member.profileImage} artistName={groupInfo.groupName} artistId={groupInfo.groupId} />
+              <MemberCard key={index} name={member.stageName} imageUrl={member.profileImage} artistName={member.stageName} artistId={member.artistId} groupId={groupInfo.groupId} />
             ))}
           </div>
         )}
@@ -252,7 +247,7 @@ const ArtistPage = () => {
               date={media.date} // API 응답에 맞게 필드 이름을 조정해야 합니다.
               time={media.time} // API 응답에 맞게 필드 이름을 조정해야 합니다.
               title={media.title}
-              onClick={() => handleLiveCardClick(media)}
+              onClick={() => handleMediaCardClick(media)}
             />
           ))}
         </div>
@@ -291,19 +286,19 @@ const ArtistPage = () => {
 
       <section className={styles.section}>
         <div className={styles.snsButtonsContainer}>
-          <a href="#" target="_blank" rel="noopener noreferrer" className={styles.snsButton}>
+          <a href={groupInfo.groupYoutube} target="_blank" rel="noopener noreferrer" className={styles.snsButton}>
             <img src="https://via.placeholder.com/40/FF0000/FFFFFF?text=YT" alt="YouTube" className={styles.snsIcon} />
           </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" className={styles.snsButton}>
+          <a href={groupInfo.groupInstagram} target="_blank" rel="noopener noreferrer" className={styles.snsButton}>
             <img src="https://via.placeholder.com/40/E4405F/FFFFFF?text=IG" alt="Instagram" className={styles.snsIcon} />
           </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" className={styles.snsButton}>
+          <a href={groupInfo.groupX} target="_blank" rel="noopener noreferrer" className={styles.snsButton}>
             <img src="https://via.placeholder.com/40/000000/FFFFFF?text=X" alt="X (Twitter)" className={styles.snsIcon} />
           </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" className={styles.snsButton}>
+          <a href={groupInfo.groupTikTok} target="_blank" rel="noopener noreferrer" className={styles.snsButton}>
             <img src="https://via.placeholder.com/40/00F2EA/FFFFFF?text=TK" alt="TikTok" className={styles.snsIcon} />
           </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" className={styles.snsButton}>
+          <a href={groupInfo.groupHomepage} target="_blank" rel="noopener noreferrer" className={styles.snsButton}>
             <img src="https://via.placeholder.com/40/007BFF/FFFFFF?text=HP" alt="Homepage" className={styles.snsIcon} />
           </a>
         </div>

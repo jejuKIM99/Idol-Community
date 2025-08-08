@@ -9,6 +9,7 @@ const NicknamePage = () => {
   const router = useRouter();
   const artistName = searchParams.get('artistName');
   const artistId = searchParams.get('artistId'); // Assuming artistId is also passed from MemberCard
+  const groupId = searchParams.get('groupId'); // Assuming artistId is also passed from MemberCard
   const memberName = searchParams.get('memberName');
   const memberImage = searchParams.get('memberImage');
 
@@ -23,7 +24,7 @@ const NicknamePage = () => {
     if (nickname.length < 6) {
       alert('닉네임은 6글자 이상 작성해야됩니다.');
     } else {
-      router.push(`/artist-sns?artistId=${artistId}&artistName=${artistName}${memberName ? `&memberName=${memberName}` : ''}`);
+      router.push(`/artist-sns?artistId=${artistId}&groupId=${groupId}&artistName=${artistName}${memberName ? `&memberName=${memberName}` : ''}`);
     }
   };
 
