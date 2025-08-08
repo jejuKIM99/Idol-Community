@@ -137,6 +137,7 @@ const WeverseShopPage = () => {
               {shopData.artists.map(artist => (
                 <SwiperSlide key={artist.artistId} style={{ width: 'auto' }}>
                   <Link href={`/shop/${encodeURIComponent(artist.stageName)}`} className={styles.artistItem}>
+
                 <img src={`http://localhost:80${artist.profileImage}`} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
                     <span className={styles.artistName}>{artist.stageName}</span>
                   </Link>

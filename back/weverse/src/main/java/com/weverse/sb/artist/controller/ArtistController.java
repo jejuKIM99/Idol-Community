@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.weverse.sb.artist.dto.ArtistDTO;
 import com.weverse.sb.artist.dto.ArtistInfoResponseDTO;
 import com.weverse.sb.artist.entity.Artist;
+import com.weverse.sb.artist.entity.Board;
 import com.weverse.sb.artist.entity.Group;
 import com.weverse.sb.artist.service.ArtistService;
 import com.weverse.sb.media.entity.Streaming;
 import com.weverse.sb.media.entity.UploadedVideo;
 import com.weverse.sb.media.repository.StreamingRepository;
+import com.weverse.sb.product.dto.ProductArtistInfoDTO;
 import com.weverse.sb.product.entity.Product;
 
 import lombok.extern.log4j.Log4j2;
@@ -68,5 +70,40 @@ public class ArtistController {
 	    List<UploadedVideo> videos = artistService.getVideosByGroupId(groupId);
 	    return ResponseEntity.ok(videos);
 	}
+// 상품 조회 함수
+	@GetMapping("/api/artistinfo/product")
+	public ResponseEntity<List<ProductArtistInfoDTO>> getProductsByGroup(@RequestParam("groupId") Long groupId) {
+	    List<ProductArtistInfoDTO> products = artistService.getProductsByGroupId(groupId);
+	    return ResponseEntity.ok(products);
+	}
+	
+	
+    // 아티스트 url 최신순 단일 조회
+    /*@GetMapping("/api/artistinfo/sns")
+    public ResponseEntity<ArtistSnsDTO> getArtistSns(@RequestParam("artistId") Long artistId) {
+        try {
+            ArtistSnsDTO dto = artistService.getArtistSnsById(artistId);
+            return ResponseEntity.ok(dto);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                 .body(ArtistSnsDTO.builder()
+                                     .artistId(artistId)
+                                     .snsUrl(null)
+                                     .build());
+        }
+    }
+    // 아티스트 sns_url 최신순 3건 조회
+    @GetMapping("/api/artistinfo/snss")
+    public List<ArtistSnsDTO> getRecentArtists() {
+        return artistService.getRecentArtists();
+    }*/
+    
+    // 공지사항 최근 3건 조회
+    // 최신 3건 게시글 (groupId 기준)
+    @GetMapping("/api/artistinfo/board")
+    public ResponseEntity<List<Board>> getRecentBoardsByGroup(@RequestParam("groupId") Long groupId) {
+        List<Board> boardList = artistService.getRecentBoardsByGroupId(groupId);
+        return ResponseEntity.ok(boardList);
+    }
 }
 

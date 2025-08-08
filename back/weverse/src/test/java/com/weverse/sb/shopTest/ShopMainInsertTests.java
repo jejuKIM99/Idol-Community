@@ -106,7 +106,7 @@ public class ShopMainInsertTests {
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .stockQty(product.getStockQty())
-                .groupId(product.getGroupId())
+                .groupId(product.getGroup().getGroupId())
                 .build();
 
         System.out.println("상품 ID: " + dto.getProductId());
