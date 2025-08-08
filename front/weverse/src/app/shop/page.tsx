@@ -71,7 +71,16 @@ const WeverseShopPage = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data: ShopMainResponseDTO = await response.json();
-        setShopData(data);
+
+        const processedBanners = data.banners.map((banner: any) => {
+          const artist = data.artists.find(a => a.groupId === banner.groupId);
+          return {
+            ...banner,
+            linkUrl: artist ? `/shop/${encodeURIComponent(artist.stageName)}` : '#'
+          };
+        });
+
+        setShopData({ ...data, banners: processedBanners });
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -113,7 +122,7 @@ const WeverseShopPage = () => {
           <div className={`${styles.recommendedArtistsList} ${styles.desktopOnly}`}>
             {shopData.artists.map(artist => (
               <Link href={`/shop/${encodeURIComponent(artist.stageName)}`} key={artist.artistId} className={styles.artistItem}>
-                <img src={artist.profileImage} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
+                <img src={`http://localhost:80${artist.profileImage}`} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
                 <span className={styles.artistName}>{artist.stageName}</span>
               </Link>
             ))}
@@ -128,7 +137,7 @@ const WeverseShopPage = () => {
               {shopData.artists.map(artist => (
                 <SwiperSlide key={artist.artistId} style={{ width: 'auto' }}>
                   <Link href={`/shop/${encodeURIComponent(artist.stageName)}`} className={styles.artistItem}>
-                    <img src={artist.profileImage} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
+                <img src={`http://localhost:80${artist.profileImage}`} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
                     <span className={styles.artistName}>{artist.stageName}</span>
                   </Link>
                 </SwiperSlide>
