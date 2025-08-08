@@ -9,7 +9,7 @@ import com.weverse.sb.community.dto.PostDTO;
 @Service
 public interface PostService {
 	
-	List<PostDTO> getPostDTOList();
+	List<PostDTO> getPostDTOList(Long userId, Long groupId);
 
 	void inputPost(Long artistID, String content);
 
@@ -18,6 +18,15 @@ public interface PostService {
 	void inputPostLike(Long postId, Long userId);
 
     void deletePostLike(Long postId, Long userId);
+
+	void insertFavorite(Long artistId, Long userId);
+
+	void deleteFavorite(Long artistId, Long userId);
+
+	List<PostDTO> getFanPostDTOList(Long groupId);
+
+	void inputFanPost(Long artistID, String content, Long userId);
+
 	
 	
 

@@ -1,12 +1,11 @@
 // app/shop/checkout/page.tsx (Modified)
 "use client";
 
-import React, { Suspense, useState, useMemo, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Script from 'next/script';
 import Cookies from 'js-cookie';
 import Header from '@/components/Header';
-import { allProducts } from '@/data/mockData';
 import styles from '@/styles/CheckoutPage.module.css';
 import { FiChevronDown, FiChevronUp, FiX } from "react-icons/fi";
 
@@ -26,16 +25,62 @@ interface OrdererInfo {
     address: string;
 }
 
+interface ShopProductDetailDTO {
+  productId: number;
+  productName: string;
+  description: string;
+  price: number;
+  stockQty: number;
+  groupId: number;
+  artistId: number;
+  category: {
+    categoryId: number;
+    categoryName: string;
+    parentCategory: {
+      categoryId: number;
+      categoryName: string;
+    } | null;
+  } | null;
+  images: {
+    imageUrl: string;
+    imageType: string;
+    sortOrder: number;
+  }[];
+  options: {
+    optionName: string;
+    stockQty: number;
+    additionalPrice: number;
+  }[];
+  notice: {
+    productName: string;
+    material: string;
+    sizeInfo: string;
+    components: string;
+    manufacturer: string;
+    originCountry: string;
+    manufactureDate: string;
+    certificationInfo: string;
+    careInstructions: string;
+    qualityGuarantee: string;
+    sellerName: string;
+    sellerLicenseNo: string;
+    phone: string;
+    email: string;
+    address: string;
+  } | null;
+}
+
 const CheckoutContent = () => {
     const searchParams = useSearchParams();
-    const router = useRouter(); // 라우터 사용
+    const router = useRouter();
 
-    // URL에서 상품 정보 가져오기
     const productId = searchParams.get('productId');
-    const quantity = searchParams.get('quantity');
-    const totalPrice = searchParams.get('totalPrice');
+    const quantityParam = searchParams.get('quantity');
 
-    // 상태 관리
+    const [product, setProduct] = useState<ShopProductDetailDTO | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
     const [isProductDetailsOpen, setIsProductDetailsOpen] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [ordererInfo, setOrdererInfo] = useState<OrdererInfo | null>(null);
@@ -49,57 +94,63 @@ const CheckoutContent = () => {
     const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
     const [isAgreementChecked, setIsAgreementChecked] = useState(false);
 
-    // 컴포넌트 마운트 시 쿠키에서 주문자 정보 불러오기
     useEffect(() => {
-        const savedInfo = Cookies.get('ordererInfo');
-        if (savedInfo) {
-            const parsedInfo = JSON.parse(savedInfo);
-            setOrdererInfo(parsedInfo);
-            setFormState(parsedInfo); // 수정 모달을 위해 formState도 업데이트
-        }
-    }, []);
+        const fetchProductAndOrdererInfo = async () => {
+            if (!productId) {
+                setError('상품 ID가 없습니다.');
+                setLoading(false);
+                return;
+            }
 
-    // 상품 정보 조회
-    const product = useMemo(() =>
-        allProducts.find(p => p.id === parseInt(productId || '')),
-        [productId]
-    );
+            try {
+                const productResponse = await fetch(`http://localhost:80/api/shop/products/${productId}`);
+                if (!productResponse.ok) {
+                    throw new Error(`HTTP error! status: ${productResponse.status}`);
+                }
+                const productData: ShopProductDetailDTO = await productResponse.json();
+                setProduct(productData);
 
-    // 결제 버튼 활성화 여부 결정
-    const isPayButtonEnabled = !!ordererInfo && !!selectedPayment && isAgreementChecked;
+                const savedInfo = Cookies.get('ordererInfo');
+                if (savedInfo) {
+                    const parsedInfo = JSON.parse(savedInfo);
+                    setOrdererInfo(parsedInfo);
+                    setFormState(parsedInfo);
+                }
 
-    if (!product || !quantity || !totalPrice) {
-        return (
-            <main className={styles.container}>
-                <div className={styles.error}>주문 정보를 불러오는데 실패했습니다.</div>
-            </main>
-        );
-    }
+            } catch (err: any) {
+                setError(err.message);
+                setProduct(null); // 에러 발생 시 product를 null로 설정
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const numericTotalPrice = parseInt(totalPrice);
+        fetchProductAndOrdererInfo();
+    }, [productId]);
+
+    const quantity = parseInt(quantityParam || '1');
+    const numericTotalPrice = product ? product.price * quantity : 0;
     const deliveryFee = numericTotalPrice >= 50000 ? 0 : 3000;
     const finalPrice = numericTotalPrice + deliveryFee;
 
-    // 입력 폼 변경 핸들러
+    const isPayButtonEnabled = !!ordererInfo && !!selectedPayment && isAgreementChecked && !loading && !error && product;
+
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormState(prevState => ({ ...prevState, [name]: value }));
     };
 
-    // 주문자 정보 저장 핸들러
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // 모든 필드가 채워졌는지 확인
         if (Object.values(formState).some(field => field.trim() === '')) {
             alert('모든 필수 정보를 입력해주세요.');
             return;
         }
         setOrdererInfo(formState);
-        Cookies.set('ordererInfo', JSON.stringify(formState), { expires: 7 }); // 7일간 쿠키에 저장
+        Cookies.set('ordererInfo', JSON.stringify(formState), { expires: 7 });
         setIsModalOpen(false);
     };
 
-    // 결제 처리 핸들러
     const handlePayment = () => {
         if (!isPayButtonEnabled || !ordererInfo || !product) return;
 
@@ -107,34 +158,55 @@ const CheckoutContent = () => {
         IMP.init('imp10391932');
 
         const paymentData = {
-            // [수정] pg사 설정: 토스페이먼츠는 'tosspayments.상점MID' 형태로 입력해야 합니다.
-            // 포트원 관리자 콘솔에서 해당 값을 확인하고 YOUR_TOSSPAYMENTS_MID 부분을 교체해주세요.
-            pg: selectedPayment === 'kakao' 
-                ? 'kakaopay' 
-                : 'tosspayments.YOUR_TOSSPAYMENTS_MID', // ❗️ 중요: 이곳을 실제 값으로 변경하세요.
+            pg: 'kakaopay',
             pay_method: 'card',
             merchant_uid: `order_${new Date().getTime()}`,
-            name: `${product.name} 등`,
+            name: `${product.productName} 등`,
             amount: finalPrice,
             buyer_email: ordererInfo.email,
             buyer_name: `${ordererInfo.lastName} ${ordererInfo.firstName}`,
             buyer_tel: ordererInfo.phone,
             buyer_addr: ordererInfo.address,
-            buyer_postcode: '123-456', // 필요한 경우 우편번호도 동적으로 처리
+            buyer_postcode: '123-456',
         };
 
         IMP.request_pay(paymentData, (rsp: any) => {
             if (rsp.success) {
                 console.log('Payment success:', rsp);
                 alert('결제가 성공적으로 완료되었습니다.');
-                // TODO: 결제 성공 시, 백엔드에 결제 정보 검증 및 저장 요청
-                // 예: router.push(`/shop/checkout/success?imp_uid=${rsp.imp_uid}&merchant_uid=${rsp.merchant_uid}`);
             } else {
                 console.error('Payment failed:', rsp);
                 alert(`결제에 실패하였습니다. 에러: ${rsp.error_msg}`);
             }
         });
     };
+
+    if (loading) {
+        return (
+            <main className={styles.container}>
+                <div className={styles.loading}>로딩 중...</div>
+            </main>
+        );
+    }
+
+    if (error) {
+        return (
+            <main className={styles.container}>
+                <div className={styles.error}>오류: {error}</div>
+            </main>
+        );
+    }
+
+    if (!product) {
+        return (
+            <main className={styles.container}>
+                <div className={styles.notFound}>상품 정보를 불러올 수 없습니다.</div>
+            </main>
+        );
+    }
+
+    // product가 null이 아님을 보장
+    const mainImageUrl = product.images?.find(img => img.imageType === 'main')?.imageUrl || product.images?.[0]?.imageUrl;
 
     return (
         <>
@@ -153,10 +225,14 @@ const CheckoutContent = () => {
                             {isProductDetailsOpen && (
                                 <div className={styles.productDetailsContent}>
                                     <div className={styles.productItem}>
-                                        <img src={product.imageUrl} alt={product.name} className={styles.productImage} />
+                                        {mainImageUrl ? (
+                                            <img src={`http://localhost:80${mainImageUrl}`} alt={product.productName} className={styles.productImage} />
+                                        ) : (
+                                            <div className={styles.noImage}>이미지 없음</div>
+                                        )}
                                         <div className={styles.productDesc}>
-                                            <p>{product.name}</p>
-                                            <p className={styles.productSubDesc}>HOPE ON THE STREET / {quantity}개</p>
+                                            <p>{product.productName}</p>
+                                            <p className={styles.productSubDesc}>{product.productName} / {quantity}개</p>
                                         </div>
                                         <p className={styles.productPrice}>KRW {numericTotalPrice.toLocaleString()}</p>
                                     </div>
@@ -199,13 +275,6 @@ const CheckoutContent = () => {
                                     disabled={!ordererInfo}
                                 >
                                     카카오페이
-                                </button>
-                                <button
-                                    className={`${styles.paymentButton} ${selectedPayment === 'toss' ? styles.selectedToss : ''}`}
-                                    onClick={() => setSelectedPayment('toss')}
-                                    disabled={!ordererInfo}
-                                >
-                                    토스페이
                                 </button>
                             </div>
                             {!ordererInfo && <p className={styles.infoText}>주문자 정보를 등록해야 결제 수단을 선택할 수 있습니다.</p>}

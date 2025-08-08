@@ -39,6 +39,22 @@ interface Media {
   time: string;
 }
 
+interface Product {
+  id: number;
+  productName: string;
+  description: string;
+  thumbnail: string;
+  price: string;
+  stockQty: string;
+}
+
+interface Notice {
+  id: number;
+  title: string;
+  create_at: string;
+}
+
+
 const ArtistPage = () => {
   const params = useParams();
   const id = params.id as string;
@@ -47,6 +63,9 @@ const ArtistPage = () => {
   const [artistList, setArtistList] = useState<Member[]>([]);
   const [liveData, setLiveData] = useState<Streaming[]>([]); // 라이브 데이터 상태 추가
   const [mediaData, setMediaData] = useState<Media[]>([]); // 라이브 데이터 상태 추가
+  const [products, setProduct] = useState<Product[]>([]); // 라이브 데이터 상태 추가
+  const [noties, setNotice] = useState<Notice[]>([]); // 라이브 데이터 상태 추가
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -110,6 +129,44 @@ const ArtistPage = () => {
       }
     };
     fetchMediaData();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchProductData = async () => {
+      console.log("fetchProductData")
+      if (id) {
+        try {
+          console.log("Fetching live data for groupId:", id);
+          const response = await axios.get(`http://localhost:80/api/artistinfo/product`, {
+            params: { groupId: id }
+          });
+          console.log('product Data Response:', response.data); // API 응답 전체를 다시 확인
+          setProduct(response.data);
+        } catch (err) {
+          console.error('Failed to fetch product data:', err);
+        }
+      }
+    };
+    fetchProductData();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchNotice = async () => {
+      console.log("fetchProductData")
+      if (id) {
+        try {
+          console.log("Fetching notice data for groupId:", id);
+          const response = await axios.get(`http://localhost:80/api/artistinfo/board`, {
+            params: { groupId: id }
+          });
+          console.log('notice Data Response:', response.data); // API 응답 전체를 다시 확인
+          setNotice(response.data);
+        } catch (err) {
+          console.error('Failed to fetch notice data:', err);
+        }
+      }
+    };
+    fetchNotice();
   }, [id]);
 
   if (loading) {
@@ -207,12 +264,12 @@ const ArtistPage = () => {
           <button className={styles.artistShopButton}>Artist Shop &gt;</button>
         </div>
         <div className={styles.merchGrid}>
-          {[...Array(5)].map((_, index) => (
+          {products.map((product) => (
             <MerchCard
-              key={index}
-              image={`https://via.placeholder.com/180x180?text=Merch+${index + 1}`}
-              name={`상품명 ${index + 1}`}
-              price={`${(index + 1) * 10000}원`}
+              key={product.id}
+              image={`http://localhost:80${product.thumbnail}`}
+              name={`상품명 ${product.productName}`}
+              price={`${product.price}원`}
             />
           ))}
         </div>
@@ -222,10 +279,11 @@ const ArtistPage = () => {
 
       <section className={styles.section}>
         <div className={styles.announcementList}>
-          {[...Array(3)].map((_, index) => (
+          {noties.map((notice) => (
             <AnnouncementCard
-              key={index}
-              title={`[NOTICE] 제목 ${index + 1}`}
+              key={notice.id}
+              title={`[NOTICE] 제목 ${notice.title}`}
+              create_at={notice.create_at}
             />
           ))}
         </div>

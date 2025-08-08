@@ -110,6 +110,6 @@ public class ArtistController {
         List<Board> boardList = artistService.getRecentBoardsByGroupId(groupId);
         return ResponseEntity.ok(boardList);
     }
-    
+  
 }
 

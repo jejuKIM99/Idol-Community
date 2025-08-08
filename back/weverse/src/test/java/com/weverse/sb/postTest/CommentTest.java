@@ -22,7 +22,7 @@ public class CommentTest {
 	void insertPostComment() {
 		
 		Long postId = 3L;
-		String content = "르세라핌 댓글 테스트";
+		String content = "댓글 테스트";
 		Long userId = 2L;
 		
 		this.commentService.inputComment(postId, content, userId);

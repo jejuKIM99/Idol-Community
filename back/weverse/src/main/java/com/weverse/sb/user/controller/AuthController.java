@@ -27,16 +27,16 @@ public class AuthController {
     private final AuthService authService;
     
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest) {
+    public ResponseEntity<JwtResponseDto> login(@RequestBody LoginRequestDto loginRequest) {
         try {
             User user = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
 
             String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
 
-            // 토큰을 반환
-            return ResponseEntity.ok(new JwtResponseDto(token));
+            // 토큰과 userId를 함께 반환
+            return ResponseEntity.ok(new JwtResponseDto(token, user.getUserId()));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(null); // 실패 시 body는 비워서 보냄
         }
     }
     
