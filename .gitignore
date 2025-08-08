@@ -138,3 +138,6 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# static/images 폴더 전체 무시
+src/main/resources/static/images/
