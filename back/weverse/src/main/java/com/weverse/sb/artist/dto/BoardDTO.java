@@ -20,8 +20,10 @@ import lombok.ToString;
 public class BoardDTO {
 	
 	private Long id;
+	
+	private Long categoryId;
 
-    private Long groupId;
+	private String catagoryName;
     
     private String groupName;
 

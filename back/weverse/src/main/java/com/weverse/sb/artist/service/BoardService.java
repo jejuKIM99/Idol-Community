@@ -12,7 +12,7 @@ public interface BoardService {
 
 	List<BoardDTO> getList(Long groupId);
 
-	void inputNotice(Long groupId, String title, String content);
+	void inputNotice(Long catagoryId, Long groupId, String title, String content);
 
 
 

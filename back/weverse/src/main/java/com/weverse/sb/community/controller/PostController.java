@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.weverse.sb.artist.dto.ArtistDTO;
+import com.weverse.sb.artist.dto.ArtistInfoResponseDTO;
 import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.service.ArtistService;
 import com.weverse.sb.community.dto.PostDTO;
@@ -30,18 +31,16 @@ public class PostController {
 	
 	// 아티스트 정보 조회 (한명)
 	@GetMapping("/api/artistSNS/home/profile")
-	public ArtistDTO selectArtist(@RequestParam("artistId") Long artistId) {
+	public Artist selectArtist(@RequestParam("artistId") Long artistId) {
 		return artistService.findById(artistId);
 	}
 	
 	// 그룹 멤버 정보 조회 (멤버 전부) - 필요하시면 쓰세요
 	@GetMapping("/api/artistSNS/home/profile/group")
-	public ArtistDTO selectGroupArtist(@RequestParam Long groupId) {
-	    List<Artist> artistList = artistService.getArtistDTOList(groupId);
+	public ArtistInfoResponseDTO selectGroupArtist(@RequestParam Long groupId) {
+	    ArtistInfoResponseDTO artistList = artistService.getArtistInfoByGroupId(groupId);
 
-	    ArtistDTO dto = ArtistDTO.builder().artistList(artistList).build();
-
-	    return dto;
+	    return artistList;
 	}
 
 	

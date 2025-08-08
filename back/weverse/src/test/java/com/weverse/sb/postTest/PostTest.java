@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.weverse.sb.artist.dto.ArtistDTO;
+import com.weverse.sb.artist.dto.ArtistInfoResponseDTO;
+import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.repository.ArtistRepository;
 import com.weverse.sb.community.controller.PostController;
 import com.weverse.sb.community.dto.PostDTO;
@@ -37,25 +38,25 @@ public class PostTest {
 	
 	@Test
 	public void testSelectArtist() {
-		Long groupId = 1L;
-		ArtistDTO dto = postController.selectArtist(groupId);
+		Long artistId = 1L;
+		Artist artist = postController.selectArtist(artistId);
 
 		System.out.println("=== 아티스트 정보 ===");
-	    System.out.println("ID: " + dto.getId() + ", 이름: " + dto.getStageName());
-	    System.out.println("  ㄴ 프로필사진 : " + dto.getProfileImage());
-	    System.out.println("  ㄴ 이메일 : " + dto.getEmail());
+	    System.out.println("ID: " + artist.getArtistId() + ", 이름: " + artist.getStageName());
+	    System.out.println("  ㄴ 프로필사진 : " + artist.getProfileImage());
+	    System.out.println("  ㄴ 이메일 : " + artist.getEmail());
 	}
 	
 	@Test
 	public void testSelectGroupArtist() {
 		Long groupId = 1L;
-		ArtistDTO dto = postController.selectGroupArtist(groupId);
+		ArtistInfoResponseDTO dto = postController.selectGroupArtist(groupId);
 		
 		System.out.println("=== 그룹 멤버 정보 ===");
 		
-		dto.getArtistList().forEach(artist -> {
-			if (artist.getId() != null) {
-				System.out.println("ID: " + artist.getId() + ", 이름: " + artist.getStageName());
+		dto.getArtists().forEach(artist -> {
+			if (artist.getArtistId() != null) {
+				System.out.println("ID: " + artist.getArtistId() + ", 이름: " + artist.getStageName());
 				System.out.println("  ㄴ 프로필사진 : " + artist.getProfileImage());
 				System.out.println("  ㄴ 이메일 : " + artist.getEmail());
 			}
@@ -89,7 +90,7 @@ public class PostTest {
 	public void testfilterPost() {
 		PostDTO dto = postController.filterPost(3L);
 
-		System.out.println("=== 전체 게시글 리스트 ===");
+		System.out.println("=== 특정 아티스트 게시글 리스트 ===");
 		dto.getPostList().forEach(post -> {
 			System.out.println("ID: " + post.getPostId() + ", 작성자: " + post.getArtistName());
 			if (post.getPostId() != null) {
@@ -102,15 +103,15 @@ public class PostTest {
 	}
 //
 	//	특정 아티스트 작성 게시글 좋아요
-//	@Test
-//	public void testLikePost() {
-//		Long postId = 3L;
-//		Long userId = 1L;
+	@Test
+	public void testLikePost() {
+		Long postId = 1L;
+		Long userId = 1L;
+
+		postService.inputPostLike(postId, userId);
+	}
 //
-//		postService.inputPostLike(postId, userId);
-//	}
-//
-//	//	특정 아티스트 작성 게시글 좋아요 취소
+	//	특정 아티스트 작성 게시글 좋아요 취소
 //	@Test
 //	public void testUnlikePost() {
 //		Long postId = 3L;

@@ -32,10 +32,6 @@ public class Board {
 	@JoinColumn(name = "board_category_id", nullable = false)
 	private BoardCategory category;
 
-	@ManyToOne
-	@JoinColumn(name = "artist_id", nullable = false)
-	private Artist artist;
-
 	@Column(name = "title", length = 255, nullable = false)
 	private String title;
 

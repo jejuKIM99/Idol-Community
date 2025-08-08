@@ -6,11 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.weverse.sb.artist.dto.ArtistDTO;
 import com.weverse.sb.artist.dto.BoardDTO;
 import com.weverse.sb.artist.dto.GroupDTO;
-import com.weverse.sb.artist.entity.Board;
-import com.weverse.sb.artist.entity.Group;
 import com.weverse.sb.artist.repository.ArtistRepository;
 import com.weverse.sb.community.controller.FanPostController;
 import com.weverse.sb.community.controller.PostController;

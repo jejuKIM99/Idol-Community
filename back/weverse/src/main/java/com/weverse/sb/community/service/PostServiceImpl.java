@@ -52,14 +52,14 @@ public class PostServiceImpl implements PostService{
 
 	@Override
 	public List<PostDTO> getPostDTOList(Long userId, Long groupId) {
-		List<Post> postList = postRepository.findByGroup_IdAndAuthorType(groupId, "artist");
+		List<Post> postList = postRepository.findByGroup_GroupIdAndAuthorType(groupId, "artist");
 		List<PostDTO> dtoList = new ArrayList<>();
 
 		for (Post post : postList) {
 		    int commentCount = commentRepository.countByPostId(post.getId());
 		    int likeCount = likeRepository.countByPostId(post.getId());
 		    boolean likeByUser = postLikeRepository.existsByUserUserIdAndPostId(userId, post.getId() );
-		    boolean followByUser = favoriteRepository.existsByUserUserIdAndArtistId(userId, post.getArtist().getArtistId());
+		    boolean followByUser = favoriteRepository.existsByUser_UserIdAndArtist_ArtistId(userId, post.getArtist().getArtistId());
 		    
 		    Long artistId = (post.getArtist() != null) ? post.getArtist().getArtistId() : null;
 
@@ -113,7 +113,7 @@ public class PostServiceImpl implements PostService{
 	@Override
 	public List<PostDTO> getFilterPostList(Long id) {
 		
-		List<Post> postList = postRepository.findByArtist_IdAndAuthorType(id, "artist");
+		List<Post> postList = postRepository.findByArtist_ArtistIdAndAuthorType(id, "artist");
 		List<PostDTO> dtoList = new ArrayList<>();
 
 		for (Post post : postList) {
@@ -189,7 +189,7 @@ public class PostServiceImpl implements PostService{
 	    User user = userRepository.findById(userId)
 	            .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
 
-	    if (favoriteRepository.existsByUserUserIdAndArtistId(userId, artistId)) {
+	    if (favoriteRepository.existsByUser_UserIdAndArtist_ArtistId(userId, artistId)) {
 	        throw new IllegalStateException("Already followed");
 	    }
 
@@ -208,11 +208,11 @@ public class PostServiceImpl implements PostService{
 	@Transactional
 	public void deleteFavorite(Long artistId, Long userId) {
 		
-		if (!favoriteRepository.existsByUserUserIdAndArtistId(userId, artistId)) {
+		if (!favoriteRepository.existsByUser_UserIdAndArtist_ArtistId(userId, artistId)) {
             throw new IllegalStateException("follow does not exist");
         }
 
-        favoriteRepository.deleteByUserUserIdAndArtistId(userId, artistId);
+        favoriteRepository.deleteByUser_UserIdAndArtist_ArtistId(userId, artistId);
 		
 	}
 
@@ -220,7 +220,7 @@ public class PostServiceImpl implements PostService{
 	@Override
 	public List<PostDTO> getFanPostDTOList(Long groupId) {
 		
-		List<Post> post = postRepository.findByGroup_IdAndAuthorType(groupId, "user");
+		List<Post> post = postRepository.findByGroup_GroupIdAndAuthorType(groupId, "user");
 		List<PostDTO> postList = new ArrayList<>();
 		
 		

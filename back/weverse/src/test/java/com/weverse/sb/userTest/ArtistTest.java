@@ -6,9 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.weverse.sb.artist.controller.ArtistController;
 import com.weverse.sb.artist.dto.ArtistDTO;
-import com.weverse.sb.artist.entity.Artist;
-import com.weverse.sb.artist.entity.Group;
-import com.weverse.sb.artist.repository.GroupRepository;
 import com.weverse.sb.artist.repository.ArtistRepository;
 import com.weverse.sb.artist.repository.GroupRepository;
 
@@ -252,15 +249,15 @@ class ArtistTest {
 
 		System.out.println("=== 전체 아티스트 리스트 ===");
 		dto.getArtistList().forEach(artist -> {
-			System.out.println("ID: " + artist.getId() + ", 이름: " + artist.getStageName());
-			if (artist.getId() != null) {
-				System.out.println("  그룹명: " + artist.getGroup().getName());
+			System.out.println("ID: " + artist.getArtistId() + ", 이름: " + artist.getStageName());
+			if (artist.getArtistId() != null) {
+				System.out.println("  그룹명: " + artist.getGroup().getGroupName());
 			}
 		});
 
 		System.out.println("=== 전체 그룹 리스트 ===");
 		dto.getGroupList().forEach(group -> {
-			System.out.println("그룹ID: " + group.getId() + ", 그룹명: " + group.getName());
+			System.out.println("그룹ID: " + group.getGroupId() + ", 그룹명: " + group.getGroupName());
 		});
 
 	}

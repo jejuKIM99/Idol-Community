@@ -41,9 +41,10 @@ public class BoardController {
 	@PostMapping("/api/artistSNS/home/notice")
 	public ResponseEntity<String> inputNotice(@RequestParam("groupId") Long groupId,
 			@RequestParam("title") String title,
-			@RequestParam("content") String content ) {
+			@RequestParam("content") String content,
+			@RequestParam("board_category_id") Long boardCatagoryId) {
 		try {
-			boardService.inputNotice(groupId, title, content);
+			boardService.inputNotice(boardCatagoryId, groupId, title, content);
 			return ResponseEntity.ok("success");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("fail");

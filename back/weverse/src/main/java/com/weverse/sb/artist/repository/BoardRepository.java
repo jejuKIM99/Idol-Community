@@ -11,7 +11,7 @@ import com.weverse.sb.artist.entity.Board;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long>{
 
-	List<Board> findByGroupId(Long groupId);
+	List<Board> findByGroup_GroupId(Long groupId);
 
 	List<Board> findTop3ByGroup_GroupIdOrderByCreatedAtDesc(Long groupId);
 }
