@@ -27,10 +27,10 @@ public class ProductImage {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column(name = "image_url", length = 2083, nullable = false)
+    @Column(name = "image_url", length = 2083)
     private String imageUrl;
 
     @Column(name = "image_type", length = 20)

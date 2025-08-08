@@ -43,4 +43,8 @@ public class Board {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+@ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 }

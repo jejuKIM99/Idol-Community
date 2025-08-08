@@ -1,18 +1,33 @@
 'use client';
 
 import styles from '@/styles/RecommendedArtistCard.module.css';
-import { Artist } from '@/data/artists';
 
-interface RecommendedArtistCardProps {
-  artist: Artist;
-  onClick: (artistName: string) => void;
+// interface Artist {
+//   artistId: number;
+//   name: string;
+//   profileImageUrl: string;
+//   logoImageUrl: string;
+// }
+
+interface Group {
+  groupId: number;
+  groupName: string;
+  groupProfileImage: string;
+  groupLogo: string;
 }
 
-const RecommendedArtistCard: React.FC<RecommendedArtistCardProps> = ({ artist, onClick }) => {
+interface RecommendedArtistCardProps {
+ // artists: Artist[];
+  group: Group;
+
+  onClick: () => void;
+}
+
+const RecommendedArtistCard: React.FC<RecommendedArtistCardProps> = ({ group, onClick }) => {
   return (
-    <div className={styles.card} onClick={() => onClick(artist.name)}>
-      <img src={artist.imageUrl} alt={artist.name} className={styles.image} />
-      <h3 className={styles.name}>{artist.name}</h3>
+    <div className={styles.card} onClick={onClick}>
+      <img src={`http://localhost:80/${group.groupProfileImage}`} alt={group.groupName} className={styles.image} />
+      <h3 className={styles.name}>{group.groupName}</h3>
     </div>
   );
 };

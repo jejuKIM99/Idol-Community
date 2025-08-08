@@ -20,13 +20,10 @@ import lombok.ToString;
 public class GroupDTO {
 
 	private Long id;
-	
 	private String name;
-	
 	private String image;
-	
 	private String logo;
-	
 	private List<Group> groupList;
 
 }
+

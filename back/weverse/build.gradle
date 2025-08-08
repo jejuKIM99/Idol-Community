@@ -32,6 +32,16 @@ dependencies {
    annotationProcessor 'org.projectlombok:lombok'
    testImplementation 'org.springframework.boot:spring-boot-starter-test'
    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+   
+   /*Spring Security*/
+   implementation 'org.springframework.boot:spring-boot-starter-security'
+   /*thymeleaf-extras-springsecurity6 패키지는 타임리프 템플릿 엔진과 스프링 시큐리티 프레임워크를 함께 사용할 때 필요한 타임리프의 확장 기능*/
+   implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+   
+   // JWT (JJWT)
+   implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+   runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+   runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 }
 
 tasks.named('test') {
