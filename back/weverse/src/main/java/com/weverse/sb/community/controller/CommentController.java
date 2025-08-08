@@ -25,7 +25,7 @@ public class CommentController {
 	@Autowired
 	CommentService commentService;
 	
-	@GetMapping("api/artistSNS/home/post")
+	@GetMapping("api/artistSNS/home/comment")
 	public CommentDTO selectPostCommend(@RequestParam("postId") Long postId) {
 		List<Comment> commentList = this.commentService.getCommentList(postId);
 		CommentDTO dto = CommentDTO.builder().commentList(commentList).build();

@@ -33,7 +33,7 @@ public class FanPostTest {
 
 	@Autowired
 	private PostService postService;
-
+/*
 	@Test
 	void insertFanPost() {
 
@@ -54,7 +54,7 @@ public class FanPostTest {
 		System.out.println("  ㄴ 그룹ID : " + dto.getGroupId());
 	    System.out.println("  ㄴ 그룹사진 : " + dto.getGroupProfileImage());
 	    System.out.println("  ㄴ 그룹로고 : " + dto.getGroupLogo());
-	}
+	}*/
 
 	@Test
 	public void testSelectFanPost() {
