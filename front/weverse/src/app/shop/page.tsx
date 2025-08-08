@@ -62,6 +62,8 @@ const WeverseShopPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [recommendedArtists, setRecommendedArtists] = useState<ShopArtistDTO[]>([]);
+  const [artistsForProducts, setArtistsForProducts] = useState<ShopArtistDTO[]>([]);
 
   useEffect(() => {
     const fetchShopData = async () => {
@@ -90,6 +92,16 @@ const WeverseShopPage = () => {
 
     fetchShopData();
   }, []);
+
+  useEffect(() => {
+    if (shopData) {
+      const shuffledArtists = [...shopData.artists].sort(() => 0.5 - Math.random());
+      const recommended = shuffledArtists.slice(0, 10);
+      const forProducts = recommended.slice(0, 5);
+      setRecommendedArtists(recommended);
+      setArtistsForProducts(forProducts);
+    }
+  }, [shopData]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -120,7 +132,7 @@ const WeverseShopPage = () => {
           </div>
           {/* Desktop View */}
           <div className={`${styles.recommendedArtistsList} ${styles.desktopOnly}`}>
-            {shopData.artists.map(artist => (
+            {recommendedArtists.map(artist => (
               <Link href={`/shop/${encodeURIComponent(artist.stageName)}`} key={artist.artistId} className={styles.artistItem}>
                 <img src={`http://localhost:80${artist.profileImage}`} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
                 <span className={styles.artistName}>{artist.stageName}</span>
@@ -134,7 +146,7 @@ const WeverseShopPage = () => {
               slidesPerView={'auto'}
               className="artist-swiper"
             >
-              {shopData.artists.map(artist => (
+              {recommendedArtists.map(artist => (
                 <SwiperSlide key={artist.artistId} style={{ width: 'auto' }}>
                   <Link href={`/shop/${encodeURIComponent(artist.stageName)}`} className={styles.artistItem}>
 
@@ -152,7 +164,7 @@ const WeverseShopPage = () => {
         </section>
 
         {/* --- 아티스트별 상품 섹션 (동적 생성) --- */}
-        {shopData.artists.map(artist => (
+        {artistsForProducts.map(artist => (
           <ArtistProductSection key={artist.artistId} artist={artist} products={shopData.products.filter(p => p.artistId === artist.artistId)} />
         ))}
 
