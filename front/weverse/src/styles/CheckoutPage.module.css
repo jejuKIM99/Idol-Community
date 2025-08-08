@@ -4,8 +4,7 @@
     max-width: 1200px;
     margin: 40px auto;
     padding: 0 20px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .title {
@@ -198,24 +197,53 @@
 
 .paymentGrid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr; /* 버튼을 세로로 정렬 */
     gap: 10px;
 }
 
-.paymentGrid button {
+.paymentButton {
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: white;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px; /* 폰트 크기 조정 */
     font-weight: bold;
+    display: flex; /* 아이콘과 텍스트를 중앙 정렬 */
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* 아이콘과 텍스트 사이 간격 */
+    transition: all 0.2s ease-in-out;
 }
 
-.payco { color: #e41e2b; }
+.paymentButton:hover {
+    border-color: #333; /* 호버 시 테두리 색상 변경 */
+}
+
+/* 카카오페이 버튼 스타일 */
+.paymentButton.selectedKakao {
+    background-color: #FEE500; /* 카카오 노란색 */
+    color: #3C1E1E; /* 카카오 진한 회색 */
+    border-color: #FEE500;
+}
+
+.paymentButton.selectedKakao::before {
+    content: '';
+    display: inline-block;
+    width: 24px; /* 아이콘 크기 */
+    height: 24px;
+    background-image: url('https://developers.kakao.com/assets/img/about/logos/kakaopay/kakaopay_ci.png'); /* 카카오페이 로고 URL */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+}
+
+/* 기존 결제 수단 스타일 제거 */
+/* .payco { color: #e41e2b; }
 .kakaoPay { color: #ffeb00; background-color: #3a1d1d; }
 .toss { color: #0064ff; }
-.naverPay { color: #03c75a; }
+.naverPay { color: #03c75a; } */
 
 
 .infoText {

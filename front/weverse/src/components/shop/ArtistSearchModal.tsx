@@ -60,7 +60,7 @@ const ArtistSearchModal = ({ isOpen, onClose, artists }: Props) => {
               className={styles.artistListItem}
               onClick={onClose} // 모달 닫기
             >
-              <img src={artist.profileImage} alt={artist.stageName} />
+              <img src={`http://localhost:80${artist.profileImage}`} alt={artist.stageName} />
               <span>{artist.stageName}</span>
             </Link>
           ))}
