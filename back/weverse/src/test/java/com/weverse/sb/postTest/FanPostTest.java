@@ -53,10 +53,10 @@ public class FanPostTest {
 		GroupDTO dto = fanPostController.groupInfo(groupId);
 
 		System.out.println("=== 그룹 정보 ===");
-		System.out.println("  ㄴ 그룹명 : " + dto.getName());
-		System.out.println("  ㄴ 그룹ID : " + dto.getId());
-	    System.out.println("  ㄴ 그룹사진 : " + dto.getImage());
-	    System.out.println("  ㄴ 그룹로고 : " + dto.getLogo());
+		System.out.println("  ㄴ 그룹명 : " + dto.getGroupName());
+		System.out.println("  ㄴ 그룹ID : " + dto.getGroupId());
+	    System.out.println("  ㄴ 그룹사진 : " + dto.getGroupProfileImage());
+	    System.out.println("  ㄴ 그룹로고 : " + dto.getGroupLogo());
 	}
 
 	@Test

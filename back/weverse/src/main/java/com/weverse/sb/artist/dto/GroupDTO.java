@@ -3,12 +3,10 @@ package com.weverse.sb.artist.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.weverse.sb.artist.entity.Artist;
-import com.weverse.sb.artist.entity.Group;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -18,15 +16,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GroupDTO {
-
-	private Long id;
-	
-	private String name;
-	
-	private String image;
-	
-	private String logo;
-	
-	private List<Group> groupList;
-
+    private Long groupId;
+    private String groupName;
+    private String groupProfileImage;
+    private String groupLogo;
 }

@@ -33,7 +33,7 @@ public class BoardServiceImpl implements BoardService{
 	    for (Board b : boards) {
 	        BoardDTO dto = BoardDTO.builder()
 	                .id(b.getId())
-	                .groupId(b.getGroup().getId())
+	                .groupId(b.getGroup().getGroupId())
 	                .content(b.getContent())
 	                .title(b.getTitle())
 	                .createdAt(b.getCreatedAt())

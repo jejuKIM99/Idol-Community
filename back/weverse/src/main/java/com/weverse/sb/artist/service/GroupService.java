@@ -27,10 +27,10 @@ public class GroupService {
 	    if (group.isPresent()) {
 	        Group g = group.get();
 	        GroupDTO dto = GroupDTO.builder()
-	                .id(g.getId())
-	                .name(g.getName())
-	                .image(g.getGroupImage())
-	                .logo(g.getLogo())
+	                .groupId(g.getGroupId())
+	                .groupName(g.getGroupName())
+	                .groupProfileImage(g.getGroupProfileImage())
+	                .groupLogo(g.getGroupLogo())
 	                .build();
 	        return dto;
 	    } else {

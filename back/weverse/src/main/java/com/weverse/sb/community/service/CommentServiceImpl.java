@@ -48,7 +48,7 @@ public class CommentServiceImpl implements CommentService{
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
         
-        Long artistId = post.getArtist().getId();
+        Long artistId = post.getArtist().getArtistId();
         
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid artist ID"));

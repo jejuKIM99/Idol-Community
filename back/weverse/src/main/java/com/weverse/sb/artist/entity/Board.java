@@ -23,24 +23,32 @@ import lombok.NoArgsConstructor;
 @Table(name = "board")
 public class Board {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "board_id")
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+	@ManyToOne
+	@JoinColumn(name = "board_category_id", nullable = false)
+	private BoardCategory category;
 
-    @Column(name = "title", length = 255, nullable = false)
-    private String title;
+	@ManyToOne
+	@JoinColumn(name = "artist_id", nullable = false)
+	private Artist artist;
 
-    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
-    private String content;
+	@Column(name = "title", length = 255, nullable = false)
+	private String title;
 
-    @Column(name = "thumbnail_image", length = 2083)
-    private String thumbnailImage;
+	@Column(name = "content", columnDefinition = "TEXT", nullable = false)
+	private String content;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+	@Column(name = "thumbnail_image", length = 2083)
+	private String thumbnailImage;
+
+	@Column(name = "created_at", nullable = false)
+	private LocalDateTime createdAt;
+
+	@ManyToOne
+	@JoinColumn(name = "group_id")
+	private Group group;
 }

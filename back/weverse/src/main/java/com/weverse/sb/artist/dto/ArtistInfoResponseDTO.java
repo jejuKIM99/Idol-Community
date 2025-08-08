@@ -7,18 +7,17 @@ import com.weverse.sb.artist.entity.Group;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@Data
-@ToString
-@Builder
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-public class ArtistDTO {
-	
-	private List<Artist> artistList;
-	private List<Group> groupList;
-	
+@AllArgsConstructor
+@Builder
+public class ArtistInfoResponseDTO {
+    
+	private Group group;
+    private List<Artist> artists;
+    
+    
 }

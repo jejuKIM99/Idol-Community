@@ -59,9 +59,9 @@ public class PostServiceImpl implements PostService{
 		    int commentCount = commentRepository.countByPostId(post.getId());
 		    int likeCount = likeRepository.countByPostId(post.getId());
 		    boolean likeByUser = postLikeRepository.existsByUserUserIdAndPostId(userId, post.getId() );
-		    boolean followByUser = favoriteRepository.existsByUserUserIdAndArtistId(userId, post.getArtist().getId());
+		    boolean followByUser = favoriteRepository.existsByUserUserIdAndArtistId(userId, post.getArtist().getArtistId());
 		    
-		    Long artistId = (post.getArtist() != null) ? post.getArtist().getId() : null;
+		    Long artistId = (post.getArtist() != null) ? post.getArtist().getArtistId() : null;
 
 		    PostDTO dto = PostDTO.builder()
 		            .postId(post.getId())
@@ -90,7 +90,7 @@ public class PostServiceImpl implements PostService{
 		
         Group group = artist.getGroup();
         
-        String groupName = group.getName();
+        String groupName = group.getGroupName();
         
 
 		int randomNum = ThreadLocalRandom.current().nextInt(1, 5);
@@ -118,7 +118,7 @@ public class PostServiceImpl implements PostService{
 
 		for (Post post : postList) {
 		    int commentCount = commentRepository.countByPostId(post.getId());
-		    Long artistId = post.getArtist().getId();
+		    Long artistId = post.getArtist().getArtistId();
 
 		    PostDTO dto = PostDTO.builder()
 		            .postId(post.getId())
@@ -258,7 +258,7 @@ public class PostServiceImpl implements PostService{
 		
         Group group = artist.getGroup();
         
-        String groupName = group.getName();
+        String groupName = group.getGroupName();
         
 
 		int randomNum = ThreadLocalRandom.current().nextInt(1, 5);
