@@ -1,9 +1,5 @@
-
-<<<<<<< HEAD
 package com.weverse.sb.product.controller;
-=======
-package com.weverse.sb.product.Controller;
->>>>>>> 2e010c7a5fb945b3bd108c29261d949027950853
+
 
 import java.util.List;
 
@@ -21,8 +17,6 @@ import com.weverse.sb.product.dto.ShopMainResponseDTO;
 import com.weverse.sb.product.dto.ShopProductDetailDTO;
 import com.weverse.sb.product.service.ProductService;
 import com.weverse.sb.product.service.ShopMainService;
-
-import com.weverse.sb.user.controller.UserController;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

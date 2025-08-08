@@ -131,7 +131,7 @@ public class ShopMainServiceImpl implements ShopMainService {
                 .description(entity.getDescription())
                 .price(entity.getPrice())
                 .stockQty(entity.getStockQty())
-                .groupId(entity.getGroupId())                  
+                .groupId(entity.getGroup().getGroupId())                  
                 .build();
     }
 
@@ -162,7 +162,7 @@ public class ShopMainServiceImpl implements ShopMainService {
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .stockQty(product.getStockQty())
-                .groupId(product.getGroupId())
+                .groupId(product.getGroup().getGroupId())
                 .artistId(product.getArtist().getArtistId())
 
                 .category(category != null ? ShopProductDetailDTO.CategoryDTO.builder()
