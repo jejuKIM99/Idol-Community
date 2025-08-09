@@ -38,11 +38,11 @@ public class Payment {
     @Column(name = "payment_method", length = 50, nullable = false)
     private String paymentMethod;
 
-    @Column(name = "amount", precision = 10, scale = 2, nullable = false)
+    @Column(name = "amount", precision = 19, scale = 2, nullable = false)
     private BigDecimal amount;
 
     @Column(name = "status", length = 20, nullable = false)
-    private String status;
+    private String status; // COMPLETED, REFUNDED 등
 
     @Column(name = "currency", length = 10, nullable = false)
     private String currency;
@@ -55,6 +55,14 @@ public class Payment {
 
     @Column(name = "payment_gateway", length = 50)
     private String paymentGateway;
+    
+    // [PG사 연동] PG사 거래 ID
+    @Column(name = "imp_uid", nullable = false, unique = true)
+    private String impUid;
+    
+    // [PG사 연동] 우리 시스템의 고유 주문 번호
+    @Column(name = "merchant_uid", nullable = false, unique = true)
+    private String merchantUid;
     
     // Payment 생성을 위한 정적 팩토리 메서드 추가
     public static Payment create(User user, int amount, String paymentMethod) {

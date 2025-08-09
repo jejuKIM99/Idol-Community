@@ -33,7 +33,7 @@ public class Refund {
     @JoinColumn(name = "payment_id", nullable = false)
     private Payment payment;
 
-    @Column(name = "refund_amount", precision = 15, scale = 2, nullable = false)
+    @Column(name = "refund_amount", precision = 19, scale = 2, nullable = false)
     private BigDecimal refundAmount;
 
     @Column(name = "reason", columnDefinition = "TEXT")
