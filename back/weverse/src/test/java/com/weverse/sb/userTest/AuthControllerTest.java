@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -76,7 +77,7 @@ class AuthControllerTest {
             .phoneNumber("010-0000-0000")
             .country("KR")
             .jellyBalance(0)
-            .cashBalance(0)
+            .cashBalance(BigDecimal.ZERO)
             .isEmailVerified(false)
             .isSmsVerified(false)
             .createdAt(LocalDateTime.now())

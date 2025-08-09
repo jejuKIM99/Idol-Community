@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,7 @@ class AuthServiceTest {
                 .phoneNumber("010-0000-0000")  // NOT NULL
                 .country("KR")                 // NOT NULL
                 .jellyBalance(0)               // NOT NULL
-                .cashBalance(0)                // NOT NULL
+                .cashBalance(BigDecimal.ZERO)                // NOT NULL
                 .isEmailVerified(false)        // NOT NULL
                 .isSmsVerified(false)          // NOT NULL
                 .createdAt(LocalDateTime.now())// NOT NULL
@@ -90,7 +91,7 @@ class AuthServiceTest {
                 .phoneNumber("010-0000-0000")   // ✅ 추가
                 .country("KR")                  // ✅ 추가
                 .jellyBalance(0)
-                .cashBalance(0)
+                .cashBalance(BigDecimal.ZERO)
                 .isEmailVerified(false)
                 .isSmsVerified(false)
                 .createdAt(LocalDateTime.now()) // ✅ 추가

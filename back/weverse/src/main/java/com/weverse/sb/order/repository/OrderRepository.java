@@ -7,5 +7,7 @@ import com.weverse.sb.order.entity.Order;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    // Custom query methods (if needed) can be defined here
+    
+	Order findByOrderNumber(String OrderNumber);
+	
 }

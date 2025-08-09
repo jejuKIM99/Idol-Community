@@ -58,9 +58,10 @@ public class Product {
     private Integer stockQty = 0;
     
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id")
     private Group group; // 'group' 필드가 존재
     
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images;
+    
 }

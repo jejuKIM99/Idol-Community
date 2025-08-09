@@ -1,14 +1,18 @@
 package com.weverse.sb.user.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,7 +31,7 @@ public class UserDTO {
     private Integer jellyBalance;
     
     @JsonProperty("cashBalance")
-    private Integer cashBalance;
+    private BigDecimal cashBalance;
     
     private Boolean isEmailVerified;
     private Boolean isSmsVerified;
@@ -38,7 +42,7 @@ public class UserDTO {
         return this.jellyBalance;
     }
 
-    public Integer getCashBalance() {
+    public BigDecimal getCashBalance() {
         return this.cashBalance;
     }
 

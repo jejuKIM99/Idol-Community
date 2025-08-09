@@ -1,5 +1,6 @@
 package com.weverse.sb.user.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,11 +45,11 @@ public class AuthService {
                 .password(encodedPassword)
                 .nickname(nickname)
                 .role("USER")
-                .name("회원")                     // ✅ 더미 값
+                .name("회원")                      // ✅ 더미 값
                 .phoneNumber("010-0000-0000")     // ✅ 더미 값
                 .country("KR")                    // ✅ 더미 값
                 .jellyBalance(0)                  // ✅ NOT NULL
-                .cashBalance(0)                   // ✅ NOT NULL
+                .cashBalance(BigDecimal.ZERO)     // ✅ NOT NULL
                 .isEmailVerified(false)           // ✅ NOT NULL
                 .isSmsVerified(false)             // ✅ NOT NULL
                 .createdAt(LocalDateTime.now())   // ✅ NOT NULL

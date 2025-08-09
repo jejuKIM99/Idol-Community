@@ -1,5 +1,6 @@
 package com.weverse.sb.userTest;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 
@@ -33,7 +34,7 @@ class UserServiceInsertTests {
                     .country("KR")
                     .profileImage(null)
                     .jellyBalance(100)
-                    .cashBalance(1000)
+                    .cashBalance(new BigDecimal(100000))
                     .isEmailVerified(true)
                     .isSmsVerified(false)
                     .createdAt(LocalDateTime.now())

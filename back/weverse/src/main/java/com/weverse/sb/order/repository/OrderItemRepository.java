@@ -8,5 +8,4 @@ import com.weverse.sb.order.entity.OrderItem;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 	
-	
 }

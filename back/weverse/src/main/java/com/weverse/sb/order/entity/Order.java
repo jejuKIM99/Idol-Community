@@ -5,9 +5,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
+
+import com.weverse.sb.global.entity.BaseEntity;
 import com.weverse.sb.payment.entity.Payment;
-import com.weverse.sb.product.entity.Product;
-import com.weverse.sb.product.entity.ProductOption;
 import com.weverse.sb.user.entity.User;
 
 import jakarta.persistence.CascadeType;
@@ -31,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,11 +43,12 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "order_number", length = 50, nullable = false)
+    // 우리가 관리하는 고유 주문 번호 (예: order_1660211234)
+    @Column(name = "order_number", length = 50, unique = true, nullable = false)
     private String orderNumber;
 
     @ManyToOne
-    @JoinColumn(name = "payment_id", nullable = false)
+    @JoinColumn(name = "payment_id", nullable = true)
     private Payment payment;
 
     @Column(name = "recipient_name", length = 100)
@@ -87,43 +89,19 @@ public class Order {
 
     @Column(name = "status", length = 20, nullable = false)
     private String status; // "PENDING", "PAID", "CANCELLED" 등
-
-    @Column(name = "ordered_at", nullable = false)
-    private LocalDateTime orderedAt;
-    
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
     
     // [PG사 연동] PG사가 발급하는 결제 고유 ID (예: imp_123456)
     @Column(name = "imp_uid")
     private String impUid;
     
-    // [PG사 연동] 우리가 관리하는 고유 주문 번호 (예: order_1660211234)
-    @Column(name = "merchant_uid", unique = true)
-    private String merchantUid;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<OrderItem> orderItems = new ArrayList<>();
 
-    // 주문 생성을 위한 정적 팩토리 메서드
-    public static Order create(User user, Product product, ProductOption option, int quantity, Payment payment, int subtotalPrice, int shippingFee, int finalAmount) {
-        Order order = new Order();
-        order.setUser(user);
-        order.setPayment(payment);
-        order.setOrderNumber("ORD" + System.currentTimeMillis());
-        order.setRecipientName(user.getName()); // 기본값으로 유저 이름 사용
-        order.setStatus("PAYMENT_COMPLETED");
-        order.setOrderedAt(LocalDateTime.now());
-        order.setCarrierName("우체국택배");
-
-        // 계산된 금액들을 모두 설정
-        order.setSubtotalPrice(subtotalPrice);
-        order.setShippingFee(shippingFee);
-        order.setCashUsed(finalAmount);
-        order.setTotalPrice((long) finalAmount);
-
-        // 주문 항목 생성 및 추가
-        OrderItem orderItem = OrderItem.create(order, product, option, quantity);
-        order.getOrderItems().add(orderItem);
-
-        return order;
+    // 연관관계 편의 메서드
+    public void addOrderItem(OrderItem orderItem) {
+        this.orderItems.add(orderItem);
+        orderItem.setOrder(this);
     }
 
 }

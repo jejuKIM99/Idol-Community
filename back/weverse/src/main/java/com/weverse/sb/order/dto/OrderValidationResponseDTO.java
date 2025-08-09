@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class OrderInitiateResponseDTO { // PG사 결제 준비 결과 (결제 화면에 표시될 정보)
+public class OrderValidationResponseDTO { // PG사 결제 준비 결과 (결제 화면에 표시될 정보)
 
 	// 거래 식별 정보
 	private String orderNumber; // PG사에 전달할 우리측 고유 주문번호

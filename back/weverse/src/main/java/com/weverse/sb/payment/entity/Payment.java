@@ -3,6 +3,8 @@ package com.weverse.sb.payment.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import com.weverse.sb.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -15,13 +17,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "payment")
 public class Payment {
@@ -47,32 +51,18 @@ public class Payment {
     @Column(name = "currency", length = 10, nullable = false)
     private String currency;
 
-    @Column(name = "paid_at")
+    @CreatedDate
+    @Column(name = "paid_at", updatable = false)
     private LocalDateTime paidAt;
-
-    @Column(name = "transaction_id", length = 255)
-    private String transactionId;
 
     @Column(name = "payment_gateway", length = 50)
     private String paymentGateway;
     
     // [PG사 연동] PG사 거래 ID
-    @Column(name = "imp_uid", nullable = false, unique = true)
+    @Column(name = "imp_uid", length = 255, nullable = false, unique = true)
     private String impUid;
     
     // [PG사 연동] 우리 시스템의 고유 주문 번호
     @Column(name = "merchant_uid", nullable = false, unique = true)
     private String merchantUid;
-    
-    // Payment 생성을 위한 정적 팩토리 메서드 추가
-    public static Payment create(User user, int amount, String paymentMethod) {
-        Payment payment = new Payment();
-        payment.setUser(user);
-        payment.setAmount(new BigDecimal(amount));
-        payment.setPaymentMethod(paymentMethod);
-        payment.setStatus("COMPLETED");
-        payment.setCurrency("KRW");
-        payment.setPaidAt(LocalDateTime.now());
-        return payment;
-    }
 }
