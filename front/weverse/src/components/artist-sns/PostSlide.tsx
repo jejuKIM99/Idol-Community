@@ -4,20 +4,20 @@ import React from 'react';
 import styles from './PostSlide.module.css';
 
 interface PostSlideProps {
-  artistImage: string;
+  image: string;
   artistName: string;
-  postContent: string;
+  content: string;
 }
 
-const PostSlide: React.FC<PostSlideProps> = ({ artistImage, artistName, postContent }) => {
+const PostSlide: React.FC<PostSlideProps> = ({ image, artistName, content }) => {
   return (
     <div className={styles.slideContainer}>
       <div className={styles.imageWrapper}>
-        <img alt={artistName} className={styles.artistImage} />
+        <img src={`http://localhost:80${image}`} alt={artistName} className={styles.artistImage} />
       </div>
       <div className={styles.content}>
         <h3 className={styles.artistName}>{artistName}</h3>
-        <p className={styles.postContent}>{postContent}</p>
+        <p className={styles.postContent}>{content}</p>
       </div>
     </div>
   );

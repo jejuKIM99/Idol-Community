@@ -3,7 +3,7 @@ package com.weverse.sb.community.entity;
 import java.time.LocalDateTime;
 
 import com.weverse.sb.artist.entity.Artist;
-import com.weverse.sb.artist.entity.Tag;
+import com.weverse.sb.artist.entity.Group;
 import com.weverse.sb.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -33,16 +33,16 @@ public class Post {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
     @JoinColumn(name = "artist_id")
     private Artist artist;
-
+    
     @ManyToOne
-    @JoinColumn(name = "tag_id")
-    private Tag tag;
+    @JoinColumn(name = "group_id")
+    private Group group;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
@@ -55,4 +55,7 @@ public class Post {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "author_type", nullable = false)
+    private String authorType; 
 }

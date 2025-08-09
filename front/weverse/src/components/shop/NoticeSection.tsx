@@ -1,10 +1,17 @@
 import React from 'react';
 import styles from './NoticeSection.module.css';
-import { Notice } from '@/data/mockData';
+// import { Notice } from '@/data/mockData'; // 목업 데이터 제거
+
+interface ShopNoticeDTO {
+  noticeId: number;
+  title: string;
+  content: string;
+  createdAt: string;
+}
 
 // Props 인터페이스에 title 속성 추가
 interface Props {
-  notices: Notice[];
+  notices: ShopNoticeDTO[];
   title: string; 
 }
 
@@ -19,9 +26,10 @@ const NoticeSection = ({ notices, title }: Props) => {
         <ul className={styles.noticeList}>
             {notices.length > 0 ? (
                 notices.map(notice => (
-                    <li key={notice.id}>
+                    <li key={notice.noticeId}>
                         <a href="#">
-                            <span className={styles.noticeCategory}>[{notice.category}]</span>
+                            {/* 백엔드 DTO에 category 필드가 없으므로 제거 */}
+                            {/* <span className={styles.noticeCategory}>[{notice.category}]</span> */}
                             <span className={styles.noticeTitle}>{notice.title}</span>
                         </a>
                     </li>
@@ -33,5 +41,6 @@ const NoticeSection = ({ notices, title }: Props) => {
     </section>
   );
 };
+
 
 export default NoticeSection;

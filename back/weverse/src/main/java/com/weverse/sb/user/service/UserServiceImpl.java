@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService{
                 .phoneNumber(user.getPhoneNumber())
                 .country(user.getCountry())
                 .profileImage(user.getProfileImage())
-                .jellyBalance(user.getJellyBalance())
+                .jellyBalance(user.getJellyBalance() != null ? user.getJellyBalance() : 0)
                 .cashBalance(user.getCashBalance())
                 .isEmailVerified(user.getIsEmailVerified())
                 .isSmsVerified(user.getIsSmsVerified())

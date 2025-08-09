@@ -26,7 +26,7 @@ public class ProductCategory {
     @Column(name = "category_id")
     private Long id;
 
-    @Column(name = "category_name", length = 100, nullable = false)
+    @Column(name = "category_name", length = 100)
     private String categoryName;
 
     @ManyToOne
