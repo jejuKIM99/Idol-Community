@@ -23,7 +23,7 @@ public interface PostService {
 
 	void deleteFavorite(Long artistId, Long userId);
 
-	List<PostDTO> getFanPostDTOList(Long groupId);
+	List<PostDTO> getFanPostDTOList(Long groupId, String type);
 
 	void inputFanPost(Long artistID, String content, Long userId);
 

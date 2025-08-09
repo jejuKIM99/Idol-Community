@@ -1,58 +1,135 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './MediaTabContent.module.css';
 import MediaItemCard from './MediaItemCard';
+import axios from 'axios';
 
 interface MediaTabContentProps {
-  artistName?: string | null;
+  artistName?: string;
+  groupId?: string | null;
+  artistId?: string | null;
   onItemClick: (item: any) => void;
 }
 
-const MediaTabContent: React.FC<MediaTabContentProps> = ({ artistName, onItemClick }) => {
+// Artist와 Group은 중복되므로 한 곳에 정의하여 재사용할 수 있습니다.
+export interface Group {
+  id: number;
+  name: string;
+  profileImage: string;
+}
+
+export interface Artist {
+  id: number;
+  name: string;
+  profileImage: string;
+  birthDate: string;
+  description: string;
+}
+
+// 영상 데이터의 인터페이스
+export interface UploadedVideo {
+  id: number;
+  artist: Artist;
+  title: string;
+  description: string;
+  price: number;
+  thumbnail: string;
+  uploadedAt: string;
+  scheduledAt: string | null;
+  group: Group;
+}
+
+// 최종 응답 데이터 구조의 인터페이스
+export interface VideoWithCategory {
+  categoryTitle: string;
+  videos: UploadedVideo[];
+}
+
+export interface Streaming {
+  streamingId: number;
+  owner: Artist;
+  streamer: Artist;
+  videoId: string;
+  title: string;
+  thumbnail: string;
+  createdAt: string;
+  scheduledAt: string | null;
+  group: Group;
+}
+
+
+const MediaTabContent: React.FC<MediaTabContentProps> = ({ artistName, groupId, artistId, onItemClick }) => {
   const [activeTab, setActiveTab] = useState('home');
   const [activeHomeSubTab, setActiveHomeSubTab] = useState('Home');
 
-  const continueWatchingData: { thumbnailSrc: string; duration?: string; title: string; type: 'video' | 'image'; artistImageSrc?: string; uploadDate?: string; views?: string; likes?: string; chats?: string; hasSubtitles?: boolean; artistName?: string; }[] = [
-    { thumbnailSrc: "/images/thumbnail1.jpg", duration: "03:45", title: `${artistName} - 영상 제목 1`, type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '8월 1일 14:30', views: '1.5M', likes: '300K', chats: '10K', hasSubtitles: true, artistName: artistName },
-    { thumbnailSrc: "/images/thumbnail2.jpg", duration: "02:10", title: `${artistName} - 영상 제목 2`, type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '8월 2일 15:00', views: '1.2M', likes: '250K', chats: '8K', hasSubtitles: false, artistName: artistName },
-    { thumbnailSrc: "/images/thumbnail3.jpg", duration: "05:00", title: `${artistName} - 영상 제목 3`, type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '8월 3일 16:30', views: '1.0M', likes: '200K', chats: '7K', hasSubtitles: true, artistName: artistName },
-  ];
+  const [data, setData] = useState<VideoWithCategory[] | null>(null);
+  const [streamingData, setStreamingData] = useState<Streaming[]>([]);
 
-  const latestMediaData: { thumbnailSrc: string; duration?: string; title: string; type: 'video' | 'image'; artistImageSrc?: string; uploadDate?: string; views?: string; likes?: string; chats?: string; hasSubtitles?: boolean; artistName?: string; }[] = [
-    { thumbnailSrc: "/images/thumbnail4.jpg", duration: "01:23", title: `${artistName} - 최신 영상 1`, type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '7월 20일 10:00', views: '800K', likes: '150K', chats: '5K', hasSubtitles: false, artistName: artistName },
-    { thumbnailSrc: "/images/thumbnail5.jpg", title: `${artistName} - 최신 이미지 1`, type: "image", artistImageSrc: '/images/default_artist.jpg', uploadDate: '7월 21일 11:00', views: undefined, likes: undefined, chats: undefined, hasSubtitles: undefined, artistName: artistName },
-    { thumbnailSrc: "/images/thumbnail6.jpg", duration: "04:50", title: `${artistName} - 최신 영상 2`, type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '7월 22일 12:00', views: '700K', likes: '120K', chats: '4K', hasSubtitles: true, artistName: artistName },
-    { thumbnailSrc: "/images/thumbnail7.jpg", title: `${artistName} - 최신 이미지 2`, type: "image", artistImageSrc: '/images/default_artist.jpg', uploadDate: '7월 23일 13:00', views: undefined, likes: undefined, chats: undefined, hasSubtitles: undefined, artistName: artistName },
-    { thumbnailSrc: "/images/thumbnail8.jpg", duration: "02:00", title: `${artistName} - 최신 영상 3`, type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '7월 24일 14:00', views: '600K', likes: '100K', chats: '3K', hasSubtitles: false, artistName: artistName },
-    { thumbnailSrc: "/images/thumbnail9.jpg", duration: "03:15", title: `${artistName} - 최신 영상 4`, type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '7월 25일 15:00', views: '500K', likes: '90K', chats: '2K', hasSubtitles: true, artistName: artistName },
-  ];
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const forWeverseData: { thumbnailSrc: string; duration?: string; title: string; type: 'video' | 'image'; artistImageSrc?: string; uploadDate?: string; views?: string; likes?: string; chats?: string; hasSubtitles?: boolean; artistName?: string; }[] = [
-    { thumbnailSrc: "/images/thumbnail10.jpg", duration: "01:00", title: "For Weverse 영상 1", type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '7월 10일 09:00', views: '400K', likes: '80K', chats: '1K', hasSubtitles: false, artistName: artistName },
-    { thumbnailSrc: "/images/thumbnail11.jpg", title: "For Weverse 이미지 1", type: "image", artistImageSrc: '/images/default_artist.jpg', uploadDate: '7월 11일 10:00', views: undefined, likes: undefined, chats: undefined, hasSubtitles: undefined, artistName: artistName },
-  ];
+  useEffect(() => {
+    const fetchMedia = async () => {
+      try {
+        const response = await axios.get(`http://localhost:80/api/artistSNS/media`, {
+          params: { groupId: groupId }
+        });        
+        const fetchedData = response.data;
+        console.log("fetch data : ", fetchedData);
+        setData(fetchedData);
+      } catch (err) {
+        console.error('Failed to fetch notice data:', err);
+      }
+    };
 
-  const musicContentsData: { thumbnailSrc: string; duration?: string; title: string; type: 'video' | 'image'; artistImageSrc?: string; uploadDate?: string; views?: string; likes?: string; chats?: string; hasSubtitles?: boolean; artistName?: string; }[] = [
-    { thumbnailSrc: "/images/thumbnail12.jpg", duration: "03:30", title: "음악 콘텐츠 1", type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '6월 1일 18:00', views: '300K', likes: '70K', chats: '500', hasSubtitles: true, artistName: artistName },
-    { thumbnailSrc: "/images/thumbnail13.jpg", duration: "02:45", title: "음악 콘텐츠 2", type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '6월 2일 19:00', views: '200K', likes: '60K', chats: '400', hasSubtitles: false, artistName: artistName },
-    { thumbnailSrc: "/images/thumbnail14.jpg", duration: "04:00", title: "음악 콘텐츠 3", type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '6월 3일 20:00', views: '100K', likes: '50K', chats: '300', hasSubtitles: true, artistName: artistName },
-    { thumbnailSrc: "/images/thumbnail15.jpg", duration: "03:00", title: "음악 콘텐츠 4", type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '6월 4일 21:00', views: '90K', likes: '40K', chats: '200', hasSubtitles: false, artistName: artistName },
-    { thumbnailSrc: "/images/thumbnail16.jpg", duration: "02:20", title: "음악 콘텐츠 5", type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '6월 5일 22:00', views: '80K', likes: '30K', chats: '100', hasSubtitles: true, artistName: artistName },
-  ];
+    fetchMedia();
+  }, [groupId]);
 
-  const hebiContentsData: { thumbnailSrc: string; duration?: string; title: string; type: 'video' | 'image'; artistImageSrc?: string; uploadDate?: string; views?: string; likes?: string; chats?: string; hasSubtitles?: boolean; artistName?: string; }[] = [
-    { thumbnailSrc: "/images/hebi1.jpg", duration: "01:30", title: `${artistName} - Hebi Content 1`, type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '5월 1일 10:00', views: '70K', likes: '20K', chats: '50', hasSubtitles: false, artistName: artistName },
-    { thumbnailSrc: "/images/hebi2.jpg", title: `${artistName} - Hebi Content 2`, type: "image", artistImageSrc: '/images/default_artist.jpg', uploadDate: '5월 2일 11:00', views: undefined, likes: undefined, chats: undefined, hasSubtitles: undefined, artistName: artistName },
-    { thumbnailSrc: "/images/hebi3.jpg", duration: "02:00", title: `${artistName} - Hebi Content 3`, type: "video", artistImageSrc: '/images/default_artist.jpg', uploadDate: '5월 3일 12:00', views: '60K', likes: '10K', chats: '30', hasSubtitles: true, artistName: artistName },
-  ];
+  useEffect(() => {
+    const fetchStreamingData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:80/api/artistSNS/streamingAll`, {
+          params: { groupId: groupId }
+        });  
+        setStreamingData(response.data);
+        console.log("streaming data fetch : " ,response.data)
+      } catch (err) {
+        console.error('Failed to fetch streaming data:', err);
+        setError('스트리밍 데이터를 불러오는 데 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (groupId) {
+      fetchStreamingData();
+    }
+  }, [groupId]);
+
+
+  const getVideosByCategory = (categoryTitle: string) => {
+    return data?.find(item => item.categoryTitle === categoryTitle)?.videos || [];
+  };
+
+  const continueWatchingData = streamingData;
+
+  const latestMediaData = data
+    ? data
+        .flatMap(category => category.videos) // 모든 카테고리의 videos를 하나의 배열로 합칩니다.
+        .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()) // uploadedAt을 기준으로 내림차순 정렬합니다.
+        .slice(0, 10) // 상위 10개만 선택합니다.
+    : [];
+
+  const forWeverseData = getVideosByCategory('forweverse');
+  const hebiContentsData = getVideosByCategory('contents');
+  const musicContentsData = getVideosByCategory('music');
 
   const allVideoMediaData = [
-    ...continueWatchingData.filter(item => item.type === 'video'),
-    ...latestMediaData.filter(item => item.type === 'video'),
-    ...forWeverseData.filter(item => item.type === 'video'),
-    ...musicContentsData.filter(item => item.type === 'video'),
-    ...hebiContentsData.filter(item => item.type === 'video'),
+    ...continueWatchingData,
+    ...latestMediaData,
+    ...forWeverseData,
+    ...musicContentsData,
+    ...hebiContentsData,
   ];
 
   return (
