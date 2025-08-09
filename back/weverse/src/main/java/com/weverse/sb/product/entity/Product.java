@@ -50,8 +50,8 @@ public class Product {
     
     @Column(name = "thumbnail", columnDefinition = "TEXT")
     private String thumbnail;
-
-    @Column(name = "price", precision = 15, scale = 2)
+  
+    @Column(name = "price", precision = 19, scale = 2, nullable = false)
     private BigDecimal price;
 
     @Column(name = "stock_qty")

@@ -1,5 +1,6 @@
 package com.weverse.sb.user.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -53,8 +54,8 @@ public class User {
     @Column(name = "jelly_balance", nullable = false)
     private Integer jellyBalance = 0;
 
-    @Column(name = "cash_balance", nullable = false)
-    private Integer cashBalance = 0;
+    @Column(name = "cash_balance", precision = 19, scale = 2, nullable = false)
+    private BigDecimal cashBalance = BigDecimal.ZERO;
 
     @Column(name = "is_email_verified", nullable = false)
     private Boolean isEmailVerified = false;
@@ -66,11 +67,11 @@ public class User {
     private LocalDateTime createdAt;
     
     // 사용자 잔액 차감
-    public void decreaseCash(int amount) {
-        if (this.cashBalance < amount) {
-            // throw new InsufficientCashException("잔액이 부족합니다.");
+    public void decreaseCash(BigDecimal amount) {
+        if (this.cashBalance.compareTo(amount) == -1) {
+            throw new RuntimeException("보유 캐시가 부족합니다.");
         }
-        this.cashBalance -= amount;
+        this.cashBalance = this.cashBalance.subtract(amount);
     }
 }
 

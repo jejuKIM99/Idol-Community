@@ -1,8 +1,11 @@
 package com.weverse.sb.order.service;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.weverse.sb.order.dto.OrderInitiateResponseDTO;
 import com.weverse.sb.order.dto.OrderRequestDTO;
 import com.weverse.sb.order.dto.OrderResponseDTO;
 import com.weverse.sb.order.entity.Order;
@@ -29,7 +32,78 @@ public class OrderService {
     private final ProductOptionRepository productOptionRepository;
     
     @Transactional
-    public OrderResponseDTO createOrder(Long userId, OrderRequestDTO requestDTO) {
+    public OrderInitiateResponseDTO initiateOrder(Long userId, OrderRequestDTO requestDTO) {
+	    	// 주문에 필요한 정보들을 모두 조회
+	    	User user = userRepository.findById(userId).orElseThrow();
+        Product product = productRepository.findById(requestDTO.getProductId()).orElseThrow();
+        ProductOption option = null;
+        
+        // 상픔 옵션을 선택했다면 선택한 옵션 정보 조회
+        if (requestDTO.getOptionId() != null) {
+			option = productOptionRepository.findById(requestDTO.getProductId()).orElseThrow();
+		}
+        
+        // 상품 재고가 존재하는 지 확인
+        int stockQuantity = 0;
+        if (option == null) { // 상품 옵션 선택 X
+        	stockQuantity = product.getStockQty();
+		} else { // 상품 옵션 선택 O
+			stockQuantity = option.getStockQty();
+		}
+        if (requestDTO.getQuantity() > stockQuantity) {
+        		throw new RuntimeException("상품 재고가 부족합니다.");
+		}
+        
+        // 상품 가격 확인
+        BigDecimal price = BigDecimal.ZERO;
+        if (option == null) {
+			price = product.getPrice();
+		} else {
+			price = option.getAdditionalPrice();
+		}
+        
+        // 상품가, 배송비 등 기본 금액 계산
+        int subtotalPrice = product.getPrice().intValueExact() * requestDTO.getQuantity();
+        int shippingFee = calculateShippingFee(user.getCountry());
+        int totalAmount = subtotalPrice + shippingFee; // 원래 내야 할 총 금액
+        
+        // 사용할 캐시 검증 및 실제 PG 결제 금액 계산
+        int cashToUse = requestDTO.getCashToUse();
+        if (user.getCashBalance() < cashToUse) {
+            throw new RuntimeException("보유 캐시가 부족합니다.");
+        }
+        if (totalAmount < cashToUse) {
+            throw new RuntimeException("사용할 캐시가 총 금액보다 많을 수 없습니다.");
+        }
+        int finalPgAmount = totalAmount - cashToUse; // PG사로 결제할 최종 금액
+
+        // 우리 시스템의 고유 주문번호 생성
+        String merchantUid = "order_" + System.currentTimeMillis();
+
+        // 'PENDING' 상태의 Order 생성 (사용한 캐시 정보도 함께 기록)
+        Order order = Order.builder()
+                .user(user)
+                .merchantUid(merchantUid)
+                .status("PENDING")
+                .subtotalPrice(subtotalPrice)
+                .shippingFee(shippingFee)
+                .cashUsed(cashToUse) // 사용한 캐시 기록
+                .totalPrice((long) totalAmount) // 원래 총액 기록
+                .build();
+        orderRepository.save(order);
+
+        // 프론트엔드에는 '실제 PG 결제 금액'을 전달
+        return OrderInitiateResponseDTO.builder()
+                .merchantUid(merchantUid)
+                .productName(product.getProductName())
+                .amount(finalPgAmount) // PG사 결제창에는 캐시가 차감된 금액이 표시됨
+                .buyerEmail(user.getEmail())
+                .buyerName(user.getName())
+                .build();
+    }
+
+    @Transactional
+    public OrderResponseDTO createOrderByCash(Long userId, OrderRequestDTO requestDTO) {
         // 1. 주문에 필요한 정보들을 모두 조회합니다. (User, Product, Option 등)
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Product product = productRepository.findById(requestDTO.getProductId()).orElseThrow(() -> new RuntimeException("Product not found"));
@@ -63,6 +137,7 @@ public class OrderService {
 
         return OrderResponseDTO.from(newOrder);
     }
+    
 
     // 배송비 계산 로직 예시
     private int calculateShippingFee(String country) {

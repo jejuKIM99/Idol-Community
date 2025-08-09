@@ -38,6 +38,6 @@ public class ProductOption {
     @Column(name = "stock_qty")
     private Integer stockQty = 0;
 
-    @Column(name = "additional_price", precision = 15, scale = 2)
+    @Column(name = "additional_price", precision = 19, scale = 2)
     private BigDecimal additionalPrice = BigDecimal.ZERO;
 }
