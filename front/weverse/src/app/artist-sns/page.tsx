@@ -63,9 +63,9 @@ const ArtistSNSPage = () => {
       case 'artist':
         return <ArtistTabContent groupId={groupId} artistId={artistId} />;
       case 'media':
-        return <MediaTabContent artistId={artistId} onItemClick={(item) => handleItemClick(item, 'media')} />;
+        return <MediaTabContent groupId={groupId} artistId={artistId} onItemClick={(item) => handleItemClick(item, 'media')} />;
       case 'live':
-        return <LiveTabContent artistId={artistId} onItemClick={(item) => handleItemClick(item, 'live')} />;
+        return <LiveTabContent groupId={groupId} onItemClick={(item) => handleItemClick(item, 'live')} />;
       case 'shop':
         return <div className={styles.contentSection}><h2>{artistId} 샵 페이지 내용</h2><p>이곳은 외부 샵 페이지로 이동하는 링크가 될 것입니다.</p></div>;
       default:

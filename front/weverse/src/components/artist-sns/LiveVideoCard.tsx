@@ -31,7 +31,7 @@ const LiveVideoCard: React.FC<LiveVideoCardProps> = ({
   return (
     <div className={styles.cardContainer}>
       <div className={styles.thumbnailWrapper}>
-        <img alt={title} className={styles.thumbnail} />
+        <img src={`http://localhost:80${thumbnailSrc}`} alt={title} className={styles.thumbnail} />
         <span className={styles.duration}>{duration}</span>
       </div>
       <h3 className={styles.title}>{title}</h3>
@@ -42,7 +42,7 @@ const LiveVideoCard: React.FC<LiveVideoCardProps> = ({
         {hasSubtitles && <span className={styles.cc}>CC</span>}
       </div>
       <div className={styles.artistInfo}>
-        <img alt={artistName} className={styles.artistImage} />
+        <img src={`http://localhost:80${thumbnailSrc}`} alt={artistName} className={styles.artistImage} />
         <div className={styles.artistDetails}>
           <span className={styles.artistName}>{artistName}</span>
           <span className={styles.uploadDate}>{uploadDate}</span>

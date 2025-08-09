@@ -62,7 +62,7 @@ const ItemDetailView: React.FC<ItemDetailViewProps> = ({ item, type }) => {
           <div className={styles.leftSection}>
             <div className={styles.videoPlayer}>
               {/* Placeholder for video player */}
-              <img src={item.thumbnailSrc || item.thumbnail} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              <img src={`http://localhost:80${item.thumbnailSrc || item.thumbnail}`} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>
             <div className={styles.videoInfo}>
               <div className={styles.artistProfile}>
