@@ -3,9 +3,10 @@ import styles from './AnnouncementCard.module.css';
 
 interface AnnouncementCardProps {
   title: string;
+  create_at: string;
 }
 
-const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ title }) => {
+const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ title, create_at }) => {
   return (
     <div className={styles.announcementCard}>
       <p className={styles.anon}>공지</p>

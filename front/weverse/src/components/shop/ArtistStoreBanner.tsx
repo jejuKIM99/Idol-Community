@@ -1,16 +1,22 @@
-// components/shop/ArtistStoreBanner.tsx (New File)
+// components/shop/ArtistStoreBanner.tsx (Updated)
 "use client";
 
+import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import styles from './MainBanner.module.css'; // Reusing MainBanner styles
-import { Banner } from '@/data/mockData';
+
+interface ShopBannerDTO {
+  bannerId: number;
+  imageUrl: string;
+  linkUrl: string;
+}
 
 interface Props {
-  banners: Banner[];
+  banners: ShopBannerDTO[];
 }
 
 const ArtistStoreBanner = ({ banners }: Props) => {
@@ -32,24 +38,14 @@ const ArtistStoreBanner = ({ banners }: Props) => {
           disableOnInteraction: false,
         }}
       >
-        {banners.map((banner, index) => (
-          <SwiperSlide key={index}>
-            <div className={styles.mainBanner}>
-              <div className={styles.bannerBg} style={{ backgroundImage: `url(${banner.imgSrc})` }}></div>
-              <div className={styles.bannerContent}>
-                {banner.albumArt && (
-                  <img 
-                    src={banner.albumArt}
-                    alt={`${banner.title} Album Art`}
-                    className={styles.bannerAlbumArt}
-                  />
-                )}
-                <div className={styles.bannerText}>
-                  <h2>{banner.title}</h2>
-                  <p>{banner.subtitle}</p>
-                </div>
+        {banners.map((banner) => (
+          <SwiperSlide key={banner.bannerId}>
+            <Link href={banner.linkUrl || '#'}>
+              <div className={styles.mainBanner}>
+                <div className={styles.bannerBg} style={{ backgroundImage: `url(http://localhost:80${banner.imageUrl})` }}></div>
+                {/* Banner content can be added here if needed in the future */}
               </div>
-            </div>
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>

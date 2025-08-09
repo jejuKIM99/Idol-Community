@@ -17,11 +17,13 @@
   border-radius: 10px;
   width: 90%;
   max-width: 800px;
-  height: 40%;
-  max-height: 600px;
+  height: auto;
+  max-height: 80vh;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   color: #333;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .closeButton {
@@ -98,32 +100,52 @@
   margin-right: 10px;
   font-size: 0.9em;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.activeTag {
+  background-color: #0070f3;
+  color: white;
 }
 
 .selectedArtistInfo {
   text-align: left;
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
 .selectedArtistInfo > p {
-  font-size: min(2vw, 36px);
+  font-size: min(2vw, 24px);
   font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.artistDetailGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 20px;
 }
 
 .artistDetail {
-  margin-top: 15px;
-  height: 50%;
+  text-align: center;
 }
 
 .artistImage {
-  width: 180px;
-  height: 180px;
-  background: rgb(128, 128, 128);
-  border-radius: 32px;
-  margin-bottom: 20px;
+  width: 100px;
+  height: 100px;
+  background: rgb(230, 230, 230);
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.artistImage img {
+    object-fit: cover;
 }
 
 .artistDetailName {
-  font-size: 1.2em;
+  font-size: 1em;
   font-weight: bold;
   margin: 0;
 }

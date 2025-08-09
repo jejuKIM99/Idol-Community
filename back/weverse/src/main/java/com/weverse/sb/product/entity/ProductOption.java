@@ -29,13 +29,13 @@ public class ProductOption {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column(name = "option_name", length = 255, nullable = false)
+    @Column(name = "option_name", length = 255)
     private String optionName;
 
-    @Column(name = "stock_qty", nullable = false)
+    @Column(name = "stock_qty")
     private Integer stockQty = 0;
 
     @Column(name = "additional_price", precision = 19, scale = 2)

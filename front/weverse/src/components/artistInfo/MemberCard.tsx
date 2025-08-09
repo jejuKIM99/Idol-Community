@@ -3,20 +3,19 @@ import Link from 'next/link';
 import styles from './MemberCard.module.css';
 
 interface MemberCardProps {
-  member: {
-    name: string;
-    imageUrl: string;
-  };
+  name: string;
+  imageUrl: string;
   artistName: string;
-  artistId: string;
+  artistId: number;
+  groupId: number;
 }
 
-const MemberCard: React.FC<MemberCardProps> = ({ member, artistName, artistId }) => {
+const MemberCard: React.FC<MemberCardProps> = ({ name, imageUrl, artistName, artistId, groupId }) => {
   return (
-    <Link href={`/nickname?artistName=${artistName}&memberName=${member.name}&memberImage=${member.imageUrl}&artistId=${artistId}`} legacyBehavior>
+    <Link href={`/nickname?artistName=${artistName}&memberName=${name}&memberImage=${imageUrl}&artistId=${artistId}&groupId=${groupId}`} legacyBehavior>
       <a className={styles.memberCard}>
-        <img src={member.imageUrl} alt={member.name} className={styles.memberImage} />
-        <p className={styles.memberName}>{member.name}</p>
+        <img src={`http://localhost:80${imageUrl}`} alt={name} className={styles.memberImage} />
+        <p className={styles.memberName}>{name}</p>
       </a>
     </Link>
   );
