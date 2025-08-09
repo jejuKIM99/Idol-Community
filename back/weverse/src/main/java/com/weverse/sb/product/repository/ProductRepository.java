@@ -11,6 +11,7 @@ import com.weverse.sb.product.entity.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
 	// 기본 버전 (LAZY 로딩 주의)
     List<Product> findByArtist_ArtistId(Long artistId);
 
@@ -23,4 +24,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 	List<Product> findByGroup_GroupId(Long groupId);
 	
+	// 상품명으로 검색 (대소문자 구분 없음)
+	List<Product> findByProductNameContainingIgnoreCase(String keyword);
 }

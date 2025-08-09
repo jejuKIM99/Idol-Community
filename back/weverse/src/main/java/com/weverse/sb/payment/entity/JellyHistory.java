@@ -2,6 +2,7 @@ package com.weverse.sb.payment.entity;
 
 import java.time.LocalDateTime;
 
+import com.weverse.sb.payment.repository.JellyHistoryRepository;
 import com.weverse.sb.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -48,4 +49,35 @@ public class JellyHistory {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+    
+    
+    public static void logJellyTransaction(JellyHistoryRepository jellyHistoryRepository, User user, JellyProduct product, int balanceBefore) {
+    	
+    	int baseJelly = product.getJellyAmount();
+        int bonusJelly = product.getBonusJellyValue(); 
+        
+    	 // 5-1. 기본 젤리 충전 내역
+        int balanceAfterBase = balanceBefore + baseJelly;
+        JellyHistory chargeHistory = JellyHistory.builder()
+            .user(user)
+            .changeAmount(baseJelly)
+            .balanceAfter(balanceAfterBase)
+            .changeType("CHARGE")
+            .description(product.getProductName() + " 충전")
+            .build();
+        jellyHistoryRepository.save(chargeHistory);
+
+        // 5-2. 보너스 젤리 적립 내역 (보너스가 있을 경우)
+        if (bonusJelly > 0) {
+        	int finalBalance = balanceAfterBase + bonusJelly;
+            JellyHistory bonusHistory = JellyHistory.builder()
+                .user(user)
+                .changeAmount(product.getBonusJelly())
+                .balanceAfter(finalBalance)
+                .changeType("BONUS")
+                .description(product.getBenefitDescription())
+                .build();
+            jellyHistoryRepository.save(bonusHistory);
+        }
+    }
 }

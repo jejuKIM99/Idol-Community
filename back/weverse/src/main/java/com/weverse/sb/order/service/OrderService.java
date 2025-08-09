@@ -72,5 +72,10 @@ public class OrderService {
         }
         return 15000; // 해외 배송비
     }
+
+	public void setOrderStatusToPaid(com.siot.IamportRestClient.response.Payment paymentData) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

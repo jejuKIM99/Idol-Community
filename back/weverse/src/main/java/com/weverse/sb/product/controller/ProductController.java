@@ -1,10 +1,10 @@
 package com.weverse.sb.product.controller;
 
-
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +18,7 @@ import com.weverse.sb.product.dto.ShopMainResponseDTO;
 import com.weverse.sb.product.dto.ShopProductDetailDTO;
 import com.weverse.sb.product.service.ProductService;
 import com.weverse.sb.product.service.ShopMainService;
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
