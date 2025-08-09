@@ -20,8 +20,10 @@ public class JellyPaymentProcessor implements PaymentProcessor{
 	@Override
     @Transactional
     public void verifyAndProcess(Payment paymentData) {
-        // 1. 우리 DB에서 merchant_uid로 'JellyPurchase' 정보 조회
-        JellyPurchase purchase = jellyPurchaseRepository.findByMerchantUid(paymentData.getMerchantUid())
+        // 1.  DB에서 merchant_uid로 'JellyPurchase' 정보 조회
+        String merchantUid =  paymentData.getMerchantUid();
+        
+        JellyPurchase purchase = jellyPurchaseRepository.findByMerchantUid(merchantUid)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 젤리 구매 요청입니다."));
 
         // 2. 금액 교차 검증 (DB의 주문 금액과 PG사 실제 결제 금액 비교)

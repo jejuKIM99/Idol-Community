@@ -61,9 +61,11 @@ public class JellyService {
         JellyProduct product = jellyProductRepository.findById(requestDto.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException("젤리 상품을 찾을 수 없습니다. ID: " + requestDto.getProductId()));
 
-        // 2. 고유 주문번호(merchant_uid) 생성
-        // 형식: "jelly_랜덤문자열" (e.g., jelly_a1b2c3d4-e5f6-...)
-        String merchantUid = "jelly_" + UUID.randomUUID().toString();
+        // 2. 고유 주문번호(merchant_uid) 생성 (아임포트 호환을 위해 길이 단축)
+        // 형식: "jelly_타임스탬프_랜덤4자리" (e.g., jelly_1704567890_ab1c)
+        String timestamp = String.valueOf(System.currentTimeMillis() / 1000); // 10자리 타임스탬프
+        String randomSuffix = UUID.randomUUID().toString().substring(0, 4); // 4글자 랜덤
+        String merchantUid = "jelly_" + timestamp + "_" + randomSuffix; // 총 22글자
 
         // 3. '결제 대기'(PENDING) 상태의 주문(JellyPurchase) 엔티티를 생성하여 DB에 저장
         JellyPurchase purchase = JellyPurchase.builder()
@@ -108,7 +110,7 @@ public class JellyService {
         // 3. 기존 JellyPurchase 엔티티에 최종 결제 정보(Payment)를 연결하고 상태 변경
         purchase.completePurchase(payment); // 상태를 'PAID'로 변경하고 Payment 연결
 
-        // 4. 사용자 젤리 잔액 업데이트 (기존 로직과 동일)
+        // 4. 사용자 젤리 잔액 업데이트 
         int balanceBefore = user.getJellyBalance();
         int totalAddedJelly = product.getJellyAmount() + product.getBonusJellyValue();
         int balanceAfter = balanceBefore + totalAddedJelly;

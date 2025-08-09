@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -22,7 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weverse.sb.payment.dto.JellyChargeRequestDTO;
 import com.weverse.sb.payment.entity.JellyProduct;
-import com.weverse.sb.payment.entity.JellyPurchase;
+
 import com.weverse.sb.payment.repository.JellyProductRepository;
 import com.weverse.sb.payment.repository.JellyPurchaseRepository;
 import com.weverse.sb.user.entity.User;
@@ -177,17 +177,14 @@ class JellyIntegrationTest {
         }
 
         // 결제 준비 요청
-        String response = mockMvc.perform(post("/api/jelly/charge")
+        mockMvc.perform(post("/api/jelly/charge")
                 .param("userId", testUser.getUserId().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(prepareRequest)))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                .andExpect(status().isOk());
 
         // merchantUid 추출 (실제로는 JSON 파싱이 필요하지만 여기서는 간단히 처리)
-        String merchantUid = "jelly_test_123"; // 실제로는 response에서 추출
+        String merchantUid = "jelly_test_123"; // 실제 구현에서는 response에서 추출
 
         // 결제 검증 요청
         JellyChargeRequestDTO verifyRequest = new JellyChargeRequestDTO();

@@ -28,7 +28,11 @@ public class PaymentVerificationService {
         IamportResponse<Payment> paymentResponse = iamportClient.paymentByImpUid(request.getImpUid());
         Payment paymentData = paymentResponse.getResponse();
         
-        // 2. 조회된 결제 데이터를 담당 프로세서에게 넘겨 검증 및 최종 처리를 모두 위임
+        // 2. merchantUid 선택 (아임포트 잘림 이슈 대응)
+        String correctMerchantUid = (request.getMerchantUid() != null) ? 
+            request.getMerchantUid() : paymentData.getMerchantUid();
+        
+        // 3. 조회된 결제 데이터를 담당 프로세서에게 넘기고 올바른 merchantUid도 전달
         processor.verifyAndProcess(paymentData);
     }
 

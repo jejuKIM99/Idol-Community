@@ -64,6 +64,7 @@ public class JellyHistory {
             .balanceAfter(balanceAfterBase)
             .changeType("CHARGE")
             .description(product.getProductName() + " 충전")
+            .createdAt(LocalDateTime.now())
             .build();
         jellyHistoryRepository.save(chargeHistory);
 
@@ -76,6 +77,7 @@ public class JellyHistory {
                 .balanceAfter(finalBalance)
                 .changeType("BONUS")
                 .description(product.getBenefitDescription())
+                .createdAt(LocalDateTime.now())
                 .build();
             jellyHistoryRepository.save(bonusHistory);
         }
