@@ -21,6 +21,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 		
 		// setAllowedOrigins("*") 는 웹소켓 cors 정책으로 인해, 허용 도메인을 지정해야함
 		registry.addHandler(chatHandler, "/ws/api/artistSNS/home/live").setAllowedOrigins("*");
+		registry.addHandler(chatHandler, "/ws/api/artistSNS/home/media").setAllowedOrigins("*");
 		
 	}
 	

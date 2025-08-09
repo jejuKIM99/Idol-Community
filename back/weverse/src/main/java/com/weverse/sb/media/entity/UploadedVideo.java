@@ -57,4 +57,7 @@ public class UploadedVideo {
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
+    
+    @Column(name = "video_url", length = 255, nullable = false)
+    private String videoUrl;
 }
