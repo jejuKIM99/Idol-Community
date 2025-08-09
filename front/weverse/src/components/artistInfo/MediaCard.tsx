@@ -5,10 +5,11 @@ interface MediaCardProps {
   thumbnail: string;
   title: string;
   date: string;
+  time: string;
   onClick: () => void;
 }
 
-const MediaCard: React.FC<MediaCardProps> = ({ thumbnail, title, date, onClick }) => {
+const MediaCard: React.FC<MediaCardProps> = ({ thumbnail, title, date,time, onClick }) => {
   return (
     <div className={styles.mediaCard} onClick={onClick}>
       <img src={thumbnail} alt={title} className={styles.thumbnail} />

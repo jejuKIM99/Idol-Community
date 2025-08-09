@@ -10,7 +10,17 @@ import 'swiper/css/pagination';
 import styles from './MainBanner.module.css';
 import { mainBanners } from '@/data/mockData';
 
-const MainBanner = () => {
+interface ShopBannerDTO {
+  bannerId: number;
+  imageUrl: string;
+  linkUrl: string;
+}
+
+interface MainBannerProps {
+  banners: ShopBannerDTO[];
+}
+
+const MainBanner = ({ banners }: MainBannerProps) => {
   return (
     <div className={styles.bannerContainer}>
       <Swiper
@@ -25,12 +35,13 @@ const MainBanner = () => {
           disableOnInteraction: false,
         }}
       >
-        {mainBanners.map((banner, index) => (
-          <SwiperSlide key={index}>
-            <Link href={banner.artistName ? `/shop/${encodeURIComponent(banner.artistName)}` : '#'}>
+        {banners.map((banner, index) => (
+          <SwiperSlide key={banner.bannerId}>
+            <Link href={banner.linkUrl || '#'}>
               <div className={styles.mainBanner}>
-                <div className={styles.bannerBg} style={{ backgroundImage: `url(${banner.imgSrc})` }}></div>
-                <div className={styles.bannerContent}>
+                <div className={styles.bannerBg} style={{ backgroundImage: `url(${banner.imageUrl})` }}></div>
+                {/* 백엔드에서 title, subtitle, albumArt 정보가 제공되지 않으므로 임시로 제거하거나 다른 방식으로 표시 */}
+                {/* <div className={styles.bannerContent}>
                   <img 
                     src={banner.albumArt}
                     alt={`${banner.title} Album Art`}
@@ -40,7 +51,7 @@ const MainBanner = () => {
                     <h2>{banner.title}</h2>
                     <p>{banner.subtitle}</p>
                   </div>
-                </div>
+                </div> */}
               </div>
             </Link>
           </SwiperSlide>
