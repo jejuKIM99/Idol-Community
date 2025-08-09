@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import styles from './artist-sns.module.css';
 import FanTabContent from '../../components/artist-sns/FanTabContent';
@@ -9,14 +9,36 @@ import ArtistSNSOverview from '../../components/artist-sns/ArtistSNSOverview';
 import LiveTabContent from '../../components/artist-sns/LiveTabContent';
 import MediaTabContent from '../../components/artist-sns/media/MediaTabContent';
 import ItemDetailView from '../../components/artist-sns/ItemDetailView';
+import axios from 'axios';
+
+
 
 const ArtistSNSPage = () => {
   const searchParams = useSearchParams();
   const artistId = searchParams.get('artistId');
   const artistName = searchParams.get('artistName') || 'Unknown Artist';
+  const memberName = searchParams.get('memberName');
+  const groupId = searchParams.get('groupId');
 
-  const [activeTab, setActiveTab] = useState('home'); // Default active tab
+  const [activeTab, setActiveTab] = useState('home');
   const [selectedItem, setSelectedItem] = useState<any>(null);
+
+
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('activeTab');
+    const itemFromUrl = searchParams.get('selectedItem');
+
+    if (tabFromUrl) {
+      setActiveTab(tabFromUrl);
+    }
+    if (itemFromUrl) {
+      try {
+        setSelectedItem(JSON.parse(decodeURIComponent(itemFromUrl)));
+      } catch (error) {
+        console.error("Failed to parse selectedItem from URL:", error);
+      }
+    }
+  }, [searchParams]);
 
   const handleItemClick = (item: any, type: 'live' | 'media') => {
     setSelectedItem(item);
@@ -35,17 +57,19 @@ const ArtistSNSPage = () => {
 
     switch (activeTab) {
       case 'home':
-        return <ArtistSNSOverview artistName={artistName} />;
+        return <ArtistSNSOverview artistId={artistId} memberName={memberName} />;
       case 'fan':
-        return <FanTabContent artistName={artistName} />;
+        return <FanTabContent groupId={groupId} artistId={artistId} />;
       case 'artist':
-        return <ArtistTabContent artistName={artistName} />;
+        return <ArtistTabContent artistId={artistId} />;
       case 'media':
-        return <MediaTabContent artistName={artistName} onItemClick={(item) => handleItemClick(item, 'media')} />;
+        return <MediaTabContent artistId={artistId} onItemClick={(item) => handleItemClick(item, 'media')} />;
       case 'live':
-        return <LiveTabContent artistName={artistName} onItemClick={(item) => handleItemClick(item, 'live')} />;
+        return <LiveTabContent artistId={artistId} onItemClick={(item) => handleItemClick(item, 'live')} />;
       case 'shop':
-        return <div className={styles.contentSection}><h2>{artistName} 샵 페이지 내용</h2><p>이곳은 외부 샵 페이지로 이동하는 링크가 될 것입니다.</p></div>;
+        return <div className={styles.contentSection}><h2>{artistId} 샵 페이지 내용</h2><p>이곳은 외부 샵 페이지로 이동하는 링크가 될 것입니다.</p></div>;
+      default:
+        return <ArtistSNSOverview artistId={artistId} memberName={memberName} />;
     }
   };
 

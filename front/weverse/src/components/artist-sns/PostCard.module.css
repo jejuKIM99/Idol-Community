@@ -4,6 +4,7 @@
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
+  color: black;
 }
 
 .header {
@@ -32,6 +33,12 @@
   height: 40px;
   border-radius: 50%;
   margin-right: 10px;
+}
+
+.postImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .headerInfo {

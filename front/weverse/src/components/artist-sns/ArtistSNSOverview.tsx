@@ -1,25 +1,91 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './ArtistSNSOverview.module.css';
 import ArtistHeaderInfo from './ArtistHeaderInfo';
 import PostCard from './PostCard';
 import CommentCard from './CommentCard';
 import { FaImage, FaVideo } from 'react-icons/fa';
+import axios from 'axios';
 
 interface ArtistSNSOverviewProps {
-  artistName?: string | null;
+  artistId?: string | null;
+  memberName?: string | null;
 }
 
-const ArtistSNSOverview: React.FC<ArtistSNSOverviewProps> = ({ artistName }) => {
+interface Profile {
+  artistId: number;
+  birthday: string;
+  profileImage: string;
+  stageName: string;
+}
+
+interface Post {
+  postId: number;
+  artistId: number;
+  profgroupId: number;
+  userId: number;
+  content: string;
+  createdAt: string;
+  image: string;
+  likeCount: number;
+  commentCount: number;
+  artistName: string;
+}
+
+const ArtistSNSOverview: React.FC<ArtistSNSOverviewProps> = ({ artistId, memberName }) => {
   const [activeSubTab, setActiveSubTab] = React.useState('posts');
+
+  const [profile, setProfile] = useState<Profile[]>([]); // 라이브 데이터 상태 추가
+  const [post, setPost] = useState<Post[]>([]); // 라이브 데이터 상태 추가
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchNotice = async () => {
+      console.log("fetchProfile")
+      if (artistId) {
+        try {
+          console.log("Fetching notice data for artistId:", artistId);
+          const response = await axios.get(`http://localhost:80/api/artistSNS/home/profile`, {
+            params: { artistId: artistId }
+          });
+          console.log('profile Data Response:', response.data); // API 응답 전체를 다시 확인
+          setProfile(response.data);
+        } catch (err) {
+          console.error('Failed to fetch notice data:', err);
+        }
+      }
+    };
+    fetchNotice();
+  }, [artistId]);
+
+  useEffect(() => {
+    const fetchNotice = async () => {
+      console.log("fetchPost")
+      if (artistId) {
+        try {
+          console.log("Fetching post data for artistId:", artistId);
+          const response = await axios.get(`http://localhost:80/api/artistSNS/home/artist`, {
+            params: { artistID: artistId }
+          });
+          console.log('post Data Response:', response.data); // API 응답 전체를 다시 확인
+          setPost(response.data.postList);
+        } catch (err) {
+          console.error('Failed to fetch post data:', err);
+        }
+      }
+    };
+    fetchNotice();
+  }, [artistId]);
 
   return (
     <div className={styles.container}>
       <div className={styles.section1}>
         <ArtistHeaderInfo
-          artistImage="/vercel.svg"
-          artistName={artistName || "Artist Name"}
-          artistBirthday="1997.09.01"
+          artistImage={`http://localhost:80${profile.profileImage}`}
+          artistName={profile.stageName}
+          artistBirthday={profile.birthday}
         />
         <button className={styles.followButton}>Follow</button>
       </div>
@@ -56,12 +122,18 @@ const ArtistSNSOverview: React.FC<ArtistSNSOverviewProps> = ({ artistName }) => 
           </div>
           {activeSubTab === 'posts' && (
             <div className={styles.postList}>
-              <PostCard profileImage="/vercel.svg" nickname="User 1" postDate="2 hours ago" postImageColor="#ffcccb" postContent="This is the first post." />
-              <PostCard profileImage="/next.svg" nickname="User 2" postDate="3 hours ago" postImageColor="#add8e6" postContent="This is the second post." />
-              <PostCard profileImage="/globe.svg" nickname="User 3" postDate="5 hours ago" postImageColor="#90ee90" postContent="This is the third post." />
-              <PostCard profileImage="/file.svg" nickname="User 4" postDate="1 day ago" postImageColor="#ffd700" postContent="This is the fourth post." />
-              <PostCard profileImage="/window.svg" nickname="User 5" postDate="2 days ago" postImageColor="#ffb6c1" postContent="This is the fifth post." />
-              <PostCard profileImage="/vercel.svg" nickname="User 6" postDate="3 days ago" postImageColor="#e6e6fa" postContent="This is the sixth post." />
+              {post.map((post) => (
+                <PostCard
+                  key={post.postId}
+                  profileImage={profile.profileImage}
+                  nickname={post.artistName}
+                  postDate={post.createdAt}
+                  postContent={post.content}
+                  likes={post.likeCount}
+                  comments={post.commentCount}
+                  img={post.image}
+                />
+              ))}
             </div>
           )}
           {activeSubTab === 'comments' && (
@@ -82,7 +154,7 @@ const ArtistSNSOverview: React.FC<ArtistSNSOverviewProps> = ({ artistName }) => 
           <div className={styles.momentSection}>
             <h3 className={styles.momentTitle}>Moment</h3>
             <div className={styles.momentImages}>
-              <div className={styles.momentImage} style={{ backgroundColor: '#FFADAD' }}></div>
+              <div className={styles.momentImage} style={{ backgroundImage: `` }}></div>
               <div className={styles.momentImage} style={{ backgroundColor: '#FFD6A5' }}></div>
               <div className={styles.momentImage} style={{ backgroundColor: '#FDFFB6' }}></div>
             </div>

@@ -7,10 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.weverse.sb.dto.user.UserDTO;
-import com.weverse.sb.entity.user.User;
-import com.weverse.sb.repository.user.UserRepository;
-import com.weverse.sb.service.user.UserService;
+import com.weverse.sb.user.entity.User;
+import com.weverse.sb.user.repository.UserRepository;
+import com.weverse.sb.user.service.UserService;
 
 @SpringBootTest
 class UserServiceInsertTests {
@@ -21,7 +20,7 @@ class UserServiceInsertTests {
 	@Autowired
 	private UserRepository userRepository;
 	
-	/*
+	
 	@Test
     void insertUsers() {
         IntStream.rangeClosed(1, 2).forEach(i -> {
@@ -43,6 +42,6 @@ class UserServiceInsertTests {
             this.userRepository.save(user);
         });
     }
-    */
+    
 	
 }

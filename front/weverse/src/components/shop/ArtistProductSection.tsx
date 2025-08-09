@@ -9,15 +9,38 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import styles from './ArtistProductSection.module.css';
-import { Artist } from '@/data/mockData';
+// import { Artist } from '@/data/mockData'; // 목업 데이터 제거
 import ProductCard from './ProductCard'; // Import the shared ProductCard
 
-interface Props {
-  artist: Artist;
+interface ShopArtistDTO {
+  artistId: number;
+  groupId: number;
+  stageName: string;
+  email: string;
+  password?: string;
+  profileImage: string;
+  snsUrl: string;
+  birthday: string;
+  statusMessage: string;
+  dmNickname: string;
 }
 
-const ArtistProductSection = ({ artist }: Props) => {
-  const { name: artistName, products } = artist;
+interface ShopProductDTO {
+  productId: number;
+  productName: string;
+  price: number;
+  productImage: string;
+  artistId: number;
+  artistName: string;
+}
+
+interface Props {
+  artist: ShopArtistDTO;
+  products: ShopProductDTO[];
+}
+
+const ArtistProductSection = ({ artist, products }: Props) => {
+  const { stageName: artistName } = artist;
   if (products.length === 0) return null;
 
   return (
@@ -33,7 +56,7 @@ const ArtistProductSection = ({ artist }: Props) => {
       {/* Desktop Grid View */}
       <div className={`${styles.productGrid} ${styles.desktopOnly}`}>
         {products.slice(0, 4).map(product => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.productId} product={product} />
         ))}
       </div>
 
@@ -47,7 +70,7 @@ const ArtistProductSection = ({ artist }: Props) => {
           className="product-swiper"
         >
           {products.map(product => (
-            <SwiperSlide key={product.id} style={{ height: 'auto' }}>
+            <SwiperSlide key={product.productId} style={{ height: 'auto' }}>
               <ProductCard product={product} />
             </SwiperSlide>
           ))}

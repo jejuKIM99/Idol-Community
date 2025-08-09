@@ -2,13 +2,26 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import styles from './ArtistSearchModal.module.css';
-import { Artist } from '@/data/mockData';
+// import { Artist } from '@/data/mockData'; // 목업 데이터 제거
 import { FiSearch, FiX } from 'react-icons/fi';
+
+interface ShopArtistDTO {
+  artistId: number;
+  groupId: number;
+  stageName: string;
+  email: string;
+  password?: string;
+  profileImage: string;
+  snsUrl: string;
+  birthday: string;
+  statusMessage: string;
+  dmNickname: string;
+}
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  artists: Artist[];
+  artists: ShopArtistDTO[];
 }
 
 const ArtistSearchModal = ({ isOpen, onClose, artists }: Props) => {
@@ -17,7 +30,7 @@ const ArtistSearchModal = ({ isOpen, onClose, artists }: Props) => {
   const filteredArtists = useMemo(() => {
     if (!searchTerm) return artists;
     return artists.filter(artist =>
-      artist.name.toLowerCase().includes(searchTerm.toLowerCase())
+      artist.stageName.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm, artists]);
 
@@ -42,13 +55,13 @@ const ArtistSearchModal = ({ isOpen, onClose, artists }: Props) => {
         <div className={styles.artistList}>
           {filteredArtists.map(artist => (
             <Link 
-              href={`/shop/${encodeURIComponent(artist.name)}`} 
-              key={artist.id} 
+              href={`/shop/${encodeURIComponent(artist.stageName)}`} 
+              key={artist.artistId} 
               className={styles.artistListItem}
               onClick={onClose} // 모달 닫기
             >
-              <img src={artist.logoUrl} alt={artist.name} />
-              <span>{artist.name}</span>
+              <img src={`http://localhost:80${artist.profileImage}`} alt={artist.stageName} />
+              <span>{artist.stageName}</span>
             </Link>
           ))}
         </div>
@@ -56,5 +69,6 @@ const ArtistSearchModal = ({ isOpen, onClose, artists }: Props) => {
     </div>
   );
 };
+
 
 export default ArtistSearchModal;

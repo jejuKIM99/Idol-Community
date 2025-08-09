@@ -4,25 +4,31 @@ import styles from './PostCard.module.css';
 import { FaHeart, FaComment } from 'react-icons/fa';
 
 interface PostCardProps {
+  key:number;
   profileImage: string;
   nickname: string;
   postDate: string;
-  postImageColor: string;
   postContent: string;
+  likes: number;
+  comments: number;
+  img: string;
 }
 
 const PostCard: React.FC<PostCardProps> = ({
+  key,
   profileImage,
   nickname,
   postDate,
-  postImageColor,
   postContent,
+  likes,
+  comments,
+  img
 }) => {
   return (
     <div className={styles.postCard}>
       <div className={styles.header}>
         <div className={styles.userInfo}>
-          <img src={profileImage} alt="Profile" className={styles.profileImage} />
+          <img src={`http://localhost:80${profileImage}`} alt="Profile" className={styles.profileImage} />
           <div className={styles.headerInfo}>
             <span className={styles.nickname}>{nickname}</span>
             <span className={styles.postDate}>{postDate}</span>
@@ -30,18 +36,20 @@ const PostCard: React.FC<PostCardProps> = ({
         </div>
         <button className={styles.moreButton}>⋮</button>
       </div>
-      <div className={styles.postImageContainer} style={{ backgroundColor: postImageColor }}></div>
+      <div className={styles.postImageContainer}>
+        <img src={`http://localhost:80${img}`} alt="Profile" className={styles.postImage} />
+      </div>
       <div className={styles.content}>
         <p>{postContent}</p>
       </div>
       <div className={styles.actions}>
         <button className={styles.actionButton}>
           <FaHeart />
-          <span>Like</span>
+          <span>{likes}</span>
         </button>
         <button className={styles.actionButton}>
           <FaComment />
-          <span>Comment</span>
+          <span>{comments}</span>
         </button>
       </div>
     </div>
