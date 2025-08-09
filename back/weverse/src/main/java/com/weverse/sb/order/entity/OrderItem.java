@@ -46,7 +46,7 @@ public class OrderItem {
     @JoinColumn(name = "option_id", nullable = false)
     private ProductOption option;
 
-    @Column(name = "order_price", precision = 15, scale = 2, nullable = false)
+    @Column(name = "order_price", precision = 19, scale = 2, nullable = false)
     private BigDecimal orderPrice;
 
     @Column(name = "quantity", nullable = false)

@@ -38,7 +38,7 @@ public class ShippingOption {
     @JoinColumn(name = "country_carrier_id", nullable = false)
     private ShippingCountryCarrier countryCarrier;
 
-    @Column(name = "shipping_fee", precision = 15, scale = 2)
+    @Column(name = "shipping_fee", precision = 19, scale = 2)
     private BigDecimal shippingFee;
 
     @Column(name = "estimated_days")

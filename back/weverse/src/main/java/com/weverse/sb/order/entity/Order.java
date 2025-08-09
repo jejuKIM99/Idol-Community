@@ -1,5 +1,6 @@
 package com.weverse.sb.order.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,26 +73,34 @@ public class Order {
     @Column(name = "delivery_request", length = 255)
     private String deliveryRequest;
 
-    @Column(name = "subtotal_price", nullable = false)
-    private Integer subtotalPrice;
+    @Column(name = "subtotal_price", nullable = false, precision = 19, scale = 2)
+    private BigDecimal subtotalPrice;
 
-    @Column(name = "cash_used")
-    private Integer cashUsed;
+    @Column(name = "cash_used", precision = 19, scale = 2)
+    private BigDecimal cashUsed;
 
-    @Column(name = "shipping_fee")
-    private Integer shippingFee;
+    @Column(name = "shipping_fee", precision = 19, scale = 2)
+    private BigDecimal shippingFee;
 
-    @Column(name = "total_price", nullable = false)
-    private Long totalPrice;
+    @Column(name = "total_price", nullable = false, precision = 19, scale = 2)
+    private BigDecimal totalPrice;
 
     @Column(name = "status", length = 20, nullable = false)
-    private String status;
+    private String status; // "PENDING", "PAID", "CANCELLED" 등
 
     @Column(name = "ordered_at", nullable = false)
     private LocalDateTime orderedAt;
     
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
+    
+    // [PG사 연동] PG사가 발급하는 결제 고유 ID (예: imp_123456)
+    @Column(name = "imp_uid")
+    private String impUid;
+    
+    // [PG사 연동] 우리가 관리하는 고유 주문 번호 (예: order_1660211234)
+    @Column(name = "merchant_uid", unique = true)
+    private String merchantUid;
 
     // 주문 생성을 위한 정적 팩토리 메서드
     public static Order create(User user, Product product, ProductOption option, int quantity, Payment payment, int subtotalPrice, int shippingFee, int finalAmount) {

@@ -44,7 +44,7 @@ public class Product {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "price", precision = 15, scale = 2, nullable = false)
+    @Column(name = "price", precision = 19, scale = 2, nullable = false)
     private BigDecimal price;
 
     @Column(name = "stock_qty")

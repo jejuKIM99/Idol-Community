@@ -1,5 +1,6 @@
 package com.weverse.sb.payment.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.weverse.sb.order.entity.Order;
@@ -42,8 +43,8 @@ public class CashHistory {
     @Column(name = "type", length = 20, nullable = false)
     private String type;
 
-    @Column(name = "amount", nullable = false)
-    private Integer amount;
+    @Column(name = "amount", precision = 19, scale = 2, nullable = false)
+    private BigDecimal amount;
 
     @Column(name = "description", length = 255)
     private String description;
