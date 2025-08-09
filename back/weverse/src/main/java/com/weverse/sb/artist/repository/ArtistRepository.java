@@ -16,4 +16,6 @@ public interface ArtistRepository extends JpaRepository<Artist, Long>{
 
 	// 그룹에 속한 멤버 전체 조회
 	List<Artist> findByGroup_GroupId(Long groupId);
+	
+	Optional<Artist> findByStageName(String stageName);
 }

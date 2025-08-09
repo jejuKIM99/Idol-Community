@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.weverse.sb.artist.dto.ArtistDTO;
 import com.weverse.sb.artist.dto.ArtistInfoResponseDTO;
+import com.weverse.sb.artist.dto.ArtistStoryDTO;
 import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.entity.Board;
 import com.weverse.sb.artist.entity.Group;
 import com.weverse.sb.artist.service.ArtistService;
+import com.weverse.sb.artist.service.StoryService;
 import com.weverse.sb.media.entity.Streaming;
 import com.weverse.sb.media.entity.UploadedVideo;
 import com.weverse.sb.media.repository.StreamingRepository;
@@ -31,6 +33,9 @@ public class ArtistController {
 	
 	@Autowired
 	StreamingRepository streamingRepository;
+	
+	@Autowired
+	StoryService storyService;
 	
 	
 	@GetMapping("/api/main/artist")
@@ -105,5 +110,6 @@ public class ArtistController {
         List<Board> boardList = artistService.getRecentBoardsByGroupId(groupId);
         return ResponseEntity.ok(boardList);
     }
+  
 }
 

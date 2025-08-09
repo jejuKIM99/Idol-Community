@@ -2,7 +2,9 @@
 package com.weverse.sb.artist.service;
 
 import java.util.List;
+
 import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +44,9 @@ public class ArtistService {
 
 	@Autowired
 	ProductRepository productRepository;
-
+	
 	@Autowired
 	BoardRepository boardRepository;
-
 	public List<Artist> getList() {
 		return artistRepository.findAll();
 	}
@@ -161,4 +162,62 @@ public class ArtistService {
 	public List<Board> getRecentBoardsByGroupId(Long groupId) {
 		return boardRepository.findTop3ByGroup_GroupIdOrderByCreatedAtDesc(groupId);
 	}
+
+// 상품 조회 서비스
+	public List<ProductArtistInfoDTO> getProductsByGroupId(Long groupId) {
+	    List<Product> products = productRepository.findByGroup_GroupId(groupId);
+	    
+	    // Product 엔티티 리스트를 ProductDTO 리스트로 변환
+	    return products.stream()
+	            .map(this::convertToProductArtistInfoDTO)
+	            .collect(Collectors.toList());
+	}
+	
+	private ProductArtistInfoDTO convertToProductArtistInfoDTO(Product product) {
+	    // Null 체크를 통해 안전하게 변환
+	    Long groupId = (product.getGroup() != null) ? product.getGroup().getGroupId() : null;
+	    
+	    return ProductArtistInfoDTO.builder()
+	            .id(product.getId())
+	            .productName(product.getProductName())
+	            .description(product.getDescription())
+	            .price(product.getPrice())
+	            .thumbnail(product.getThumbnail())
+	            .stockQty(product.getStockQty())
+	            .groupId(groupId)
+	            .build();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+    /*
+    // 아티스트 sns_url 서비스
+    public ArtistSnsDTO getArtistSnsById(Long artistId) {
+        Artist artist = artistRepository.findById(artistId)
+            .orElseThrow(() -> new RuntimeException("해당 아티스트 없음"));
+
+        return ArtistSnsDTO.builder()
+            .artistId(artist.getArtistId())
+            .snsUrl(artist.getSnsUrl())  // null이어도 그냥 반환
+            .build();
+    }
+    // 아티스트 sns_url 최신순 3건조회
+    public List<ArtistSnsDTO> getRecentArtists() {
+        return artistRepository.findTop3ByOrderByArtistIdDesc().stream()
+            .map(artist -> ArtistSnsDTO.builder()
+                .artistId(artist.getArtistId())
+                .snsUrl(artist.getSnsUrl())
+                .build())
+            .collect(Collectors.toList());
+    }
+    */
+    // 공지(보드) 최신순 3건 조회
+    public List<Board> getRecentBoardsByGroupId(Long groupId) {
+        return boardRepository.findTop3ByGroup_GroupIdOrderByCreatedAtDesc(groupId);
+    }
 }
