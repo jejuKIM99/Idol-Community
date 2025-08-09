@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.weverse.sb.artist.dto.ArtistDTO;
 import com.weverse.sb.artist.dto.ArtistInfoResponseDTO;
@@ -69,7 +70,7 @@ public class PostController {
 	// 게시글 작성
 	@PostMapping("/api/artistSNS/home/InputPost")
 	public ResponseEntity<String> inputPost(@RequestParam("artistID") Long artistID,
-			@RequestParam("content") String content, @RequestParam("image") String image) {
+			@RequestParam("content") String content, @RequestParam("image") MultipartFile image) {
 	    try {
 	        postService.inputPost(artistID, content);
 	        return ResponseEntity.ok("success");

@@ -9,9 +9,9 @@ import com.weverse.sb.community.entity.Comment;
 @Service
 public interface CommentService {
 
-	List<Comment> getCommentList(Long postId);
+	List<Comment> getCommentList(Long groupId);
 
-	void inputComment(Long postId, String content, Long userId);
+	void inputComment(Long postId, String content, Long userId, String authorType);
 	
 	int getCommentCountByPostId(Long postId);
 

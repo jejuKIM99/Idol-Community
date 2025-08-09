@@ -57,11 +57,11 @@ const ArtistSNSPage = () => {
 
     switch (activeTab) {
       case 'home':
-        return <ArtistSNSOverview artistId={artistId} memberName={memberName} />;
+        return <ArtistSNSOverview artistId={artistId} groupId={groupId} memberName={memberName} />;
       case 'fan':
         return <FanTabContent groupId={groupId} artistId={artistId} />;
       case 'artist':
-        return <ArtistTabContent artistId={artistId} />;
+        return <ArtistTabContent groupId={groupId} artistId={artistId} />;
       case 'media':
         return <MediaTabContent artistId={artistId} onItemClick={(item) => handleItemClick(item, 'media')} />;
       case 'live':
