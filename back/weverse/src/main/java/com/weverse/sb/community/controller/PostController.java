@@ -16,19 +16,34 @@ import com.weverse.sb.artist.dto.ArtistInfoResponseDTO;
 import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.service.ArtistService;
 import com.weverse.sb.community.dto.PostDTO;
+import com.weverse.sb.community.repository.PostLikeRepository;
+import com.weverse.sb.community.repository.PostRepository;
 import com.weverse.sb.community.service.PostService;
+import com.weverse.sb.user.repository.FavoriteRepository;
 
 import lombok.extern.log4j.Log4j2;
 
 @RestController
 @Log4j2
 public class PostController {
+
+    private final PostRepository postRepository;
 	
 	@Autowired
 	PostService postService;
 	
 	@Autowired
 	ArtistService artistService;
+	
+	@Autowired
+	PostLikeRepository postLikeRepository;
+	
+	@Autowired
+	FavoriteRepository favoriteRepository;
+
+    PostController(PostRepository postRepository) {
+        this.postRepository = postRepository;
+    }
 	
 	// 아티스트 정보 조회 (한명)
 	@GetMapping("/api/artistSNS/home/profile")
@@ -66,6 +81,11 @@ public class PostController {
 		return dto;
 	} 
 	
+	// 포스트 좋아요 유무 확인
+	@GetMapping("/api/artistSNS/post/isLike")
+	public Boolean isListPost(@RequestParam("postId") Long post, @RequestParam("userId") Long userId) {
+		return postLikeRepository.existsByUserUserIdAndPostId(userId, post);
+	} 
 
 	// 게시글 작성
 	@PostMapping("/api/artistSNS/home/InputPost")
@@ -96,18 +116,18 @@ public class PostController {
 	
 	// 게시글 좋아요 취소
 	@PostMapping("/api/artistSNS/home/dislike")
-    public ResponseEntity<String> unlikePost(@RequestParam Long postId, @RequestParam Long userId) {
+    public ResponseEntity<String> unlikePost(@RequestParam("postId") Long postId, @RequestParam("userId") Long userId) {
         try {
             postService.deletePostLike(postId, userId);
             return ResponseEntity.ok("success");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("fail: " + e.getMessage());
+        	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("fail");
         }
     }
 	
 	// 아티스트 팔로우
 	@PostMapping("/api/artistSNS/home/follow")
-	public ResponseEntity<String> followArtist(@RequestParam Long artistId, @RequestParam Long userId) {
+	public ResponseEntity<String> followArtist(@RequestParam("artistId") Long artistId, @RequestParam("userId") Long userId) {
 		try {
 			postService.insertFavorite(artistId, userId);
 			return ResponseEntity.ok("success");
@@ -119,7 +139,7 @@ public class PostController {
 	
 	// 아티스트 팔로우 취소
 	@PostMapping("/api/artistSNS/home/unfollow")
-	public ResponseEntity<String> unFollowArtist(@RequestParam Long artistId, @RequestParam Long userId) {
+	public ResponseEntity<String> unFollowArtist(@RequestParam("artistId") Long artistId, @RequestParam("userId") Long userId) {
 		try {
 			postService.deleteFavorite(artistId, userId);
 			return ResponseEntity.ok("success");
@@ -127,5 +147,12 @@ public class PostController {
 			return ResponseEntity.status(500).body("fail: " + e.getMessage());
 		}
 	}
+	
+	// 포스트 좋아요 유무 확인
+	@GetMapping("/api/artistSNS/post/isFollow")
+	public Boolean isPostFollow(@RequestParam("artistId") Long artistId, @RequestParam("userId") Long userId) {
+		return favoriteRepository.existsByUser_UserIdAndArtist_ArtistId(userId, artistId);
+	} 
+	
 	
 }

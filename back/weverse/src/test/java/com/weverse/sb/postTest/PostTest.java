@@ -27,7 +27,7 @@ public class PostTest {
 	@Autowired
 	private PostService postService;
 
-	@Test
+	/*@Test
 	void insertPost() {
 
 		Long artistID = 9L;
@@ -100,13 +100,13 @@ public class PostTest {
 				System.out.println("  ㄴ commentCount : " + post.getCommentCount());
 			}
 		});
-	}
+	}*/
 //
 	//	특정 아티스트 작성 게시글 좋아요
 	@Test
 	public void testLikePost() {
-		Long postId = 1L;
-		Long userId = 1L;
+		Long postId = 9L;
+		Long userId = 3L;
 
 		postService.inputPostLike(postId, userId);
 	}

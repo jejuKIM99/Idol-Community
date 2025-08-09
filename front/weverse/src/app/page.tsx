@@ -23,6 +23,7 @@ interface Group {
   groupLogo: string;
 }
 
+
 interface ApiResponse {
   artistList: Artist[];
   groupList: Group[];

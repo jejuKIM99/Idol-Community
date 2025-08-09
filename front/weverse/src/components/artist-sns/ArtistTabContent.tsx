@@ -97,7 +97,7 @@ const ArtistTabContent: React.FC<ArtistTabContentProps> = ({ artistId, groupId }
       console.log("fetchUser")
       try {
         const response = await axios.get(`http://localhost:80/api/artistSNS/fan/myProfile`, {
-          params: { userId: 4 }
+          params: { userId: 3 }
         });
         console.log('user Post Data Response:', response.data); // API 응답 전체를 다시 확인
         setUser(response.data);
@@ -139,7 +139,7 @@ const ArtistTabContent: React.FC<ArtistTabContentProps> = ({ artistId, groupId }
             <StoryCard
               key={story.storyId}
               storyImage={story.storyImg}
-              artistImage={user.profileImage}
+              artistImage={story.storyImg}
               artistName={artistName}
             />
           ))}
@@ -148,7 +148,7 @@ const ArtistTabContent: React.FC<ArtistTabContentProps> = ({ artistId, groupId }
           {artistPost.map((post) => (
             <ArtistPostCard
               key={post.postId}
-              artistImage={user.profileImage}
+              artistImage={post.image}
               artistName={post.artistName}
               postDateTime={post.createdAt}
               postContent={post.content}
