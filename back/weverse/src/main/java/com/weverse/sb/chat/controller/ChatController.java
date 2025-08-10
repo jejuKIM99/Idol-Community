@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.weverse.sb.chat.service.ChatService;
 import com.weverse.sb.media.dto.LiveChatMessageDTO;
 import com.weverse.sb.media.dto.MediaChatMessageDTO;
-import com.weverse.sb.media.service.MediaService;
 
 
 @RestController
@@ -22,7 +22,7 @@ import com.weverse.sb.media.service.MediaService;
 public class ChatController {
 	
 	@Autowired
-	MediaService mediaService;
+	ChatService chatService;
 	
 	/*
 	 * 
@@ -55,7 +55,7 @@ public class ChatController {
         System.out.println("보낸 getSentAt: " + chatMessage.getSentAt());
         
         try {
-        	mediaService.inputChatMessage(chatMessage);
+        	chatService.inputChatMessage(chatMessage);
 			return ResponseEntity.ok("success");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("fail");
@@ -73,7 +73,7 @@ public class ChatController {
     	System.out.println("보낸 getSentAt: " + mediaMessage.getSentAt());
     	
     	try {
-    		mediaService.inputMediaChatMessage(mediaMessage);
+    		chatService.inputMediaChatMessage(mediaMessage);
     		return ResponseEntity.ok("success");
     	} catch (Exception e) {
     		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("fail");
@@ -83,7 +83,7 @@ public class ChatController {
     @GetMapping("/messages/media")
     public MediaChatMessageDTO getMediaMessage(@RequestParam("id") Long mediaId) {
     	
-    	List<MediaChatMessageDTO> chatList = this.mediaService.getMessageList(mediaId);
+    	List<MediaChatMessageDTO> chatList = this.chatService.getMessageList(mediaId);
 		MediaChatMessageDTO dto = MediaChatMessageDTO.builder().chatList(chatList).build();
 
 		return dto;
