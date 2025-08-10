@@ -30,6 +30,17 @@ type JellyUserInfo = {
   totalJelly: number;
 };
 
+type JellyHistoryItem = {
+  historyId: number;
+  changeType: string;
+  changeAmount: number;
+  balanceAfter: number;
+  description: string;
+  createdAt: string;
+  formattedDate: string;
+  formattedTime: string;
+};
+
 const jellyProducts: JellyProduct[] = [
   { id: 1, jellyAmount: 4, price: 1200 },
   { id: 2, jellyAmount: 8, price: 2400 },
@@ -176,6 +187,13 @@ export default function JellyPage() {
   const [products, setProducts] = useState<JellyProduct[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [userInfo, setUserInfo] = useState<JellyUserInfo | null>(null);
+  
+  // 조회탭 관련 상태 추가
+  const [historyType, setHistoryType] = useState('ALL');
+  const [historyDays, setHistoryDays] = useState(30);
+  const [historyData, setHistoryData] = useState<JellyHistoryItem[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [activeHistoryTab, setActiveHistoryTab] = useState('charge');
 
   // 인증 상태 확인
   useEffect(() => {
@@ -250,6 +268,43 @@ export default function JellyPage() {
     }
   }, [isAuthenticated, token]);
 
+  // 거래 내역 가져오기
+  const fetchHistory = async (type: string = 'ALL', days: number = 30) => {
+    if (!token) return;
+    
+    setIsLoadingHistory(true);
+    try {
+      const url = `http://localhost:80/api/jelly/history?type=${type}&days=${days}`;
+      
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setHistoryData(data);
+      } else {
+        const errorText = await response.text();
+        setHistoryData([]);
+      }
+    } catch (error) {
+      console.error('거래 내역 조회 중 오류:', error);
+      setHistoryData([]);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  // 조회탭이 활성화될 때 거래 내역 가져오기
+  useEffect(() => {
+    
+    if (activeTab === 'history' && isAuthenticated && token) {
+      fetchHistory(historyType, historyDays);
+    }
+  }, [activeTab, historyType, historyDays, isAuthenticated, token]);
+
   // 로딩 중이거나 인증되지 않은 경우
   if (isLoading || !isAuthenticated) {
     return <div>로딩 중...</div>;
@@ -292,6 +347,8 @@ export default function JellyPage() {
         
         // 2. 포트원 결제 요청
         console.log('결제 준비 완료:', paymentData);
+        console.log('전달받은 결제 수단:', paymentMethod);
+        console.log('전달받은 PG:', pg);
         
         // 포트원 결제 라이브러리 로드 및 초기화
         const script = document.createElement('script');
@@ -334,6 +391,31 @@ export default function JellyPage() {
     }
   };
 
+  const fetchUserInfo = async () => {
+    if (!token) return;
+  
+    try {
+      const response = await fetch('http://localhost:80/api/jelly/user-info', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setUserInfo({
+          email: data.email,
+          name: data.name,
+          chargedJelly: data.chargedJelly,
+          bonusJelly: data.bonusJelly,
+          totalJelly: data.totalJelly
+        });
+      }
+    } catch (error) {
+      console.error('사용자 정보 조회 중 오류:', error);
+    }
+  };
+
   // 결제 검증 함수
   const verifyPayment = async (impUid: string, merchantUid: string) => {
     try {
@@ -352,7 +434,9 @@ export default function JellyPage() {
       if (response.ok) {
         alert('결제가 완료되었습니다!');
         closeModal();
-        // TODO: 사용자 젤리 잔액 업데이트
+        // 사용자 젤리 잔액 업데이트
+        await fetchUserInfo();
+        
       } else {
         const errorData = await response.json();
         alert(`결제 검증 실패: ${errorData.message || '알 수 없는 오류'}`);
@@ -473,18 +557,153 @@ export default function JellyPage() {
               <div className={styles.historySection}>
                   <h2 className={styles.sectionTitle}>조회</h2>
                   <div className={styles.historyTabs}>
-                      <div>
-                          <button className={styles.active}>충전 / 적립</button>
-                          <button>사용</button>
+                      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                          <button 
+                              className={activeHistoryTab === 'charge' ? styles.active : ''}
+                              onClick={() => {
+                                  setActiveHistoryTab('charge');
+                                  setHistoryType('CHARGE_AND_BONUS');
+                              }}
+                              style={{
+                                  padding: '8px 16px',
+                                  border: '1px solid #e0e0e0',
+                                  borderRadius: '6px',
+                                  backgroundColor: activeHistoryTab === 'charge' ? '#00c4b4' : 'white',
+                                  color: activeHistoryTab === 'charge' ? 'white' : '#333',
+                                  cursor: 'pointer'
+                              }}
+                          >
+                              충전 / 적립
+                          </button>
+                          <button 
+                              className={activeHistoryTab === 'use' ? styles.active : ''}
+                              onClick={() => {
+                                  setActiveHistoryTab('use');
+                                  setHistoryType('USE');
+                              }}
+                              style={{
+                                  padding: '8px 16px',
+                                  border: '1px solid #e0e0e0',
+                                  borderRadius: '6px',
+                                  backgroundColor: activeHistoryTab === 'use' ? '#00c4b4' : 'white',
+                                  color: activeHistoryTab === 'use' ? 'white' : '#333',
+                                  cursor: 'pointer'
+                              }}
+                          >
+                              사용
+                          </button>
+                          <button 
+                              className={activeHistoryTab === 'all' ? styles.active : ''}
+                              onClick={() => {
+                                  setActiveHistoryTab('all');
+                                  setHistoryType('ALL');
+                              }}
+                              style={{
+                                  padding: '8px 16px',
+                                  border: '1px solid #e0e0e0',
+                                  borderRadius: '6px',
+                                  backgroundColor: activeHistoryTab === 'all' ? '#00c4b4' : 'white',
+                                  color: activeHistoryTab === 'all' ? 'white' : '#333',
+                                  cursor: 'pointer'
+                              }}
+                          >
+                              전체
+                          </button>
                       </div>
-                      <select>
-                          <option>전체</option>
+                      <select 
+                          value={historyDays} 
+                          onChange={(e) => setHistoryDays(Number(e.target.value))}
+                          style={{
+                              padding: '8px 12px',
+                              border: '1px solid #e0e0e0',
+                              borderRadius: '6px',
+                              backgroundColor: 'white',
+                              cursor: 'pointer'
+                          }}
+                      >
+                          <option value={7}>최근 7일</option>
+                          <option value={30}>최근 30일</option>
+                          <option value={90}>최근 90일</option>
+                          <option value={365}>최근 1년</option>
                       </select>
                   </div>
-                  <div className={styles.emptyHistory}>
-                      <p>해당 내역이 없습니다.</p>
-                      <button onClick={() => setActiveTab('charge')}>젤리 충전</button>
-                  </div>
+                  
+                  {isLoadingHistory ? (
+                      <div className={styles.loadingHistory} style={{ textAlign: 'center', padding: '40px' }}>
+                          <p>거래 내역을 불러오는 중...</p>
+                      </div>
+                  ) : historyData.length > 0 ? (
+                      <div className={styles.historyList} style={{ marginTop: '20px' }}>
+                          {historyData.map((item) => (
+                              <div key={item.historyId} className={styles.historyItem} style={{
+                                  border: '1px solid #e0e0e0',
+                                  borderRadius: '8px',
+                                  padding: '16px',
+                                  marginBottom: '12px',
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  backgroundColor: '#fff'
+                              }}>
+                                  <div className={styles.historyInfo} style={{ flex: 1 }}>
+                                      <div className={styles.historyType} style={{
+                                          fontWeight: 'bold',
+                                          color: item.changeType === 'CHARGE' ? '#00c4b4' : 
+                                                 item.changeType === 'BONUS' ? '#ff6b6b' : '#666',
+                                          marginBottom: '4px'
+                                      }}>
+                                          {item.changeType === 'CHARGE' && '충전'}
+                                          {item.changeType === 'BONUS' && '적립'}
+                                          {item.changeType === 'USE' && '사용'}
+                                      </div>
+                                      <div className={styles.historyDescription} style={{
+                                          fontSize: '14px',
+                                          color: '#333',
+                                          marginBottom: '4px'
+                                      }}>
+                                          {item.description}
+                                      </div>
+                                      <div className={styles.historyDate} style={{
+                                          fontSize: '12px',
+                                          color: '#999'
+                                      }}>
+                                          {item.formattedDate} {item.formattedTime}
+                                      </div>
+                                  </div>
+                                  <div className={styles.historyAmount} style={{ textAlign: 'right' }}>
+                                      <span className={item.changeAmount > 0 ? styles.positive : styles.negative} style={{
+                                          fontSize: '18px',
+                                          fontWeight: 'bold',
+                                          color: item.changeAmount > 0 ? '#00c4b4' : '#ff6b6b',
+                                          display: 'block',
+                                          marginBottom: '4px'
+                                      }}>
+                                          {item.changeAmount > 0 ? '+' : ''}{item.changeAmount}
+                                      </span>
+                                      <div className={styles.balanceAfter} style={{
+                                          fontSize: '12px',
+                                          color: '#666'
+                                      }}>
+                                          잔액: {item.balanceAfter}
+                                      </div>
+                                  </div>
+                              </div>
+                          ))}
+                      </div>
+                  ) : (
+                      <div className={styles.emptyHistory} style={{ textAlign: 'center', padding: '40px' }}>
+                          <p>해당 내역이 없습니다.</p>
+                          <button onClick={() => setActiveTab('charge')} style={{
+                              backgroundColor: '#00c4b4',
+                              color: 'white',
+                              border: 'none',
+                              padding: '12px 24px',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              marginTop: '16px'
+                          }}>젤리 충전</button>
+                      </div>
+                  )}
               </div>
           )}
         </main>

@@ -147,7 +147,7 @@
   box-shadow: 0 0 0 2px rgba(0, 196, 180, 0.3);
 }
 
-.bestOffer.selected {
+.productItem.bestOffer {
   border-color: #00c4b4;
 }
 

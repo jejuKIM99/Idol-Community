@@ -1,6 +1,9 @@
 package com.weverse.sb.payment.controller;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.weverse.sb.payment.dto.JellyChargeReadyResponseDTO;
@@ -23,6 +27,8 @@ import com.weverse.sb.payment.service.PaymentVerificationService;
 import com.weverse.sb.payment.repository.JellyHistoryRepository;
 import com.weverse.sb.user.dto.UserDTO;
 import com.weverse.sb.user.service.JwtUserService;
+import com.weverse.sb.payment.dto.JellyHistoryDTO;
+import com.weverse.sb.payment.entity.JellyHistory;
 
 import lombok.RequiredArgsConstructor;
 
@@ -96,26 +102,70 @@ public class JellyController {
             String email = userDetails.getUsername();
             UserDTO userDto = jwtUserService.getUserInfoByEmail(email);
             Long userId = userDto.getUserId();
+
+            // JellySummaryDTO를 통해 젤리 요약 정보 조회
+            JellySummaryDTO summary = jellyHistoryRepository.getJellySummary(userId);
             
-            // JellyHistory에서 젤리 요약 정보를 한 번에 가져오기
-            JellySummaryDTO jellySummary = jellyHistoryRepository.getJellySummary(userId);
-            
-            // 실제 보유 젤리 = 충전젤리 + 적립젤리 - 사용된 젤리
-            Long actualJelly = jellySummary.getChargedJelly() + 
-                              jellySummary.getBonusJelly() - 
-                              jellySummary.getUsedJelly();
-            
-            // JellyUserDTO로 변환하여 젤리 정보 포함하여 반환
-            JellyUserDTO responseDto = JellyUserDTO.builder()
+            JellyUserDTO jellyUserDTO = JellyUserDTO.builder()
                     .email(userDto.getEmail())
                     .name(userDto.getName())
-                    .chargedJelly(jellySummary.getChargedJelly().intValue())
-                    .bonusJelly(jellySummary.getBonusJelly().intValue())
-                    .totalJelly(actualJelly.intValue())
+                    .chargedJelly(summary.getChargedJelly() != null ? summary.getChargedJelly().intValue() : 0)
+                    .bonusJelly(summary.getBonusJelly() != null ? summary.getBonusJelly().intValue() : 0)
+                    .totalJelly(userDto.getJellyBalance())
                     .build();
             
-            return ResponseEntity.ok(responseDto);
+            return ResponseEntity.ok(jellyUserDTO);
         } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<JellyHistoryDTO>> getJellyHistory(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(value = "type", defaultValue = "ALL") String type,
+            @RequestParam(value = "days", defaultValue = "30") int days) {
+        try {
+            String email = userDetails.getUsername();
+            UserDTO userDto = jwtUserService.getUserInfoByEmail(email);
+            Long userId = userDto.getUserId();
+
+            List<JellyHistory> historyList;
+            
+            if ("CHARGE".equals(type)) {
+                historyList = jellyHistoryRepository.findByUserUserIdAndChangeTypeOrderByCreatedAtDesc(userId, "CHARGE");
+            } else if ("BONUS".equals(type)) {
+                historyList = jellyHistoryRepository.findByUserUserIdAndChangeTypeOrderByCreatedAtDesc(userId, "BONUS");
+            } else if ("USE".equals(type)) {
+                historyList = jellyHistoryRepository.findByUserUserIdAndChangeTypeOrderByCreatedAtDesc(userId, "USE");
+            } else if ("CHARGE_AND_BONUS".equals(type)) {
+                // 충전과 적립만 조회
+                List<JellyHistory> chargeList = jellyHistoryRepository.findByUserUserIdAndChangeTypeOrderByCreatedAtDesc(userId, "CHARGE");
+                List<JellyHistory> bonusList = jellyHistoryRepository.findByUserUserIdAndChangeTypeOrderByCreatedAtDesc(userId, "BONUS");
+                historyList = new ArrayList<>();
+                historyList.addAll(chargeList);
+                historyList.addAll(bonusList);
+                // 날짜순으로 정렬
+                historyList.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));
+            } else {
+                // ALL인 경우
+                historyList = jellyHistoryRepository.findByUserUserIdOrderByCreatedAtDesc(userId);
+            }
+
+            // 최근 N일 내역만 필터링
+            LocalDateTime cutoffDate = LocalDateTime.now().minusDays(days);
+            List<JellyHistory> filteredList = historyList.stream()
+                    .filter(history -> history.getCreatedAt().isAfter(cutoffDate))
+                    .collect(Collectors.toList());
+
+            List<JellyHistoryDTO> historyDTOs = filteredList.stream()
+                    .map(JellyHistoryDTO::fromEntity)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(historyDTOs);
+        } catch (Exception e) {
+            System.err.println("Error in getJellyHistory: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }

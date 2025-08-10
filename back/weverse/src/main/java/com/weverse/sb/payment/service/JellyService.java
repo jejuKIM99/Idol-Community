@@ -94,11 +94,29 @@ public class JellyService {
 		User user = purchase.getUser();
         JellyProduct product = purchase.getJellyProduct();
 
-        // 2. 우리 시스템의 최종 Payment 엔티티 생성 및 저장
+        // 디버깅: PortOne에서 받은 결제 수단 정보 로그
+        System.out.println("=== PortOne 결제 응답 정보 ===");
+        System.out.println("getPayMethod(): " + paymentData.getPayMethod());
+        System.out.println("getPgProvider(): " + paymentData.getPgProvider());
+        System.out.println("getChannel(): " + paymentData.getChannel());
+        System.out.println("================================");
+
+        // 2. 결제 수단 매핑 (PortOne의 'point' 응답을 실제 결제 수단으로 변환)
+        String mappedPaymentMethod = paymentData.getPayMethod();
+        if ("point".equals(paymentData.getPayMethod()) && "kakaopay".equals(paymentData.getPgProvider())) {
+            mappedPaymentMethod = "KAKAO_PAY";
+        } else if ("point".equals(paymentData.getPayMethod()) && "naverpay".equals(paymentData.getPgProvider())) {
+            mappedPaymentMethod = "NAVER_PAY";
+        }
+        
+        System.out.println("매핑된 결제 수단: " + mappedPaymentMethod);
+        
+        // 3. 우리 시스템의 최종 Payment 엔티티 생성 및 저장
         Payment payment = Payment.builder()
             .user(user)
             .amount(paymentData.getAmount())
-            .paymentMethod(paymentData.getPayMethod())
+            .paymentMethod(mappedPaymentMethod)
+            .paymentGateway("PORTONE")
             .status("PAID") // 상태를 명확하게 'PAID'로 저장
             .impUid(paymentData.getImpUid())
             .merchantUid(purchase.getMerchantUid()) // purchase에서 merchantUid 가져오기
