@@ -13,10 +13,10 @@ interface ItemDetailViewProps {
 
 const ItemDetailView: React.FC<ItemDetailViewProps> = ({ item, type }) => {
 
-  // 라이브별 댓글 상태 관리 (streamingId를 key로)
+  // 라이브별 댓글
   const [commentsMap, setCommentsMap] = useState<Record<string | number, any[]>>({});
 
-  // 라이브별 WebSocket 저장 (useRef로 상태 변동없이 보존)
+  // 라이브별 WebSocket 상태 관리
   const wsMap = useRef<Record<string | number, WebSocket>>({});
   const wsRef = useRef<WebSocket | null>(null);
 
@@ -40,6 +40,25 @@ const ItemDetailView: React.FC<ItemDetailViewProps> = ({ item, type }) => {
   // 라이브별 WebSocket 연결
   useEffect(() => {
     const id = type === 'live' ? item.streamingId : item.id;
+
+    // media 타입일 때만 기존 댓글 불러오기
+    if (type === 'media') {
+      fetch(`http://localhost:80/api/chat/messages/media?id=${id}`)
+        .then((res) => {
+          if (!res.ok) throw new Error('댓글 불러오기 실패');
+          return res.json();
+        })
+        .then((data) => {
+          console.log('댓글 불러오기 성공:', data);
+          setCommentsMap((prev) => ({
+            ...prev,
+            [id]: data.chatList || [],
+          }));
+        })
+        .catch((error) => {
+          console.error('댓글 불러오기 중 오류:', error);
+        });
+    }
   
     // 기존 연결 닫기
     if (wsMap.current[id]) {
@@ -163,9 +182,6 @@ const ItemDetailView: React.FC<ItemDetailViewProps> = ({ item, type }) => {
           }
         }
 
-        
-  
-        
       } catch (error) {
         console.error('메시지 저장 중 오류:', error);
       }
