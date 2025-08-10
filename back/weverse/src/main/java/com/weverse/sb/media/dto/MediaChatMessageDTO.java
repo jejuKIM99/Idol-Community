@@ -1,6 +1,7 @@
 package com.weverse.sb.media.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,8 @@ public class MediaChatMessageDTO {
     private String nickname;
     private String content;
     private LocalDateTime sentAt;
+    
+    private List<MediaChatMessageDTO> chatList;
+    
 
 }

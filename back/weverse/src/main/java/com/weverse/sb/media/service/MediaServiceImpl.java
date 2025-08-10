@@ -104,4 +104,25 @@ public class MediaServiceImpl implements MediaService {
 		
 	}
 
+	@Override
+	public List<MediaChatMessageDTO> getMessageList(Long mediaId) {
+		List<MediaChatMessage> chatList = mediaChatMessageRepository.findByUploadedVideoId(mediaId);
+		List<MediaChatMessageDTO> dtoList = new ArrayList<>();
+
+		for (MediaChatMessage msg : chatList) {
+
+			MediaChatMessageDTO dto = MediaChatMessageDTO.builder()
+		            .mediaId(mediaId)
+		            .userId(msg.getUser().getUserId())
+		            .nickname(msg.getNickname())
+		            .content(msg.getContent())
+		            .sentAt(msg.getSentAt())
+		            .build();
+
+		    dtoList.add(dto);
+		}
+
+		return dtoList;
+	}
+
 }
