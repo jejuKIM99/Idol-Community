@@ -55,6 +55,7 @@ interface ShopProductDTO {
   productImage: string;
   artistId: number;
   artistName: string;
+  groupId: number; // Add groupId here
 }
 
 interface ShopBannerDTO {
@@ -77,17 +78,37 @@ interface ShopMainResponseDTO {
   notices: ShopNoticeDTO[];
 }
 
+interface Group {
+  groupId: number;
+  groupName: string;
+  groupProfileImage: string;
+  groupLogo: string;
+}
+
+interface ArtistGroup {
+  artists: ShopArtistDTO[];
+  groupName: string;
+  groupId: number;
+}
+
 const WeverseShopPage = () => {
   const [shopData, setShopData] = useState<ShopMainResponseDTO | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recommendedArtists, setRecommendedArtists] = useState<ShopArtistDTO[]>([]);
-  const [artistsForProducts, setArtistsForProducts] = useState<ShopArtistDTO[]>([]);
+  const [artistsForProducts, setArtistsForProducts] = useState<ArtistGroup[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
 
   useEffect(() => {
     const fetchShopData = async () => {
       try {
+        // Fetch groups
+        const groupResponse = await fetch('http://localhost:80/api/main/artist');
+        if (groupResponse.ok) {
+          const groupData = await groupResponse.json();
+          setGroups(groupData.groupList);
+        }
         // Fetch banners
         const bannersResponse = await fetch('http://localhost:80/api/shop/main');
         if (!bannersResponse.ok) {
@@ -120,7 +141,8 @@ const WeverseShopPage = () => {
             price: p.price, // Price is already a number after JSON parsing
             productImage: p.images && p.images.length > 0 ? p.images[0].imageUrl : '', // Use first image
             artistId: artist.artistId, // Add artistId from the loop
-            artistName: artist.stageName // Add artistName from the loop
+            artistName: artist.stageName, // Add artistName from the loop
+            groupId: artist.groupId // Add groupId here
           }));
           allProducts = allProducts.concat(mappedArtistProducts);
         }
@@ -134,7 +156,7 @@ const WeverseShopPage = () => {
           const artist = artists.find(a => a.groupId === banner.groupId);
           return {
             ...banner,
-            linkUrl: artist ? `/shop/${encodeURIComponent(artist.stageName)}` : '#'
+            linkUrl: artist ? `/shop/group/${artist.groupId}` : '#'
           };
         });
 
@@ -155,14 +177,29 @@ const WeverseShopPage = () => {
   }, []);
 
   useEffect(() => {
-    if (shopData) {
+    if (shopData && groups.length > 0) {
       const shuffledArtists = [...shopData.artists].sort(() => 0.5 - Math.random());
       const recommended = shuffledArtists.slice(0, 10);
-      const forProducts = recommended.slice(0, 5);
+      
+      const artistGroups: { [key: number]: { artists: ShopArtistDTO[], groupName: string } } = {};
+      recommended.forEach(artist => {
+        if (!artistGroups[artist.groupId]) {
+          const group = groups.find(g => g.groupId === artist.groupId);
+          artistGroups[artist.groupId] = { artists: [], groupName: group ? group.groupName : artist.stageName };
+        }
+        artistGroups[artist.groupId].artists.push(artist);
+      });
+      
+      const groupForProducts = Object.keys(artistGroups).slice(0, 5).map(groupId => ({
+        artists: artistGroups[parseInt(groupId)].artists,
+        groupName: artistGroups[parseInt(groupId)].groupName,
+        groupId: parseInt(groupId)
+      }));
+
+      setArtistsForProducts(groupForProducts);
       setRecommendedArtists(recommended);
-      setArtistsForProducts(forProducts);
     }
-  }, [shopData]);
+  }, [shopData, groups]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -194,7 +231,7 @@ const WeverseShopPage = () => {
           {/* Desktop View */}
           <div className={`${styles.recommendedArtistsList} ${styles.desktopOnly}`}>
             {recommendedArtists.map(artist => (
-              <Link href={`/shop/${encodeURIComponent(artist.stageName)}`} key={artist.artistId} className={styles.artistItem}>
+              <Link href={`/shop/group/${artist.groupId}`} key={artist.artistId} className={styles.artistItem}>
                 <img src={`http://localhost:80${artist.profileImage}`} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
                 <span className={styles.artistName}>{artist.stageName}</span>
               </Link>
@@ -209,7 +246,7 @@ const WeverseShopPage = () => {
             >
               {recommendedArtists.map(artist => (
                 <SwiperSlide key={artist.artistId} style={{ width: 'auto' }}>
-                  <Link href={`/shop/${encodeURIComponent(artist.stageName)}`} className={styles.artistItem}>
+                  <Link href={`/shop/group/${artist.groupId}`} className={styles.artistItem}>
 
                 <img src={`http://localhost:80${artist.profileImage}`} alt={`${artist.stageName} logo`} className={styles.artistLogo} />
                     <span className={styles.artistName}>{artist.stageName}</span>
@@ -225,8 +262,13 @@ const WeverseShopPage = () => {
         </section>
 
         {/* --- 아티스트별 상품 섹션 (동적 생성) --- */}
-        {artistsForProducts.map(artist => (
-          <ArtistProductSection key={artist.artistId} artist={artist} products={shopData.products.filter(p => p.artistId === artist.artistId)} />
+        {artistsForProducts.map(group => (
+          <ArtistProductSection 
+            key={group.groupId} 
+            artists={group.artists}
+            groupName={group.groupName}
+            products={shopData.products.filter(p => p.groupId === group.groupId)} 
+          />
         ))}
 
         <BestProductSection products={shopData.products} />
