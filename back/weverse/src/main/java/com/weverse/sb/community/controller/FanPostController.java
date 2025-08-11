@@ -56,11 +56,19 @@ public class FanPostController {
 	// 팬 게시글 전체조회
 	@GetMapping("/api/artistSNS/fan")
 	public PostDTO selectFanPost(@RequestParam("groupId") Long groupId) {
-		List<PostDTO> fanPostList = this.postService.getFanPostDTOList(groupId);
+		List<PostDTO> fanPostList = this.postService.getFanPostDTOList(groupId, "user");
 		PostDTO dto = PostDTO.builder().postList(fanPostList).build();
 
 		return dto;
 	}
+	
+	// 팬 게시글 전체조회
+		@GetMapping("/api/artistSNS/artistPost")
+		public PostDTO selectArtistPost(@RequestParam("groupId") Long groupId) {
+			List<PostDTO> fanPostList = this.postService.getFanPostDTOList(groupId, "artist");
+			PostDTO dto = PostDTO.builder().postList(fanPostList).build();
+			return dto;
+		}
 	
 	// 팬 게시글 작성
 	@PostMapping("/api/artistSNS/fan/fanInput")

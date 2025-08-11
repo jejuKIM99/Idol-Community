@@ -41,6 +41,9 @@ public class Board {
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
 
+	@Column(name = "thumbnail_image", length = 2083)
+    private String thumbnailImage;
+	
 	@ManyToOne
 	@JoinColumn(name = "group_id")
 	private Group group;

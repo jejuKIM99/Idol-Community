@@ -109,8 +109,8 @@ export default function LoginPage() {
         if (!isRegistered) { // 회원가입 성공 시
           setIsRegistered(true); // 로그인 폼으로 전환
           setStep(2); // 비밀번호 입력 단계 유지
-        } else if (typeof responseData === 'object' && responseData !== null && 'token' in responseData) {
-          auth.login(responseData.token);
+        } else if (typeof responseData === 'object' && responseData !== null && 'token' in responseData && 'userId' in responseData) {
+          auth.login(responseData.token, responseData.userId);
           router.push('/'); // 메인 페이지로 리다이렉트
         }
       } else {

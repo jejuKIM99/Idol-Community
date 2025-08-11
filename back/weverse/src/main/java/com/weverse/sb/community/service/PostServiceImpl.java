@@ -218,9 +218,9 @@ public class PostServiceImpl implements PostService{
 
 
 	@Override
-	public List<PostDTO> getFanPostDTOList(Long groupId) {
+	public List<PostDTO> getFanPostDTOList(Long groupId, String type) {
 		
-		List<Post> post = postRepository.findByGroup_GroupIdAndAuthorType(groupId, "user");
+		List<Post> post = postRepository.findByGroup_GroupIdAndAuthorType(groupId, type);
 		List<PostDTO> postList = new ArrayList<>();
 		
 		

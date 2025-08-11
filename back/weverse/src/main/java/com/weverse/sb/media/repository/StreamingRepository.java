@@ -15,5 +15,5 @@ public interface StreamingRepository extends JpaRepository<Streaming, Long> {
      * @param groupId 조회할 그룹의 ID
      * @return 해당 그룹의 스트리밍 목록
      */
-    List<Streaming> findByGroup_GroupId(Long groupId);
+	List<Streaming> findByGroup_GroupId(Long groupId);
 }
