@@ -22,7 +22,7 @@ const ProductCard = ({ product }: Props) => {
     <Link href={`/shop/products/${product.productId}`} className={styles.cardLink}>
       <div className={styles.productCard}>
         <div className={styles.productImageWrapper}>
-          <img src={product.productImage} alt={product.productName} className={styles.productImage} />
+          <img src={`http://localhost:80${product.productImage}`} alt={product.productName} className={styles.productImage} />
         </div>
         <div className={styles.productInfo}>
           <div>

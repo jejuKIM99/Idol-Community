@@ -20,6 +20,7 @@ import com.weverse.sb.product.dto.BannerDTO;
 import com.weverse.sb.product.dto.ProductDTO;
 import com.weverse.sb.product.dto.ProductOptionDTO;
 import com.weverse.sb.product.dto.ShopMainResponseDTO;
+import com.weverse.sb.product.dto.ShopProductDTO;
 import com.weverse.sb.product.dto.ShopProductDetailDTO;
 import com.weverse.sb.product.service.ProductService;
 import com.weverse.sb.product.service.ShopMainService;
@@ -99,13 +100,13 @@ public class ProductController {
 	
 	
     
-    /*
+    
     //5.4
     @GetMapping("/products")
     public ResponseEntity<ShopProductDTO> getProductById(@RequestParam Long productId) {
         ShopProductDTO dto = shopMainService.getProductById(productId);
         return ResponseEntity.ok(dto);
     }
-    */
+    
 
 }

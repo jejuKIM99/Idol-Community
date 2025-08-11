@@ -58,6 +58,21 @@ const ArtistSNSOverview: React.FC<ArtistSNSOverviewProps> = ({ artistId, groupId
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null); // Add this line
+  
+  useEffect(() => {
+    const localData = localStorage.getItem('userId');
+    console.log("======================================== : ")
+    if (localData) {
+      const userId = JSON.parse(localData);
+      console.log("userId : ", userId)
+      if (userId) {
+        setCurrentUserId(userId.toString()); // Assuming userId is a number, convert to string
+      }
+    }
+  }, []); 
+
+
   const handlePostSubmit = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && artistId) {
       if (!postContent.trim() && !selectedImage) {
@@ -151,7 +166,7 @@ const ArtistSNSOverview: React.FC<ArtistSNSOverviewProps> = ({ artistId, groupId
       if (artistId) {
         try {
           const response = await axios.get(`http://localhost:80/api/artistSNS/post/isFollow`, {
-            params: { userId: 4, artistId: artistId }
+            params: { userId: currentUserId, artistId: artistId }
           });
           setIsFollowing(response.data);
         } catch (err) {
@@ -165,7 +180,7 @@ const ArtistSNSOverview: React.FC<ArtistSNSOverviewProps> = ({ artistId, groupId
   const handleFollow = async () => {
     const formData = new FormData();
     formData.append('artistId', artistId);
-    formData.append('userId', '4');
+    formData.append('userId', currentUserId);
 
     const url = isFollowing ? 'http://localhost:80/api/artistSNS/home/unfollow' : 'http://localhost:80/api/artistSNS/home/follow';
 

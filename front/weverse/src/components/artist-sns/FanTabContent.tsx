@@ -66,6 +66,19 @@ const FanTabContent: React.FC<FanTabContentProps> = ({ artistId, groupId, artist
   const [fanPost, setFanPost] = useState<Post[]>([]); // 라이브 데이터 상태 추가
   const [profile, setProfile] = useState<Profile[]>([]); // 라이브 데이터 상태 추가
   const [user, setUser] = useState<User[]>([]); // 라이브 데이터 상태 추가
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null); // Add this line
+
+  useEffect(() => {
+    const localData = localStorage.getItem('userId');
+    console.log("======================================== : ")
+    if (localData) {
+      const userId = JSON.parse(localData);
+      console.log("userId : ", userId)
+      if (userId) {
+        setCurrentUserId(userId.toString()); // Assuming userId is a number, convert to string
+      }
+    }
+  }, []); 
   const [notice, setNotice] = useState<Notice[]>([]); // 라이브 데이터 상태 추가
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -84,7 +97,12 @@ const FanTabContent: React.FC<FanTabContentProps> = ({ artistId, groupId, artist
       const formData = new FormData();
       formData.append('artistID', artistId);
       formData.append('content', postContent);
-      formData.append('userId', '4');
+      if (currentUserId) {
+        formData.append('userId', currentUserId);
+      } else {
+        alert('User not logged in.'); // Or handle this case appropriately
+        return;
+      }
 
       try {
         await axios.post('http://localhost:80/api/artistSNS/fan/fanInput', formData);
@@ -131,10 +149,10 @@ const FanTabContent: React.FC<FanTabContentProps> = ({ artistId, groupId, artist
 
   // latestPost
   useEffect(() => {
-    const sessionData = sessionStorage.getItem('user');
-    if (sessionData) {
-      const user = JSON.parse(sessionData);
-      console.log('Session User Info:', user);
+    const localData = localStorage.getItem('user');
+    if (localData) {
+      const user = JSON.parse(localData);
+      console.log('Local User Info:', user);
     }
     const fetchNotice = async () => {
       console.log("fetchPost")
@@ -142,7 +160,7 @@ const FanTabContent: React.FC<FanTabContentProps> = ({ artistId, groupId, artist
         try {
           console.log("Fetching post data for artistId:", groupId);
           const response = await axios.get(`http://localhost:80/api/artistSNS/latestPost`, {
-            params: { userId: 1, groupId: groupId }
+            params: { userId: currentUserId, groupId: groupId }
           });
           console.log('Latest Post Data Response:', response.data); // API 응답 전체를 다시 확인
           setPost(response.data.postList);
@@ -152,7 +170,7 @@ const FanTabContent: React.FC<FanTabContentProps> = ({ artistId, groupId, artist
       }
     };
     fetchNotice();
-  }, [groupId]);
+  }, [groupId, currentUserId]);
 
   // post
   useEffect(() => {
@@ -176,11 +194,12 @@ const FanTabContent: React.FC<FanTabContentProps> = ({ artistId, groupId, artist
 
   // user
   useEffect(() => {
-    const fetchFanPost = async () => {
+    const fetchUserPost = async () => {
       console.log("fetchUser")
       try {
+        console.log('Fetching user profile with userId:', currentUserId);
         const response = await axios.get(`http://localhost:80/api/artistSNS/fan/myProfile`, {
-          params: { userId: 3 }
+          params: { userId: currentUserId }
         });
         console.log('user Post Data Response:', response.data); // API 응답 전체를 다시 확인
         setUser(response.data);
@@ -188,8 +207,8 @@ const FanTabContent: React.FC<FanTabContentProps> = ({ artistId, groupId, artist
         console.error('Failed to fetch post data:', err);
       }
     };
-    fetchFanPost();
-  }, [groupId]);
+    fetchUserPost();
+  }, [groupId, currentUserId]);
 
   // notice
   useEffect(() => {
