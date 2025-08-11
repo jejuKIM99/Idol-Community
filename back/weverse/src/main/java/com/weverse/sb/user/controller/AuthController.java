@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.weverse.sb.config.JwtUtil;
+import com.weverse.sb.security.JwtUtil;
 import com.weverse.sb.user.dto.JwtResponseDto;
 import com.weverse.sb.user.dto.LoginRequestDto;
 import com.weverse.sb.user.dto.SignupRequestDto;
 import com.weverse.sb.user.entity.User;
 import com.weverse.sb.user.service.AuthService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -31,7 +32,7 @@ public class AuthController {
         try {
             User user = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
 
-            String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+            String token = jwtUtil.generateToken(user.getEmail(), user.getRole().toString());
 
             // 토큰과 userId를 함께 반환
             return ResponseEntity.ok(new JwtResponseDto(token, user.getUserId()));
@@ -52,7 +53,7 @@ public class AuthController {
     
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignupRequestDto signupRequest) {
+    public ResponseEntity<?> signup(@RequestBody @Valid SignupRequestDto signupRequest) {
         authService.signup(signupRequest);
         return ResponseEntity.ok("회원가입 성공");
     }
