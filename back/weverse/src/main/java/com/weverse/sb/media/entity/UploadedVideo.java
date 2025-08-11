@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import com.weverse.sb.artist.entity.Artist;
 import com.weverse.sb.artist.entity.Group;
+import com.weverse.sb.media.entity.MediaCategory;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -60,4 +61,9 @@ public class UploadedVideo {
     
     @Column(name = "video_url", length = 255, nullable = false)
     private String videoUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "category_idx", nullable = false)
+    private MediaCategory mediaCategory;
+    
 }

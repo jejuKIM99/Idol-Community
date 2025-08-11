@@ -78,6 +78,12 @@
   margin-bottom: 10px;
 }
 
+.bubbleimgsrc {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .bubblePostDateTime {
   font-size: 12px;
   color: #888;

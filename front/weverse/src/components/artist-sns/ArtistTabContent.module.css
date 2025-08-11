@@ -22,8 +22,10 @@
 
 .storySection {
   display: flex;
+  width: 760px;
   gap: 15px;
   overflow-x: auto;
+  white-space: nowrap; /* Prevent wrapping of story cards */
   padding-bottom: 10px; /* For scrollbar */
   margin-bottom: 20px;
 }

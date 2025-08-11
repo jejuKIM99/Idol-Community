@@ -36,32 +36,49 @@ public class CommentServiceImpl implements CommentService{
 	ArtistRepository artistRepository;
 
 	@Override
-	public List<Comment> getCommentList(Long postId) {
-		return commentRepository.findByPostId(postId);
+	public List<Comment> getCommentList(Long groupId) {
+		return commentRepository.findByGroup_GroupIdAndAuthorType(groupId, "artist");
 	}
 
 	@Override
-	public void inputComment(Long postId, String content, Long userId) {
-		User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-        
-        Post post = postRepository.findById(postId)
+	public void inputComment(Long postId, String content, Long userId, String authorType) {
+		
+		Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
-        
-        Long artistId = post.getArtist().getArtistId();
-        
-        Artist artist = artistRepository.findById(artistId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid artist ID"));
-        
-        Comment comment = Comment.builder()
-        		.artist(artist)
-        		.createdAt(LocalDateTime.now())
-                .post(post)
-                .user(user)
-                .content(content)
-                .build();
 
-        commentRepository.save(comment);
+        if ("artist".equals(authorType)) {
+        	
+        	Artist artist = artistRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid artist ID"));
+        	
+        	
+        	Comment comment = Comment.builder()
+            		.artist(artist)
+            		.group(artist.getGroup())
+            		.createdAt(LocalDateTime.now())
+                    .post(post)
+                    .content(content)
+                    .authorType(authorType)
+                    .build();
+        	
+        	commentRepository.save(comment);
+        	
+		}else {
+			
+			User user = userRepository.findById(userId)
+	                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+			
+			Comment comment = Comment.builder()
+	        		.createdAt(LocalDateTime.now())
+	                .post(post)
+	                .user(user)
+	                .content(content)
+	                .authorType(authorType)
+	                .build();
+			
+			commentRepository.save(comment);
+
+		}
 		
 	}
 

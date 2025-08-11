@@ -8,11 +8,18 @@ import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 import styles from '@/styles/AdBanner.module.css';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import axios from 'axios';
+
+interface Banner {
+  bannerId: number;
+  bannerImage: string;
+}
 
 const AdBanner = () => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
   const [swiper, setSwiper] = useState<any>(null);
+  const [banner, setBanner] = useState<Banner[]>([]);
 
   useEffect(() => {
     if (swiper) {
@@ -22,6 +29,20 @@ const AdBanner = () => {
       swiper.navigation.update();
     }
   }, [swiper]);
+
+  useEffect(() => {
+    const fetchBanner = async () => {
+      try {
+        const response = await axios.get(`http://localhost:80/api/shop/main`);
+        console.log("Banner : " , response.data)
+        setBanner(response.data);
+        // setIsFollowing(response.data);
+      } catch (err) {
+        console.error('Failed to fetch Banner data:', err);
+      }
+    };
+    fetchBanner();
+  }, []);
 
   const dummyImages = [
     { id: 1, color: '#ffadad' },
@@ -47,10 +68,10 @@ const AdBanner = () => {
           disableOnInteraction: false,
         }}
       >
-        {dummyImages.map((image) => (
-          <SwiperSlide key={image.id}>
-            <div className={styles.adBannerItem} style={{ backgroundColor: image.color }}>
-              Ad Banner {image.id}
+        {banner.map((banner) => (
+          <SwiperSlide key={banner.bannerId}>
+            <div className={styles.adBannerItem}>
+              <img className={styles.bannerImage} src={`http://localhost:80${banner.bannerImage}`} alt="bannerImage" />
             </div>
           </SwiperSlide>
         ))}

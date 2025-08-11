@@ -3,14 +3,14 @@ import React from 'react';
 import styles from './MediaItemCard.module.css';
 
 interface MediaItemCardProps {
-  thumbnailSrc: string;
+  thumbnail: string;
   duration?: string; // Optional for videos
   title: string;
   type: 'image' | 'video';
 }
 
 const MediaItemCard: React.FC<MediaItemCardProps> = ({
-  thumbnailSrc,
+  thumbnail,
   duration,
   title,
   type,
@@ -19,7 +19,7 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
     <div className={styles.cardContainer}>
       <div className={styles.thumbnailWrapper}>
         {/* src={thumbnailSrc} */}
-        <img alt={title} className={styles.thumbnail} /> 
+        <img src={`http://localhost:80${thumbnail}`} alt={title} className={styles.thumbnail} /> 
         {duration && <span className={styles.duration}>{duration}</span>}
       </div>
       <h3 className={styles.title}>{title}</h3>

@@ -10,4 +10,5 @@ public interface UploadedVideoRepository extends JpaRepository<UploadedVideo, Lo
 
 	List<UploadedVideo> findByGroup_GroupId(Long groupId);
 
+    List<UploadedVideo> findByGroupGroupIdAndMediaCategoryCategoryId(Long groupId, Long mediaCategoryId);
 }
