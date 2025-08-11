@@ -10,6 +10,8 @@ import com.weverse.sb.order.dto.CheckoutRequestDTO;
 import com.weverse.sb.order.dto.OrderInitiateResponseDTO;
 import com.weverse.sb.order.dto.OrderPreviewRequestDTO;
 import com.weverse.sb.order.dto.OrderPreviewResponseDTO;
+import com.weverse.sb.order.dto.OrderValidationResponseDTO;
+import com.weverse.sb.order.dto.PaymentValidationRequestDTO;
 import com.weverse.sb.order.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -48,7 +50,6 @@ public class OrderController {
 	    return ResponseEntity.ok(response);
 	}
 	
-	/*
 	// PG사 결제 검증 및 최종 처리 API
 	@PostMapping("/validation")
 	public ResponseEntity<OrderValidationResponseDTO> validate(
@@ -58,6 +59,5 @@ public class OrderController {
 		OrderValidationResponseDTO response = orderService.completeOrder(requestDTO);
 	    return ResponseEntity.ok(response);
 	}
-	*/
 	
 }

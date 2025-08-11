@@ -14,6 +14,8 @@ import com.weverse.sb.order.dto.OrderInitiateResponseDTO;
 import com.weverse.sb.order.dto.OrderItemDTO;
 import com.weverse.sb.order.dto.OrderPreviewRequestDTO;
 import com.weverse.sb.order.dto.OrderPreviewResponseDTO;
+import com.weverse.sb.order.dto.OrderValidationResponseDTO;
+import com.weverse.sb.order.dto.PaymentValidationRequestDTO;
 import com.weverse.sb.order.dto.ShippingPolicy;
 import com.weverse.sb.order.entity.Order;
 import com.weverse.sb.order.entity.OrderItem;
@@ -21,6 +23,7 @@ import com.weverse.sb.order.entity.ShippingOption;
 import com.weverse.sb.order.repository.OrderItemRepository;
 import com.weverse.sb.order.repository.OrderRepository;
 import com.weverse.sb.order.repository.ShippingOptionRepository;
+import com.weverse.sb.payment.entity.Payment;
 import com.weverse.sb.payment.repository.PaymentRepository;
 import com.weverse.sb.product.entity.Product;
 import com.weverse.sb.product.entity.ProductOption;
@@ -31,6 +34,7 @@ import com.weverse.sb.user.entity.User;
 import com.weverse.sb.user.repository.DeliveryAddressRepository;
 import com.weverse.sb.user.repository.UserRepository;
 
+import io.portone.sdk.server.PortOneClient;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -45,6 +49,8 @@ public class OrderService {
 	private final ProductRepository productRepository;
 	private final ProductOptionRepository productOptionRepository;
     private final PaymentRepository paymentRepository;
+    
+    private final PortOneClient portOneClient;
     
     // 주문 미리보기를 위한 서비스 메서드
     public OrderPreviewResponseDTO calculateOrderPreview(Long userId, OrderPreviewRequestDTO requestDTO) {
@@ -124,64 +130,46 @@ public class OrderService {
         
     }
     
-    /*
     // 결제 검증 및 최종 처리를 위한 서비스 메서드
     @Transactional
     public OrderValidationResponseDTO completeOrder(PaymentValidationRequestDTO requestDTO) {
-        // 'PENDING' 상태의 주문 정보 조회
-        Order order = orderRepository.findByOrderNumber(requestDTO.getOrderNumber());
+        final String paymentId  = requestDTO.getPaymentId();   // PortOne의 paymentId
+        final String orderNumber = requestDTO.getOrderNumber();// 우리가 발급한 orderNumber
 
-        // PG사 서버에 실제 결제 정보 조회 (실제 연동 시 SDK 사용)
-        // IamportClient client = new IamportClient("API_KEY", "API_SECRET");
-        // IamportResponse<Payment> iamportResponse = client.paymentByImpUid(requestDTO.getImp_uid());
-        // BigDecimal paidAmount = iamportResponse.getResponse().getAmount();
-
-        // (테스트용) PG사에서 받은 결제 정보가 DB의 금액과 같다고 가정
-        BigDecimal paidAmount = order.getTotalPrice().subtract(order.getCashUsed());
-
-        // 금액 검증 (PG 결제 금액이 캐시 차감 후 금액과 일치하는지)
-        if (paidAmount.compareTo(order.getTotalPrice().subtract(order.getCashUsed())) != 0) {
-            // 금액 불일치 시, PG사에 환불 요청 API를 호출하는 등 예외 처리 필요
-            order.setStatus("FAILED");
-            throw new RuntimeException("결제 금액 위변조 의심");
+        Order order = orderRepository.findByOrderNumber(orderNumber);
+        if (order == null) {
+            throw new IllegalArgumentException("주문을 찾을 수 없습니다: " + orderNumber);
         }
 
-        // --- 모든 검증 통과 ---
+        // 1) PortOne 서버 조회 (정확한 경로/메서드명은 Javadoc에서 확인)
+        // 예시 의사코드:
+        // var payment = portOneClient.payment().getPayment(paymentId);
+        // 또는 portOneClient.getPayment().getPayment(paymentId);
 
-        // '성공 기록'인 Payment 엔티티 생성 및 저장
-        Payment payment = Payment.builder()
-                .user(order.getUser())
-                .paymentMethod("CARD")
-                .amount(paidAmount)
-                .status("COMPLETED")
-                .currency("KRW")
-                .paymentGateway(null)
-                .impUid(requestDTO.getImpUid())
-                .merchantUid(requestDTO.getOrderNumber())
+        // 2) 상태/금액 대조
+        // String status = payment.getStatus(); // 예: PAID
+        // BigDecimal paidTotal = payment.getAmount().getTotal(); // 구조는 DTO 확인
+        // if (!"PAID".equals(status) || order.getTotalPrice().compareTo(paidTotal) != 0) {
+        //     throw new IllegalStateException("검증 실패(상태/금액)");
+        // }
+
+        // 3) 멱등성: 이미 처리된 주문이면 재처리 금지
+        // if ("PAID".equals(order.getStatus())) return toResponse(...);
+
+        // 4) 우리 DB 상태 변경 + payment 레코드 생성/연결
+        // paymentRepository.save(...);
+        // order.setStatus("PAID");
+        // orderRepository.save(order);
+
+        // 5) 응답 DTO 리턴
+        return OrderValidationResponseDTO.builder()
+                .orderNumber(order.getOrderNumber())
+                // .status("PAID")
                 .build();
-        paymentRepository.save(payment);
-
-        // 5. User의 캐시 실제로 차감
-        User user = order.getUser();
-        user.decreaseCash(order.getCashUsed());
-
-        // 6. 상품 재고 차감
-        for (OrderItem item : order.getOrderItems()) {
-            item.getOption().decreaseStock(item.getQuantity());
-        }
-
-        // 7. Order 상태를 'PAID'로 최종 업데이트하고 Payment와 연결
-        order.setStatus("PAID");
-        order.setPayment(payment);
-        order.setImpUid(requestDTO.getImp_uid());
-
-        // 8. DTO로 변환하여 최종 결과 반환
-        return OrderValidationResponseDTO.from(order);
     }
-    */
     
     
-    // 헬퍼 메서드
+    /* -------------------- 헬퍼 메서드 ------------------------ */
     
     // 계산만 담당하는 공통 헬퍼 메서드
     private OrderCalculationResult calculateOrderDetails(Long userId, List<OrderItemDTO> saleItems, Long addressId, BigDecimal cashToUse) {

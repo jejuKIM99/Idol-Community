@@ -42,6 +42,10 @@ dependencies {
    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+   
+   // 굿즈 결제용
+   // 포트원(PortOne) (구 아임포트) 공식 라이브러리 (가장 최신 버전)
+   implementation 'io.portone:server-sdk:0.19.2'
 }
 
 tasks.named('test') {

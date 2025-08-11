@@ -1,11 +1,8 @@
 package com.weverse.sb.order.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.data.annotation.CreatedDate;
 
 import com.weverse.sb.global.entity.BaseEntity;
 import com.weverse.sb.payment.entity.Payment;
@@ -23,13 +20,15 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "orders")
 public class Order extends BaseEntity {
