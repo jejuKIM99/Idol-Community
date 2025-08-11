@@ -43,6 +43,7 @@ public class SecurityConfig {
             .cors(cors -> {}) // ✅ CORS 활성화
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+            	.requestMatchers("/ws/**").permitAll() 
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/user/**").hasRole("USER")

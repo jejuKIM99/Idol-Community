@@ -202,20 +202,20 @@ const ItemDetailView: React.FC<ItemDetailViewProps> = ({ item, type }) => {
   ];
 
   const liveVideosData = Array.from({ length: 2 }, (_, i) => ({
-    thumbnailSrc: `/images/${item.group.groupName}/${item.group.groupName}_profile/${item.group.groupName}_live_0${i+1}.jpg`,
+    thumbnailSrc: `/images/${item.owner.group.groupName}/${item.owner.group.groupName}_profile/${item.owner.group.groupName}_live_0${i+1}.jpg`,
     duration: `00:0${i + 1}:00`,
     title: `${item.title}`,
     views: `${(i + 1) * 100}K`,
     likes: `${(i + 1) * 10}K`,
     chats: `${(i + 1) * 5}K`,
     hasSubtitles: i % 2 === 0,
-    artistImageSrc: `/images/${item.group.groupName}/${item.group.groupName}_profile/${item.group.groupName}_group.png`,
+    artistImageSrc: `/images/${item.owner.group.groupName}/${item.owner.group.groupName}_profile/${item.owner.group.groupName}_group.png`,
     artistName: `${item.group.groupName}`,
     uploadDate: `${item.createdAt}`,
   }));
 
   const mediaItemsData = Array.from({ length: 4 }, (_, i) => ({
-  thumbnailSrc: `/images/${item.artist.group.groupName}/${item.artist.group.groupName}_profile/${item.artist.group.groupName}_live_0${i + 1}.jpg`,
+  thumbnailSrc: `/images/${item.owner.group.groupName}/${item.owner.group.groupName}_profile/${item.owner.group.groupName}_live_0${i + 1}.jpg`,
   duration: i % 2 === 0 ? `00:0${i + 1}:00` : undefined,
   title: item.title,
   type: i % 2 === 0 ? 'video' : 'image',
