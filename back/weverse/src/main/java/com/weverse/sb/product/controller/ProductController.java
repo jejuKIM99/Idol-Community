@@ -2,6 +2,7 @@ package com.weverse.sb.product.controller;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -12,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.weverse.sb.artist.dto.ShopArtistDTO;
+import com.weverse.sb.artist.entity.Artist;
+import com.weverse.sb.artist.entity.Banner;
+import com.weverse.sb.artist.repository.BannerRepository;
+import com.weverse.sb.product.dto.BannerDTO;
 import com.weverse.sb.product.dto.ProductDTO;
 import com.weverse.sb.product.dto.ProductOptionDTO;
 import com.weverse.sb.product.dto.ShopMainResponseDTO;
@@ -31,10 +36,31 @@ public class ProductController {
 	
 	private final ProductService productService;
 	private final ShopMainService shopMainService;
+	private final BannerRepository bannerRepository;
 
     @GetMapping("/main")
-    public ShopMainResponseDTO getShopMainData() {
-        return shopMainService.getShopMainData();
+    public List<BannerDTO> getShopMainBanners() {
+        List<Banner> banners = bannerRepository.findAll();
+        
+        // 엔티티 리스트를 DTO 리스트로 변환
+        return banners.stream()
+                .map(banner -> {
+                    BannerDTO dto = new BannerDTO();
+                    dto.setBannerId(banner.getBannerId());
+                    dto.setMainTitle(banner.getMainTitle());
+                    dto.setSubTitle(banner.getSubTitle());
+                    dto.setBannerImage(banner.getBannerImage());
+                    
+                    // Artist 객체가 null인지 확인하고 ID를 설정
+                    Artist artist = banner.getArtist();
+                    if (artist != null) {
+                        dto.setArtistId(artist.getArtistId());
+                    }
+                    
+                    dto.setGroupId(banner.getGroupId());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
 	

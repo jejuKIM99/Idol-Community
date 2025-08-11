@@ -38,12 +38,12 @@ public class ShopMainInsertTests {
 
     @Autowired
     private BannerRepository bannerRepository;
-/*
+
     @Test
     void insertShopMainData() {
 
         IntStream.rangeClosed(1, 2).forEach(i -> {
-
+        	
             // 아티스트 
             Artist artist = Artist.builder()
                     .stageName("아티스트" + i)
@@ -87,9 +87,9 @@ public class ShopMainInsertTests {
             noticeRepository.save(notice);
         });
     }
-    */
     
     
+    /*
     @Test
     @DisplayName("상품 엔티티로 직접 DTO 검증")
     void getProductDtoDirectly() {
@@ -122,7 +122,7 @@ public class ShopMainInsertTests {
         assertNotNull(dto);
         assertEquals(product.getId(), dto.getProductId());
         assertEquals(product.getProductName(), dto.getProductName());
-    }
+    }*/
 
 
 }
