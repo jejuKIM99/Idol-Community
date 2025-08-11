@@ -27,15 +27,35 @@ const PostCard: React.FC<PostCardProps> = ({
 }) => {
   const [liked, setLiked] = useState(false);
 
+  const [currentUserId, setCurrentUserId] = useState<string>(); // Add this line
+    
+    useEffect(() => {
+      const localData = localStorage.getItem('userId');
+      console.log("======================================== : ")
+      if (localData) {
+        let parsedUserId;
+        try {
+          parsedUserId = JSON.parse(localData);
+        } catch (e) {
+          parsedUserId = localData; // Not a JSON string, use as is
+        }
+        console.log("userId : ", parsedUserId)
+        if (parsedUserId) {
+          setCurrentUserId(parsedUserId.toString()); // Ensure it's a string
+        }
+      }
+    }, []); 
+
+
   // artistprofile
   useEffect(() => {
     const fetchIsLike = async () => {
       console.log("fetchProfile")
-      if (postId) {
+      if (postId && currentUserId) { // Only fetch if currentUserId is available
         try {
-          console.log("Fetching siLike data for PostId:", postId);
+          console.log("Fetching siLike data for PostId:", postId, " and userId:", currentUserId);
           const response = await axios.get(`http://localhost:80/api/artistSNS/post/isLike`, {
-            params: { userId: 3, postId: postId }
+            params: { userId: currentUserId, postId: postId }
           });
           console.log('post Data Response:', response.data); // API 응답 전체를 다시 확인
           setLiked(response.data);
@@ -45,12 +65,17 @@ const PostCard: React.FC<PostCardProps> = ({
       }
     };
     fetchIsLike();
-  }, [postId]);
+  }, [postId, currentUserId]);
 
   const handleLike = async () => {
     const formData = new FormData();
     formData.append('postId', postId.toString());
-    formData.append('userId', '3');
+    if (!currentUserId) {
+      alert('User not logged in. Cannot like/dislike post.');
+      return;
+    }
+    formData.append('userId', currentUserId);
+    console.log('Sending like/dislike request with userId:', currentUserId, ' and postId:', postId);
 
     const url = liked ? 'http://localhost:80/api/artistSNS/home/dislike' : 'http://localhost:80/api/artistSNS/home/like';
 

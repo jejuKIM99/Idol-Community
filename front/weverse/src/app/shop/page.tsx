@@ -28,6 +28,26 @@ interface ShopArtistDTO {
   dmNickname: string;
 }
 
+interface ProductImageDTO {
+  imageId: number;
+  imageUrl: string;
+}
+
+interface ProductCategoryDTO {
+  categoryId: number;
+  categoryName: string;
+}
+
+interface ProductDTO {
+  productId: number;
+  productName: string;
+  description: string;
+  price: number;
+  stockQty: number;
+  images: ProductImageDTO[];
+  category: ProductCategoryDTO;
+}
+
 interface ShopProductDTO {
   productId: number;
   productName: string;
@@ -68,21 +88,62 @@ const WeverseShopPage = () => {
   useEffect(() => {
     const fetchShopData = async () => {
       try {
-        const response = await fetch('http://localhost:80/api/shop/main');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        // Fetch banners
+        const bannersResponse = await fetch('http://localhost:80/api/shop/main');
+        if (!bannersResponse.ok) {
+          throw new Error(`HTTP error! status: ${bannersResponse.status} for banners`);
         }
-        const data: ShopMainResponseDTO = await response.json();
+        const banners: ShopBannerDTO[] = await bannersResponse.json();
+        console.log("Fetched banners:", banners);
 
-        const processedBanners = data.banners.map((banner: any) => {
-          const artist = data.artists.find(a => a.groupId === banner.groupId);
+        // Fetch artists
+        const artistsResponse = await fetch('http://localhost:80/api/shop/artists');
+        if (!artistsResponse.ok) {
+          throw new Error(`HTTP error! status: ${artistsResponse.status} for artists`);
+        }
+        const artists: ShopArtistDTO[] = await artistsResponse.json();
+        console.log("Fetched artists:", artists);
+
+        // Fetch products for each artist
+        let allProducts: ShopProductDTO[] = [];
+        for (const artist of artists) {
+          const productsResponse = await fetch(`http://localhost:80/api/shop/artists/${artist.artistId}/products`);
+          if (!productsResponse.ok) {
+            console.warn(`Could not fetch products for artist ${artist.artistId}. Status: ${productsResponse.status}`);
+            continue; // Skip to next artist if products cannot be fetched
+          }
+          const artistProducts: ProductDTO[] = await productsResponse.json();
+          
+          const mappedArtistProducts: ShopProductDTO[] = artistProducts.map(p => ({
+            productId: p.productId,
+            productName: p.productName,
+            price: p.price, // Price is already a number after JSON parsing
+            productImage: p.images && p.images.length > 0 ? p.images[0].imageUrl : '', // Use first image
+            artistId: artist.artistId, // Add artistId from the loop
+            artistName: artist.stageName // Add artistName from the loop
+          }));
+          allProducts = allProducts.concat(mappedArtistProducts);
+        }
+        console.log("Fetched all products:", allProducts);
+
+        // Notices are not available from ProductController, initialize as empty
+        const notices: ShopNoticeDTO[] = [];
+        console.log("Notices initialized as empty:", notices);
+
+        const processedBanners = banners.map((banner: any) => {
+          const artist = artists.find(a => a.groupId === banner.groupId);
           return {
             ...banner,
             linkUrl: artist ? `/shop/${encodeURIComponent(artist.stageName)}` : '#'
           };
         });
 
-        setShopData({ ...data, banners: processedBanners });
+        setShopData({
+          banners: processedBanners,
+          artists: artists,
+          products: allProducts,
+          notices: notices
+        });
       } catch (err: any) {
         setError(err.message);
       } finally {
