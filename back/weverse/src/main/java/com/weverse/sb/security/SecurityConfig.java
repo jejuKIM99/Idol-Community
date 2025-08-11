@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/user/**").hasRole("USER")
+                .requestMatchers("/api/shop/**").permitAll()
                 .anyRequest().authenticated()
             )
             // 로그인 요청 필터: UsernamePasswordAuthenticationFilter 앞에 배치
