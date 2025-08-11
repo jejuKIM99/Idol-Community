@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import styles from './jelly.module.css';
@@ -41,17 +41,7 @@ type JellyHistoryItem = {
   formattedTime: string;
 };
 
-const jellyProducts: JellyProduct[] = [
-  { id: 1, jellyAmount: 4, price: 1200 },
-  { id: 2, jellyAmount: 8, price: 2400 },
-  { id: 3, jellyAmount: 20, bonusJelly: 1, price: 6000, benefitPercent: 5 },
-  { id: 4, jellyAmount: 40, bonusJelly: 3, price: 12000, benefitPercent: 7 },
-  { id: 5, jellyAmount: 60, bonusJelly: 5, price: 18000, benefitPercent: 8 },
-  { id: 6, jellyAmount: 80, bonusJelly: 7, price: 24000, benefitPercent: 8 },
-  { id: 7, jellyAmount: 120, bonusJelly: 11, price: 36000, benefitPercent: 8 },
-  { id: 8, jellyAmount: 160, bonusJelly: 15, price: 48000, benefitPercent: 8 },
-  { id: 9, jellyAmount: 240, bonusJelly: 24, price: 72000, benefitPercent: 10, bestOffer: true },
-];
+
 
 // 결제 모달 컴포넌트
 const PaymentModal = ({ product, onClose, onPayment, isProcessing }: { 
@@ -195,6 +185,69 @@ export default function JellyPage() {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [activeHistoryTab, setActiveHistoryTab] = useState('charge');
 
+  // 사용자 정보 가져오기
+  const fetchUserInfo = useCallback(async () => {
+    if (!token) return;
+  
+    try {
+      const response = await fetch('http://localhost:80/api/jelly/user-info', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setUserInfo({
+          email: data.email,
+          name: data.name,
+          chargedJelly: data.chargedJelly,
+          bonusJelly: data.bonusJelly,
+          totalJelly: data.totalJelly
+        });
+      }
+    } catch (error) {
+      console.error('사용자 정보 조회 중 오류:', error);
+    }
+  }, [token]);
+
+  // 젤리 상품 목록을 useMemo로 최적화
+  const jellyProducts = useMemo(() => [
+    { id: 1, jellyAmount: 4, price: 1200 },
+    { id: 2, jellyAmount: 8, price: 2400 },
+    { id: 3, jellyAmount: 20, bonusJelly: 1, price: 6000, benefitPercent: 5 },
+    { id: 4, jellyAmount: 40, bonusJelly: 3, price: 12000, benefitPercent: 7 },
+    { id: 5, jellyAmount: 60, bonusJelly: 5, price: 18000, benefitPercent: 8 },
+    { id: 6, jellyAmount: 80, bonusJelly: 7, price: 24000, benefitPercent: 8 },
+    { id: 7, jellyAmount: 120, bonusJelly: 11, price: 36000, benefitPercent: 8 },
+    { id: 8, jellyAmount: 160, bonusJelly: 15, price: 48000, benefitPercent: 8 },
+    { id: 9, jellyAmount: 240, bonusJelly: 24, price: 72000, benefitPercent: 10, bestOffer: true },
+  ], []);
+
+  // 사용자 정보 기반 계산된 값들을 useMemo로 최적화
+  const userDisplayInfo = useMemo(() => {
+    if (!userInfo) return null;
+    
+    return {
+      totalJelly: userInfo.totalJelly || 0,
+      chargedJelly: userInfo.chargedJelly || 0,
+      bonusJelly: userInfo.bonusJelly || 0,
+      chargeLimit: Math.min((userInfo.chargedJelly || 0), 1500),
+      maxChargeLimit: 1500
+    };
+  }, [userInfo]);
+
+  // 상품 렌더링을 위한 최적화된 데이터를 useMemo로 생성
+  const optimizedProducts = useMemo(() => {
+    return jellyProducts.map(product => ({
+      ...product,
+      formattedPrice: product.price.toLocaleString(),
+      hasBonus: !!product.bonusJelly,
+      hasBenefit: !!product.benefitPercent,
+      isBestOffer: !!product.bestOffer
+    }));
+  }, [jellyProducts]);
+
   // 인증 상태 확인
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -204,72 +257,47 @@ export default function JellyPage() {
 
           // 사용자 정보 가져오기
         useEffect(() => {
-          const fetchUserInfo = async () => {
-            if (!token) return;
-
-            try {
-              const response = await fetch('http://localhost:80/api/jelly/user-info', {
-                headers: {
-                  'Authorization': `Bearer ${token}`
-                }
-              });
-
-              if (response.ok) {
-                const data = await response.json();
-                setUserInfo({
-                  email: data.email,
-                  name: data.name,
-                  chargedJelly: data.chargedJelly,
-                  bonusJelly: data.bonusJelly,
-                  totalJelly: data.totalJelly
-                });
-              }
-            } catch (error) {
-              console.error('사용자 정보 조회 중 오류:', error);
-            }
-          };
-
           if (isAuthenticated && token) {
             fetchUserInfo();
           }
-        }, [isAuthenticated, token]);
+        }, [isAuthenticated, token, fetchUserInfo]);
 
   // 젤리 상품 목록 가져오기
-  useEffect(() => {
-    const fetchProducts = async () => {
-      if (!token) return;
-      
-      try {
-        const response = await fetch('http://localhost:80/api/jelly/products', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setProducts(data);
-        } else {
-          console.error('상품 목록 조회 실패');
-          // 백엔드 API가 아직 구현되지 않은 경우 기본 데이터 사용
-          setProducts(jellyProducts);
+  const fetchProducts = useCallback(async () => {
+    if (!token) return;
+    
+    try {
+      const response = await fetch('http://localhost:80/api/jelly/products', {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      } catch (error) {
-        console.error('상품 목록 조회 중 오류:', error);
-        // 에러 발생 시 기본 데이터 사용
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data);
+      } else {
+        console.error('상품 목록 조회 실패');
+        // 백엔드 API가 아직 구현되지 않은 경우 기본 데이터 사용
         setProducts(jellyProducts);
-      } finally {
-        setIsLoadingProducts(false);
       }
-    };
+    } catch (error) {
+      console.error('상품 목록 조회 중 오류:', error);
+      // 에러 발생 시 기본 데이터 사용
+      setProducts(jellyProducts);
+    } finally {
+      setIsLoadingProducts(false);
+    }
+  }, [token]);
 
+  useEffect(() => {
     if (isAuthenticated && token) {
       fetchProducts();
     }
-  }, [isAuthenticated, token]);
+  }, [isAuthenticated, token, fetchProducts]);
 
   // 거래 내역 가져오기
-  const fetchHistory = async (type: string = 'ALL', days: number = 30) => {
+  const fetchHistory = useCallback(async (type: string = 'ALL', days: number = 30) => {
     if (!token) return;
     
     setIsLoadingHistory(true);
@@ -295,7 +323,7 @@ export default function JellyPage() {
     } finally {
       setIsLoadingHistory(false);
     }
-  };
+  }, [token]);
 
   // 조회탭이 활성화될 때 거래 내역 가져오기
   useEffect(() => {
@@ -303,7 +331,7 @@ export default function JellyPage() {
     if (activeTab === 'history' && isAuthenticated && token) {
       fetchHistory(historyType, historyDays);
     }
-  }, [activeTab, historyType, historyDays, isAuthenticated, token]);
+  }, [activeTab, historyType, historyDays, isAuthenticated, token, fetchHistory]);
 
   // 로딩 중이거나 인증되지 않은 경우
   if (isLoading || !isAuthenticated) {
@@ -391,30 +419,7 @@ export default function JellyPage() {
     }
   };
 
-  const fetchUserInfo = async () => {
-    if (!token) return;
-  
-    try {
-      const response = await fetch('http://localhost:80/api/jelly/user-info', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        setUserInfo({
-          email: data.email,
-          name: data.name,
-          chargedJelly: data.chargedJelly,
-          bonusJelly: data.bonusJelly,
-          totalJelly: data.totalJelly
-        });
-      }
-    } catch (error) {
-      console.error('사용자 정보 조회 중 오류:', error);
-    }
-  };
+
 
   // 결제 검증 함수
   const verifyPayment = async (impUid: string, merchantUid: string) => {
@@ -458,23 +463,23 @@ export default function JellyPage() {
             <p>My Jelly</p>
             <div className={styles.jellyAmount}>
               <GiJelly className={styles.jellyIconLarge} />
-              <span>{userInfo?.totalJelly || 0}</span>
+              <span>{userDisplayInfo?.totalJelly || 0}</span>
             </div>
           </div>
           <div className={styles.jellyDetails}>
             <div className={styles.detailItem}>
               <span>충전젤리</span>
-              <span>{userInfo?.chargedJelly || 0}</span>
+              <span>{userDisplayInfo?.chargedJelly || 0}</span>
             </div>
             <div className={styles.detailItem}>
               <span>적립젤리</span>
-              <span>{userInfo?.bonusJelly || 0}</span>
+              <span>{userDisplayInfo?.bonusJelly || 0}</span>
             </div>
           </div>
           <div className={styles.chargeLimit}>
             <span>충전한도</span>
             <p>
-              <strong>{userInfo?.chargedJelly || 0}</strong> / 최대 1,500
+              <strong>{userDisplayInfo?.chargeLimit || 0}</strong> / 최대 {userDisplayInfo?.maxChargeLimit || 1500}
             </p>
           </div>
           <div className={styles.sidebarFooter}>
@@ -503,25 +508,25 @@ export default function JellyPage() {
             <div className={styles.chargeSection}>
               <h2 className={styles.sectionTitle}>일반 충전</h2>
               <div className={styles.productList}>
-                {jellyProducts.map((product, index) => (
+                {optimizedProducts.map((product, index) => (
                   <div
                     key={index}
-                    className={`${styles.productItem} ${selectedProduct?.price === product.price ? styles.selected : ''} ${product.bestOffer ? styles.bestOffer : ''}`}
+                    className={`${styles.productItem} ${selectedProduct?.price === product.price ? styles.selected : ''} ${product.isBestOffer ? styles.bestOffer : ''}`}
                     onClick={() => handleProductClick(product)}
                   >
-                    {product.bestOffer && <div className={styles.bestOfferBadge}>Best Offer</div>}
+                    {product.isBestOffer && <div className={styles.bestOfferBadge}>Best Offer</div>}
                     <div className={styles.productInfo}>
                       <GiJelly className={styles.jellyIcon} />
                       <div>
                         <p className={styles.productName}>젤리 {product.jellyAmount}</p>
-                        {product.bonusJelly && (
+                        {product.hasBonus && (
                           <p className={styles.bonusJelly}>적립젤리 {product.bonusJelly}</p>
                         )}
                       </div>
                     </div>
                     <div className={styles.productPrice}>
-                      <span>₩{product.price.toLocaleString()}</span>
-                      {product.benefitPercent && (
+                      <span>₩{product.formattedPrice}</span>
+                      {product.hasBenefit && (
                         <span className={styles.benefitTag}>{product.benefitPercent}% 혜택</span>
                       )}
                     </div>

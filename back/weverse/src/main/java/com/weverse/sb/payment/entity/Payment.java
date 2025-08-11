@@ -50,9 +50,6 @@ public class Payment {
     @Column(name = "paid_at")
     private LocalDateTime paidAt;
 
-    @Column(name = "transaction_id", length = 255)
-    private String transactionId;
-
     @Column(name = "payment_gateway", length = 50)
     private String paymentGateway;
     
