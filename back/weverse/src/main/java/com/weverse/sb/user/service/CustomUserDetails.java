@@ -23,6 +23,10 @@ public class CustomUserDetails implements UserDetails {
         return user.getRole().name();
     }
 
+    public Long getUserId() {
+        return user.getUserId();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(user.getRole().name()));
