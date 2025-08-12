@@ -24,40 +24,6 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable()) // ✅ CSRF 비활성화
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/user/**").hasRole("USER") // 권한 설정
-                .anyRequest().permitAll() // ✅ 전체 요청 허용 (개발 초기용)
-            );
-
-        return http.build(); // 아직 필터 추가 X
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    // ✅ Jwt 필터에서 쓸 AuthenticationManager 직접 등록
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-        return builder.build();
-    }
-}
-
-/*
-@Configuration  // *** 시큐리티 적용시 
-@EnableWebSecurity
-@RequiredArgsConstructor
-public class SecurityConfig {
-
-    private final CustomUserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
 
@@ -74,11 +40,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
+            .cors(cors -> {}) // ✅ CORS 활성화
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+            	.requestMatchers("/ws/**").permitAll() 
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/user/**").hasRole("USER")
+                .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/images/**").permitAll()
                 .anyRequest().authenticated()
             )
             // 로그인 요청 필터: UsernamePasswordAuthenticationFilter 앞에 배치
@@ -100,4 +70,3 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
-*/

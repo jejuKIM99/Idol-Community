@@ -15,7 +15,9 @@ import com.weverse.sb.artist.repository.ArtistRepository;
 import com.weverse.sb.artist.repository.StoryCommentRepository;
 import com.weverse.sb.artist.repository.StoryRepository;
 import com.weverse.sb.user.entity.User;
+import com.weverse.sb.user.enums.Role;
 import com.weverse.sb.user.repository.UserRepository;
+import com.weverse.sb.user.enums.Role;
 
 @SpringBootTest
 public class StoryInsertTest {
@@ -56,7 +58,7 @@ public class StoryInsertTest {
                         .isEmailVerified(false)
                         .isSmsVerified(false)
                         .createdAt(LocalDateTime.now())
-                        .role("USER")
+                        .role(Role.ROLE_USER)
                         .build();
                 userRepository.save(user);
             }

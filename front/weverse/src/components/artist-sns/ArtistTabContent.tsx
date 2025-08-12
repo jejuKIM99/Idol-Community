@@ -50,6 +50,20 @@ const ArtistTabContent: React.FC<ArtistTabContentProps> = ({ artistId, groupId }
   const [story, setStory] = useState<Story[]>([]); // 라이브 데이터 상태 추가
   const [artistPost, setArtistPost] = useState<Post[]>([]); // 라이브 데이터 상태 추가
   const [user, setUser] = useState<User[]>([]); // 라이브 데이터 상태 추가
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null); // Add this line
+
+  useEffect(() => {
+      const localData = localStorage.getItem('userId');
+      console.log("======================================== : ")
+      if (localData) {
+        const userId = JSON.parse(localData);
+        console.log("userId : ", userId)
+        if (userId) {
+          setCurrentUserId(userId.toString()); // Assuming userId is a number, convert to string
+        }
+      }
+    }, []); 
+    
   const [notice, setNotice] = useState<Notice[]>([]); // 라이브 데이터 상태 추가
 
   // story
@@ -93,11 +107,12 @@ const ArtistTabContent: React.FC<ArtistTabContentProps> = ({ artistId, groupId }
 
   // user
   useEffect(() => {
-    const fetchFanPost = async () => {
+    const fetchUserPost = async () => {
       console.log("fetchUser")
       try {
+        console.log('Fetching user profile with userId:', currentUserId);
         const response = await axios.get(`http://localhost:80/api/artistSNS/fan/myProfile`, {
-          params: { userId: 3 }
+          params: { userId: currentUserId }
         });
         console.log('user Post Data Response:', response.data); // API 응답 전체를 다시 확인
         setUser(response.data);
@@ -105,8 +120,8 @@ const ArtistTabContent: React.FC<ArtistTabContentProps> = ({ artistId, groupId }
         console.error('Failed to fetch post data:', err);
       }
     };
-    fetchFanPost();
-  }, [groupId]);
+    fetchUserPost();
+  }, [groupId, currentUserId]);
 
   // notice
   useEffect(() => {

@@ -35,21 +35,23 @@ interface ShopProductDTO {
 }
 
 interface Props {
-  artist: ShopArtistDTO;
+  artists: ShopArtistDTO[];
   products: ShopProductDTO[];
+  groupName: string;
 }
 
-const ArtistProductSection = ({ artist, products }: Props) => {
-  const { stageName: artistName } = artist;
-  if (products.length === 0) return null;
+const ArtistProductSection = ({ artists, products, groupName }: Props) => {
+  if (artists.length === 0 || products.length === 0) return null;
+
+  const groupId = artists[0].groupId;
 
   return (
     <section className={`${styles.section} ${styles.nowSection}`}>
-      <Link href={`/shop/${encodeURIComponent(artistName)}`} className={styles.headerLink}>
+      <Link href={`/shop/group/${groupId}`} className={styles.headerLink}>
         <div className={styles.nowHeader}>
           <span>Now</span>
           <FiChevronRight />
-          <span>{artistName}</span>
+          <span>{groupName}</span>
         </div>
       </Link>
       

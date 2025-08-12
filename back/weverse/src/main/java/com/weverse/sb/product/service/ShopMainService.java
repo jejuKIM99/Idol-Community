@@ -28,7 +28,7 @@ public interface ShopMainService {
     ShopMainResponseDTO getShopMainData();
     
     //5.4
-    //ShopProductDTO getProductById(Long productId);
+    ShopProductDTO getProductById(Long productId);
     
     //5.4
     ShopProductDetailDTO getProductDetail(Long productId);

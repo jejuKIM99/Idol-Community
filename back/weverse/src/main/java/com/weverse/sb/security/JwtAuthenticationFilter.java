@@ -55,10 +55,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
         String token = jwtUtil.generateToken(userDetails.getUsername(), userDetails.getRole());
+        Long userId = userDetails.getUserId();
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{\"token\": \"" + token + "\"}");
+        String jsonResponse = String.format("{\"token\": \"%s\", \"userId\": %d}", token, userId);
+        response.getWriter().write(jsonResponse);
     }
 
     // 로그인 실패 시 처리

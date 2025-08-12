@@ -1,3 +1,5 @@
+
+// app/shop/group/[groupId]/all/page.tsx
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -13,7 +15,7 @@ interface ShopProductDTO {
   productImage: string;
   artistId: number;
   artistName: string;
-  category?: { // Optional category property
+  category?: { 
     categoryId: number;
     categoryName: string;
   };
@@ -32,17 +34,19 @@ interface ShopArtistDTO {
     dmNickname: string;
   }
 
-const ArtistAllProductsPage = () => {
+const GroupAllProductsPage = () => {
   const params = useParams();
-  const artistName = decodeURIComponent(params.artistName as string);
+  const groupId = parseInt(params.groupId as string, 10);
 
   const [products, setProducts] = useState<ShopProductDTO[]>([]);
-  const [artist, setArtist] = useState<ShopArtistDTO | null>(null);
+  const [groupArtists, setGroupArtists] = useState<ShopArtistDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState('ALL');
 
   useEffect(() => {
+    if (isNaN(groupId)) return;
+
     const fetchProducts = async () => {
       try {
         const artistsResponse = await fetch(`http://localhost:80/api/shop/artists`);
@@ -50,29 +54,34 @@ const ArtistAllProductsPage = () => {
             throw new Error(`HTTP error! status: ${artistsResponse.status}`);
         }
         const artists: ShopArtistDTO[] = await artistsResponse.json();
-        const currentArtist = artists.find(a => a.stageName === artistName);
+        const artistsInGroup = artists.filter(a => a.groupId === groupId);
         
-        if (!currentArtist) {
-            setError('아티스트를 찾을 수 없습니다.');
+        if (artistsInGroup.length === 0) {
+            setError('그룹을 찾을 수 없습니다.');
             setLoading(false);
             return;
         }
-        setArtist(currentArtist);
+        setGroupArtists(artistsInGroup);
 
-        const response = await fetch(`http://localhost:80/api/shop/artists/${currentArtist.artistId}/products`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        let allProducts: ShopProductDTO[] = [];
+        for (const artist of artistsInGroup) {
+          const response = await fetch(`http://localhost:80/api/shop/artists/${artist.artistId}/products`);
+          if (response.ok) {
+            const data: any[] = await response.json();
+            const artistProducts = data.map(p => ({
+              productId: p.productId,
+              productName: p.productName,
+              price: p.price,
+              productImage: p.images && p.images.length > 0 ? p.images[0].imageUrl : '/images/default.png',
+              artistId: artist.artistId,
+              artistName: artist.stageName,
+              category: p.category
+            }));
+            allProducts = [...allProducts, ...artistProducts];
+          }
         }
-        const data: any[] = await response.json();
-        setProducts(data.map(p => ({
-          productId: p.productId,
-          productName: p.productName,
-          price: p.price,
-          productImage: p.images && p.images.length > 0 ? p.images[0].imageUrl : '/images/default.png',
-          artistId: currentArtist.artistId,
-          artistName: currentArtist.stageName,
-          category: p.category
-        })));
+        setProducts(allProducts);
+
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -80,10 +89,8 @@ const ArtistAllProductsPage = () => {
       }
     };
 
-    if (artistName) {
-        fetchProducts();
-    }
-  }, [artistName]);
+    fetchProducts();
+  }, [groupId]);
 
   const categories = useMemo(() => {
     const cats = new Set(products.map(p => p.category?.categoryName).filter(Boolean));
@@ -119,12 +126,12 @@ const ArtistAllProductsPage = () => {
     );
   }
 
-  if (!artist) {
+  if (groupArtists.length === 0) {
     return (
       <>
         <Header />
         <main className={styles.container}>
-          <div className={styles.notFound}>아티스트를 찾을 수 없습니다.</div>
+          <div className={styles.notFound}>그룹을 찾을 수 없습니다.</div>
         </main>
       </>
     );
@@ -155,4 +162,4 @@ const ArtistAllProductsPage = () => {
   );
 };
 
-export default ArtistAllProductsPage;
+export default GroupAllProductsPage;

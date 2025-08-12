@@ -84,14 +84,14 @@ public class ShopMainServiceImpl implements ShopMainService {
     }
     
     //5.4
-    /*
+    
     @Override
-    public ShopProductDTO getProductById(Long Id) {
+    public ShopProductDTO getProductById(Long Id) { 
         return productRepository.findById(Id)
             .map(this::convertToProductDTO)
             .orElseThrow(() -> new NoSuchElementException("해당 상품이 존재하지 않습니다."));
     }
-    */
+    
 
     private ShopBannerDTO convertToBannerDTO(Banner entity) {
         return ShopBannerDTO.builder()

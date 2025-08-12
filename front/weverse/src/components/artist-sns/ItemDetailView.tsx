@@ -201,25 +201,25 @@ const ItemDetailView: React.FC<ItemDetailViewProps> = ({ item, type }) => {
     { image: '/images/merch4.jpg', name: 'Concert Hoodie', price: '₩60,000' },
   ];
 
-  const liveVideosData = Array.from({ length: 10 }, (_, i) => ({
-    thumbnailSrc: `/images/live${(i % 3) + 1}.jpg`,
+  const liveVideosData = Array.from({ length: 2 }, (_, i) => ({
+    thumbnailSrc: `/images/${item.owner.group.groupName}/${item.owner.group.groupName}_profile/${item.owner.group.groupName}_live_0${i+1}.jpg`,
     duration: `00:0${i + 1}:00`,
-    title: `임시 라이브 영상 ${i + 1}`,
+    title: `${item.title}`,
     views: `${(i + 1) * 100}K`,
     likes: `${(i + 1) * 10}K`,
     chats: `${(i + 1) * 5}K`,
     hasSubtitles: i % 2 === 0,
-    artistImageSrc: '/images/default_artist.jpg',
-    artistName: '임시 아티스트',
-    uploadDate: `8월 ${i + 1}일 14:30`,
+    artistImageSrc: `/images/${item.owner.group.groupName}/${item.owner.group.groupName}_profile/${item.owner.group.groupName}_group.png`,
+    artistName: `${item.group.groupName}`,
+    uploadDate: `${item.createdAt}`,
   }));
 
-  const mediaItemsData = Array.from({ length: 10 }, (_, i) => ({
-    thumbnailSrc: `/images/thumbnail${(i % 9) + 1}.jpg`,
-    duration: i % 2 === 0 ? `00:0${i + 1}:00` : undefined,
-    title: `임시 미디어 아이템 ${i + 1}`,
-    type: i % 2 === 0 ? 'video' : 'image',
-  }));
+  const mediaItemsData = Array.from({ length: 4 }, (_, i) => ({
+  thumbnailSrc: `/images/${item.owner.group.groupName}/${item.owner.group.groupName}_profile/${item.owner.group.groupName}_live_0${i + 1}.jpg`,
+  duration: i % 2 === 0 ? `00:0${i + 1}:00` : undefined,
+  title: item.title,
+  type: i % 2 === 0 ? 'video' : 'image',
+}));
   /*
     INSERT INTO streaming 
     (created_at, group_id, owner_artist_id, scheduled_at, streamer_artist_id, thumbnail, title, video_id)
@@ -334,7 +334,7 @@ const ItemDetailView: React.FC<ItemDetailViewProps> = ({ item, type }) => {
                   key={index}
                   originalPost={comment.nickname}
                   commentContent={comment.content}
-                  commentDateTime={new Date().toISOString()}
+                  commentDateTime={comment.sentAt ? new Date(comment.sentAt).toISOString() : new Date().toISOString()}
                 />
               ))}
             </div>

@@ -1,4 +1,5 @@
-// app/shop/[artistName]/page.tsx (Modified)
+
+// app/shop/group/[groupId]/page.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -7,7 +8,6 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import ArtistStoreBanner from '@/components/shop/ArtistStoreBanner';
 import NoticeSection from '@/components/shop/NoticeSection';
-// import { allArtists, notices } from '@/data/mockData'; // 목업 데이터 제거
 import styles from '@/styles/ArtistStorePage.module.css';
 import ProductCard from '@/components/shop/ProductCard';
 
@@ -47,66 +47,83 @@ interface ShopNoticeDTO {
   createdAt: string;
 }
 
-const ArtistStorePage = () => {
+interface GroupInfo {
+  groupId: number;
+  groupName: string;
+  groupProfileImage: string;
+  groupLogo: string;
+}
+
+const GroupStorePage = () => {
   const params = useParams();
-  const artistName = decodeURIComponent(params.artistName as string);
-  
-  const [artistData, setArtistData] = useState<ShopArtistDTO | null>(null);
-  const [artistProducts, setArtistProducts] = useState<ShopProductDTO[]>([]);
-  const [artistBanners, setArtistBanners] = useState<ShopBannerDTO[]>([]);
+  const groupId = parseInt(params.groupId as string, 10);
+
+  const [groupArtists, setGroupArtists] = useState<ShopArtistDTO[]>([]);
+  const [groupProducts, setGroupProducts] = useState<ShopProductDTO[]>([]);
+  const [groupBanners, setGroupBanners] = useState<ShopBannerDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('MERCH');
+  const [groupInfo, setGroupInfo] = useState<GroupInfo | null>(null);
 
   useEffect(() => {
-    const fetchArtistData = async () => {
+    if (isNaN(groupId)) return;
+
+    const fetchGroupData = async () => {
       try {
-        // 1. 모든 아티스트 목록을 가져와서 artistId 찾기
+        const groupResponse = await fetch(`http://localhost:80/api/artist/group?groupId=${groupId}`);
+        if (groupResponse.ok) {
+          const groupData = await groupResponse.json();
+          setGroupInfo(groupData.group);
+        }
+        // 1. 모든 아티스트 목록을 가져와서 groupId로 필터링
         const artistsResponse = await fetch('http://localhost:80/api/shop/artists');
         if (!artistsResponse.ok) {
           throw new Error(`HTTP error! status: ${artistsResponse.status}`);
         }
         const allArtists: ShopArtistDTO[] = await artistsResponse.json();
-        const foundArtist = allArtists.find(a => a.stageName === artistName);
+        const artistsInGroup = allArtists.filter(a => a.groupId === groupId);
 
-        if (!foundArtist) {
-          setError('아티스트를 찾을 수 없습니다.');
+        if (artistsInGroup.length === 0) {
+          setError('그룹을 찾을 수 없습니다.');
           setLoading(false);
           return;
         }
-        setArtistData(foundArtist);
+        setGroupArtists(artistsInGroup);
 
-        // 2. 해당 아티스트의 상품 목록 가져오기
-        const productsResponse = await fetch(`http://localhost:80/api/shop/artists/${foundArtist.artistId}/products`);
-        if (!productsResponse.ok) {
-          throw new Error(`HTTP error! status: ${productsResponse.status}`);
+        // 2. 그룹에 속한 모든 아티스트의 상품 목록 가져오기
+        let allProducts: ShopProductDTO[] = [];
+        for (const artist of artistsInGroup) {
+          const productsResponse = await fetch(`http://localhost:80/api/shop/artists/${artist.artistId}/products`);
+          if (productsResponse.ok) {
+            const productsData: any[] = await productsResponse.json();
+            const artistProducts = productsData.map(p => ({
+              productId: p.productId,
+              productName: p.productName,
+              price: p.price,
+              productImage: p.images && p.images.length > 0 ? p.images[0].imageUrl : '/images/default.png',
+              artistId: artist.artistId,
+              artistName: artist.stageName
+            }));
+            allProducts = [...allProducts, ...artistProducts];
+          }
         }
-        const productsData: any[] = await productsResponse.json();
-        setArtistProducts(productsData.map(p => ({
-          productId: p.productId,
-          productName: p.productName,
-          price: p.price,
-          productImage: p.images && p.images.length > 0 ? p.images[0].imageUrl : '/images/default.png',
-          artistId: foundArtist.artistId,
-          artistName: foundArtist.stageName
-        })));
+        setGroupProducts(allProducts);
 
-        // 3. 메인 상점 데이터에서 현재 아티스트의 배너 필터링
+        // 3. 메인 상점 데이터에서 현재 그룹의 배너 필터링
         const mainShopResponse = await fetch('http://localhost:80/api/shop/main');
         if (!mainShopResponse.ok) {
           throw new Error(`HTTP error! status: ${mainShopResponse.status}`);
         }
         const bannersData: any[] = await mainShopResponse.json();
         const filteredBanners = bannersData
-          .filter((banner: any) => banner.groupId === foundArtist.groupId)
+          .filter((banner: any) => banner.groupId === groupId)
           .map(banner => ({
             bannerId: banner.bannerId,
-            // 백엔드 DTO의 bannerImage를 imageUrl로 매핑
-            imageUrl: `http://localhost:80${banner.bannerImage}`, 
-            // linkUrl은 현재 아티스트의 상점 페이지로 설정하거나, 배너 정보에 따라 다르게 설정
-            linkUrl: banner.linkUrl || `/shop/${encodeURIComponent(foundArtist.stageName)}`
+            imageUrl: `http://localhost:80${banner.bannerImage}`,
+            linkUrl: banner.linkUrl || `/shop/group/${groupId}`
           }));
-        setArtistBanners(filteredBanners);
+        setGroupBanners(filteredBanners);
 
       } catch (err: any) {
         setError(err.message);
@@ -115,10 +132,9 @@ const ArtistStorePage = () => {
       }
     };
 
-    fetchArtistData();
-  }, [artistName]);
+    fetchGroupData();
+  }, [groupId]);
 
-  // 공지사항 데이터 (현재 백엔드에 아티스트별 공지사항 API가 없으므로 임시로 빈 배열)
   const notices: ShopNoticeDTO[] = [];
 
   if (loading) {
@@ -143,30 +159,29 @@ const ArtistStorePage = () => {
     );
   }
 
-  if (!artistData) {
+  if (groupArtists.length === 0) {
     return (
       <>
         <Header />
         <main className={styles.container}>
-          <div className={styles.notFound}>아티스트를 찾을 수 없습니다.</div>
+          <div className={styles.notFound}>그룹을 찾을 수 없습니다.</div>
         </main>
       </>
     );
   }
 
-  const hasBanners = artistBanners && artistBanners.length > 0;
+  const hasBanners = groupBanners && groupBanners.length > 0;
 
   return (
     <>
       <Header />
       <main className={styles.container}>
-        {hasBanners && <ArtistStoreBanner banners={artistBanners} />}
+        {hasBanners && <ArtistStoreBanner banners={groupBanners} />}
         
         <div className={styles.contentGrid}>
           <div className={styles.productsSection}>
-            <h3 className={styles.sectionTitle}>Products</h3>
+            <h3 className={styles.sectionTitle}>{groupInfo ? groupInfo.groupName : ''} Products</h3>
             <div className={styles.tabs}>
-              {/* 탭은 MERCH만 유지하거나, 백엔드 카테고리에 따라 동적으로 생성 */}
               <button 
                 key={'MERCH'}
                 className={`${styles.tabButton} ${activeTab === 'MERCH' ? styles.active : ''}`}
@@ -177,8 +192,8 @@ const ArtistStorePage = () => {
             </div>
             
             <div className={styles.productGrid}>
-              {artistProducts.length > 0 ? (
-                artistProducts.map(product => (
+              {groupProducts.length > 0 ? (
+                groupProducts.map(product => (
                   <ProductCard key={product.productId} product={product} />
                 ))
               ) : (
@@ -188,10 +203,9 @@ const ArtistStorePage = () => {
               )}
             </div>
 
-            {/* 모두보기 버튼은 상품이 있을 경우에만 표시 */}
-            {artistProducts.length > 0 && (
+            {groupProducts.length > 0 && (
               <div className={styles.moreButtonWrapper}>
-                <Link href={`/shop/${encodeURIComponent(artistData.stageName)}/all`} className={styles.moreButton}>
+                <Link href={`/shop/group/${groupId}/all`} className={styles.moreButton}>
                   모두 보기
                 </Link>
               </div>
@@ -208,4 +222,4 @@ const ArtistStorePage = () => {
   );
 };
 
-export default ArtistStorePage;
+export default GroupStorePage;
